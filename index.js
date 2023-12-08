@@ -12,6 +12,7 @@ fs.readFile('token', 'utf8' , (err, data) => {
   });
 
   vk.updates.on(['message_new'], (context) => {
+    console.log('context.text', context.text);
     if (context.text && context.text.toLowerCase() == 'hi') {
         context.send('Hello!');
     }
