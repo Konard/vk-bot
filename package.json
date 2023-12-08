@@ -1,0 +1,26 @@
+{
+  "name": "vk-bot",
+  "version": "0.0.1",
+  "description": "vk-bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Konard/vk-bot.git"
+  },
+  "keywords": [
+    "vk",
+    "bot"
+  ],
+  "author": "",
+  "license": "Unlicense",
+  "bugs": {
+    "url": "https://github.com/Konard/vk-bot/issues"
+  },
+  "homepage": "https://github.com/Konard/vk-bot#readme",
+  "dependencies": {
+    "vk-io": "^4.8.3"
+  }
+}
