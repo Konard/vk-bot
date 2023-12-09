@@ -9,7 +9,7 @@ function randomInRange(min, max) {
 
 const queue = [];
 
-const greetingRegex = /^\s*(привет|здравствуй|здравствуйте|добрый день|доброе утро|добрый вечер)\s*[.?!]*\s*$/gi;
+const greetingRegex = /^(привет|здравствуй|здравствуйте|добрый день|доброе утро|добрый вечер)\s*[.?!]*$/gi;
 
 const greetings = [
   "Привет",
@@ -37,12 +37,42 @@ const stickers = [
   15346
 ];
 
-function getRandomGreeting() {
-  return greetings[Math.floor(Math.random()*greetings.length)];
-}
+const questionClarifications = [
+  "Ответ на какой конкретный вопрос интересует?",
+  "Что является предметом вопроса?",
+  "О каком вопросе идет речь?",
+  "Какой вопрос подразумевается?",
+  "Что конкретно интересует?",
+  "В чём вопрос?",
+  "В чём суть вопроса?",
+  "Чего касается заданный вопрос?"
+];
 
-function getRandomSticker() {
-  return stickers[Math.floor(Math.random()*stickers.length)];
+const doWeKnowEachOtherRegex = /^(мы\s*)?знакомы(\s*с\s*(тобой|вами))?\s*[?)\\]*$/i;
+
+const meetingSuggestions = [
+  "Ещё нет. Однако это просто исправить, я программист. А ты? (можно на ты?)",
+  "Мы не знакомы, но это можно исправить. Я программист, а ты? (можем на ты?)",
+  "Нет, ещё не знакомы. Можно пробовать исправить: я программист.",
+  "Нет, мы не знакомы. Как смотришь на то, чтобы это исправить? Я программист.",
+  "Ещё нет, я программист, а ты? (не против, что на ты?)",
+  "Ещё нет, я программист.",
+  "Ещё нет, я программист, будем дружить?",
+  "Ещё нет, я программист, предлагаю дружбу :)",
+  "Ещё нет, я программист, а ты? (можем перейти на ты?)",
+  "Ещё нет, я программист :)",
+  "Нет, я программист, а ты? (продолжим на ты?)",
+  "Не встречались ранее. Давай это исправим. Я программист, а ты? (переходим на ты?)",
+  "Пока не знакомы, но можно это исправить. Кстати, я программист. А ты? (можно на ты?)",
+  "Ещё нет, но я всегда рад новым знакомствам. Я программист, а ты? (продолжим на ты?)",
+  "Пока что нет. Давай познакомимся? Я программист, а ты чем занимаешься? (мы на ты?)",
+  "Пока еще не знакомы. Исправим это? Я программист. А ты? (можно на ты?)",
+  "Мы еще не знакомы. Давай это исправим? Я программист. А ты? (перейдем на ты?)",
+  "Мы еще не знакомы, но может исправить это? Я программист :) А ты? (можно на ты?)",
+]
+
+function getRandomElement(array){
+  return array[Math.floor(Math.random()*array.length)];
 }
 
 function enqueueMessage(options) {
@@ -69,23 +99,33 @@ fs.readFile('token', 'utf8' , (err, data) => {
 
     console.log('request', JSON.stringify(request, null, 2));
 
-    if (greetingRegex.test(request.text)) {
+    const message = request.text.trim();
+
+    if (greetingRegex.test(message)) {
       enqueueMessage({
         request,
         response: {
-          sticker_id: getRandomSticker(),
+          sticker_id: getRandomElement(stickers),
           random_id: Math.random() // to make each message unique
         }
       });
     }
-    // if (request.text && request.text.toLowerCase() == 'react-with-hi') {
-    //   enqueueMessage({
-    //     request,
-    //     response: {
-    //       message: getRandomGreeting()
-    //     }
-    //   });
-    // }
+    if (message === '?') {
+      enqueueMessage({
+        request,
+        response: {
+          message: getRandomElement(questionClarifications)
+        }
+      });
+    }
+    if (doWeKnowEachOtherRegex.test(message)) {
+      enqueueMessage({
+        request,
+        response: {
+          message: getRandomElement(meetingSuggestions)
+        }
+      });
+    }
   });
 
   vk.updates.start().catch(console.error);
