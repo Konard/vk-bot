@@ -78,14 +78,14 @@ fs.readFile('token', 'utf8' , (err, data) => {
         }
       });
     }
-    if (request.text && request.text.toLowerCase() == 'react-with-hi') {
-      enqueueMessage({
-        request,
-        response: {
-          message: getRandomGreeting()
-        }
-      });
-    }
+    // if (request.text && request.text.toLowerCase() == 'react-with-hi') {
+    //   enqueueMessage({
+    //     request,
+    //     response: {
+    //       message: getRandomGreeting()
+    //     }
+    //   });
+    // }
   });
 
   vk.updates.start().catch(console.error);
