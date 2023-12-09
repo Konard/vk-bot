@@ -87,80 +87,72 @@ function enqueueMessage(options) {
     ...options
   });
 }
-
-fs.readFile('token', 'utf8' , (err, data) => {
-  if (err) {
-    console.error(err)
-    return
-  }
   
-  const vk = new VK({
-    token: data
-  });
+const token = require('fs').readFileSync('token', 'utf-8').trim();
+const vk = new VK({ token });
 
-  vk.updates.on(['message_new'], (request) => {
-    console.log('request.isGroup', request.isGroup);
-    console.log('request.isFromGroup', request.isFromGroup);
-    console.log('request.isUser', request.isUser);
-    console.log('request.isFromUser', request.isFromUser);
-    if (!request.isFromUser) {
-      return;
-    }
+vk.updates.on(['message_new'], (request) => {
+  console.log('request.isGroup', request.isGroup);
+  console.log('request.isFromGroup', request.isFromGroup);
+  console.log('request.isUser', request.isUser);
+  console.log('request.isFromUser', request.isFromUser);
+  if (!request.isFromUser) {
+    return;
+  }
 
-    console.log('request', JSON.stringify(request, null, 2));
+  console.log('request', JSON.stringify(request, null, 2));
 
-    const message = (request.text || "").trim();
+  const message = (request.text || "").trim();
 
-    if (greetingRegex.test(message)) {
-      enqueueMessage({
-        request,
-        response: {
-          sticker_id: getRandomElement(stickers),
-          random_id: Math.random() // to make each message unique
-        }
-      });
-    }
-    if (questionRegex.test(message)) {
-      enqueueMessage({
-        request,
-        response: {
-          message: getRandomElement(questionClarifications)
-        }
-      });
-    }
-    if (doWeKnowEachOtherRegex.test(message)) {
-      enqueueMessage({
-        request,
-        response: {
-          message: getRandomElement(meetingSuggestions)
-        }
-      });
-    }
-    if (gratitudeRegex.test(message)) {
-      enqueueMessage({
-        request,
-        response: {
-          sticker_id: gratitudeResponseSticker,
-        }
-      });
-    }
-  });
+  if (greetingRegex.test(message)) {
+    enqueueMessage({
+      request,
+      response: {
+        sticker_id: getRandomElement(stickers),
+        random_id: Math.random() // to make each message unique
+      }
+    });
+  }
+  if (questionRegex.test(message)) {
+    enqueueMessage({
+      request,
+      response: {
+        message: getRandomElement(questionClarifications)
+      }
+    });
+  }
+  if (doWeKnowEachOtherRegex.test(message)) {
+    enqueueMessage({
+      request,
+      response: {
+        message: getRandomElement(meetingSuggestions)
+      }
+    });
+  }
+  if (gratitudeRegex.test(message)) {
+    enqueueMessage({
+      request,
+      response: {
+        sticker_id: gratitudeResponseSticker,
+      }
+    });
+  }
+});
 
-  vk.updates.start().catch(console.error);
+vk.updates.start().catch(console.error);
 
-  const messagesHandlerInterval = setInterval(() => {
-    const context = queue[0];
-    if (!context) { // no messages to send - to nothing
-      return;
-    }
-    if (context.wait > 0) // we have a message to send - wait for the set interval
-    {
-      console.log('message.wait', context.wait);
-      context.wait--;
-      return;
-    }
-    queue.shift(); // dequeue message
-    console.log('response', context.response);
-    context.request.send(context.response); // send response within the request's context
-  }, 1000);
-})
+const messagesHandlerInterval = setInterval(() => {
+  const context = queue[0];
+  if (!context) { // no messages to send - to nothing
+    return;
+  }
+  if (context.wait > 0) // we have a message to send - wait for the set interval
+  {
+    console.log('message.wait', context.wait);
+    context.wait--;
+    return;
+  }
+  queue.shift(); // dequeue message
+  console.log('response', context.response);
+  context.request.send(context.response); // send response within the request's context
+}, 1000);
