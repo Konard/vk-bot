@@ -9,6 +9,35 @@ function randomInRange(min, max) {
 
 const queue = [];
 
+const greetings = [
+  "Hi",
+  "Hello",
+  "Hey there",
+  "Good day",
+  "Howdy",
+  "Salutations",
+  "Greetings",
+  "What's up",
+  "Aloha",
+  "Bonjour",
+  "Hola",
+  "Ciao",
+  "Привет",
+  "Здравствуй",
+  "Добрый день",
+  "Hallo",
+  "Hej",
+  "Salut",
+  "Merhaba",
+  "你好",
+  "こんにちは",
+  "नमस्ते",
+];
+
+function getRandomGreeting() {
+  return greetings[Math.floor(Math.random()*greetings.length)];
+}
+
 function enqueueMessage(options) {
   queue.push({
     wait: randomInRange(2, 10),
@@ -28,11 +57,22 @@ fs.readFile('token', 'utf8' , (err, data) => {
 
   vk.updates.on(['message_new'], (request) => {
     console.log('request', JSON.stringify(request, null, 2));
-    if (request.text && request.text.toLowerCase() == 'hi') {
+    
+    if (request.text && request.text.toLowerCase() == 'react-with-sticker') {
       enqueueMessage({
         request,
         response: {
-          message: 'Hello!'
+          user_id: 3972090,
+          sticker_id: 72789,
+          random_id: Math.random() // to make each message unique
+        }
+      });
+    }
+    if (request.text && request.text.toLowerCase() == 'react-with-hi') {
+      enqueueMessage({
+        request,
+        response: {
+          message: getRandomGreeting()
         }
       });
     }
