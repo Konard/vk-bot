@@ -62,7 +62,6 @@ fs.readFile('token', 'utf8' , (err, data) => {
       enqueueMessage({
         request,
         response: {
-          user_id: 3972090,
           sticker_id: 72789,
           random_id: Math.random() // to make each message unique
         }
@@ -92,6 +91,7 @@ fs.readFile('token', 'utf8' , (err, data) => {
       return;
     }
     queue.shift(); // dequeue message
+    console.log('response', context.response);
     context.request.send(context.response); // send response within the request's context
   }, 1000);
 })
