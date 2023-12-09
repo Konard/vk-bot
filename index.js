@@ -99,7 +99,11 @@ fs.readFile('token', 'utf8' , (err, data) => {
   });
 
   vk.updates.on(['message_new'], (request) => {
-    if (request.isGroup) {
+    console.log('request.isGroup', request.isGroup);
+    console.log('request.isFromGroup', request.isFromGroup);
+    console.log('request.isUser', request.isUser);
+    console.log('request.isFromUser', request.isFromUser);
+    if (!request.isFromUser) {
       return;
     }
 
