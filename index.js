@@ -7,14 +7,13 @@ function randomInRange(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
-const messagesQueue = [];
-let intervalsToMessage = 0;
+const queue = [];
 
-function increaseInterval() {
-  const randomNumber = randomInRange(2, 10);
-  console.log('increaseInterval', 'randomNumber', randomNumber);
-  intervalsToMessage += randomNumber;
-  console.log('increaseInterval', 'intervalsToMessage', intervalsToMessage);
+function enqueueMessage(options) {
+  queue.push({
+    wait: randomInRange(2, 10),
+    ...options
+  });
 }
 
 fs.readFile('token', 'utf8' , (err, data) => {
@@ -27,29 +26,32 @@ fs.readFile('token', 'utf8' , (err, data) => {
     token: data
   });
 
-  vk.updates.on(['message_new'], (context) => {
-    console.log('context.text', context.text);
-    increaseInterval();
-    messagesQueue.push(context);
-    console.log('context', JSON.stringify(context, null, 2));
+  vk.updates.on(['message_new'], (request) => {
+    console.log('request', JSON.stringify(request, null, 2));
+    if (request.text && request.text.toLowerCase() == 'hi') {
+      enqueueMessage({
+        request,
+        response: {
+          message: 'Hello!'
+        }
+      });
+    }
   });
 
   vk.updates.start().catch(console.error);
 
   const messagesHandlerInterval = setInterval(() => {
-    if (intervalsToMessage > 0)
+    const context = queue[0];
+    if (!context) { // no messages to send - to nothing
+      return;
+    }
+    if (context.wait > 0) // we have a message to send - wait for the set interval
     {
-      console.log('intervalsToMessage', intervalsToMessage);
-      intervalsToMessage--;
+      console.log('message.wait', context.wait);
+      context.wait--;
       return;
     }
-    const message = messagesQueue.shift();
-    if (!message) {
-      return;
-    }
-    if (message.text && message.text.toLowerCase() == 'hi') {
-      message.send('Hello!');
-      increaseInterval();
-    }
+    queue.shift(); // dequeue message
+    context.request.send(context.response); // send response within the request's context
   }, 1000);
 })
