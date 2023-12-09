@@ -2,6 +2,13 @@ const { VK } = require('vk-io');
 const token = require('fs').readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
 
+const { randomInRange, handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages');
+
+const birthdaySticker = 60302;
+const birthdayCongratulation = `Поздравляю с днём рождения :)
+
+Дарю один ответ на любой вопрос по программированию и автоматизации :)`
+
 async function congratulateFriendsWithBD() {
   let offset = 0;
   const currentDate = new Date();
@@ -29,11 +36,23 @@ async function congratulateFriendsWithBD() {
           if (friend.bdate) {
               const [day, month] = friend.bdate.split('.');
               if (day == currentDay && month == currentMonth) {
-                  console.log('friend.id', friend.id)
-                  // await vk.api.messages.send({
-                  //     userId: friend.id,
-                  //     message: `Happy Birthday, ${friend.first_name}! 🥳`
-                  // });
+                  console.log('friend.id', friend.id);
+
+                  enqueueMessage({
+                    vk,
+                    response: {
+                      user_id: friend.id,
+                      sticker_id: birthdaySticker,
+                    }
+                  });
+                  enqueueMessage({
+                    vk,
+                    wait: randomInRange(5, 15),
+                    response: {
+                      user_id: friend.id,
+                      message: birthdayCongratulation
+                    }
+                  });
               }
           }
       }
@@ -43,3 +62,5 @@ async function congratulateFriendsWithBD() {
 }
 
 congratulateFriendsWithBD().catch(console.error);
+
+const messagesHandlerInterval = setInterval(handleOutgoingMessage, 1000);
