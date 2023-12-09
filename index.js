@@ -9,7 +9,7 @@ function randomInRange(min, max) {
 
 const queue = [];
 
-const greetingRegex = /^(привет|здравствуй|здравствуйте|добрый\s*день|доброе\s*утро|добрый\s*вечер)\s*[.?!]*$/gi;
+const greetingRegex = /^(ку|хай|йо(y)?|привет|здравствуй|здравствуйте|добрый\s*день|доброе\s*утро|добрый\s*вечер)\s*[.?!]*$/gi;
 
 const greetings = [
   "Привет",
