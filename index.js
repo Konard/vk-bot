@@ -37,6 +37,8 @@ const stickers = [
   15346
 ];
 
+const questionRegex = /^(м)?\?+$/i;
+
 const questionClarifications = [
   "Ответ на какой конкретный вопрос интересует?",
   "Что является предметом вопроса?",
@@ -114,7 +116,7 @@ fs.readFile('token', 'utf8' , (err, data) => {
         }
       });
     }
-    if (message === '?') {
+    if (questionRegex.test(message)) {
       enqueueMessage({
         request,
         response: {
