@@ -69,7 +69,11 @@ const meetingSuggestions = [
   "Пока еще не знакомы. Исправим это? Я программист. А ты? (можно на ты?)",
   "Мы еще не знакомы. Давай это исправим? Я программист. А ты? (перейдем на ты?)",
   "Мы еще не знакомы, но может исправить это? Я программист :) А ты? (можно на ты?)",
-]
+];
+
+const gratitudeRegex = /^(благодарю|спасибо)\s*[.!]*$/i;
+
+const gratitudeResponseSticker = 60075;
 
 function getRandomElement(array){
   return array[Math.floor(Math.random()*array.length)];
@@ -123,6 +127,14 @@ fs.readFile('token', 'utf8' , (err, data) => {
         request,
         response: {
           message: getRandomElement(meetingSuggestions)
+        }
+      });
+    }
+    if (gratitudeRegex.test(message)) {
+      enqueueMessage({
+        request,
+        response: {
+          sticker_id: gratitudeResponseSticker,
         }
       });
     }
