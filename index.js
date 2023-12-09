@@ -9,7 +9,7 @@ function randomInRange(min, max) {
 
 const queue = [];
 
-const greetingRegex = /^\s*(привет|здравствуй|здравствуйте|добрый день|доброе утро|добрый вечер)\s*$/gi;
+const greetingRegex = /^\s*(привет|здравствуй|здравствуйте|добрый день|доброе утро|добрый вечер)\s*[.?!]*\s*$/gi;
 
 const greetings = [
   "Привет",
@@ -63,8 +63,12 @@ fs.readFile('token', 'utf8' , (err, data) => {
   });
 
   vk.updates.on(['message_new'], (request) => {
+    if (context.isGroup) {
+      return;
+    }
+
     console.log('request', JSON.stringify(request, null, 2));
-    
+
     if (greetingRegex.test(request.text)) {
       enqueueMessage({
         request,
