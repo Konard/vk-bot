@@ -1,13 +1,6 @@
 const fs = require('fs');
 const { VK } = require('vk-io');
-
-function randomInRange(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min) + min);
-}
-
-const queue = [];
+const { handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages');
 
 const greetingRegex = /^(салам|ку|хай|йо(y)?|привет|здравствуй|здравствуйте|добрый\s*день|доброе\s*утро|добрый\s*вечер)\s*[.?!]*$/gi;
 
@@ -80,13 +73,6 @@ const gratitudeResponseSticker = 60075;
 function getRandomElement(array){
   return array[Math.floor(Math.random()*array.length)];
 }
-
-function enqueueMessage(options) {
-  queue.push({
-    wait: randomInRange(2, 10),
-    ...options
-  });
-}
   
 const token = require('fs').readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
@@ -141,18 +127,4 @@ vk.updates.on(['message_new'], (request) => {
 
 vk.updates.start().catch(console.error);
 
-const messagesHandlerInterval = setInterval(() => {
-  const context = queue[0];
-  if (!context) { // no messages to send - to nothing
-    return;
-  }
-  if (context.wait > 0) // we have a message to send - wait for the set interval
-  {
-    console.log('message.wait', context.wait);
-    context.wait--;
-    return;
-  }
-  queue.shift(); // dequeue message
-  console.log('response', context.response);
-  context.request.send(context.response); // send response within the request's context
-}, 1000);
+const messagesHandlerInterval = setInterval(handleOutgoingMessage, 1000);
