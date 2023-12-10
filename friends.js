@@ -2,6 +2,11 @@ const { VK } = require('vk-io');
 const token = require('fs').readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
 
+const readline = require('readline').createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
 const sourceCommunityId = 54530371;
 
 const sex = {
@@ -10,6 +15,14 @@ const sex = {
 
 const requestsLimit = 10000; // Maximum number of requests you expect
 const requestsSegmentSize = 1000; // Number of requests fetched per segment
+
+const question = (prompt) => {
+  return new Promise((resolve) => {
+    readline.question(prompt, (answer) => {
+      resolve(answer);
+    });
+  });
+};
 
 async function fetchRequests(segment, offset) {
   const req = await vk.api.friends.getRequests({ out: 1, count: segment, offset: offset });
@@ -29,8 +42,15 @@ async function fetchAllRequests() {
   return requestsIds;
 }
 
+function randomInRange(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min) + min);
+}
+
 async function getOnlineFollowers(groupId, requestsIds) {
-  let response = await vk.api.groups.getMembers({ group_id: groupId, sort: "id_desc", fields: ["online", "can_send_friend_request", "can_write_private_message", "can_see_all_posts", "is_friend", "sex", "has_photo", "language", "city"] });
+  const offset = randomInRange(0, 428000);
+  let response = await vk.api.groups.getMembers({ group_id: groupId, sort: "id_desc", fields: ["online", "can_send_friend_request", "can_write_private_message", "can_see_all_posts", "is_friend", "sex", "has_photo", "language", "city"], offset, count: 1000 });
 
   console.log('response.items.length', response.items.length);
 
@@ -79,24 +99,38 @@ async function sendFriendRequest(userId) {
   return vk.api.friends.add({ user_id: userId });
 }
 
+let messagesHandlerInterval;
+
 async function main() {
   const requestsIds = await fetchAllRequests();
-  let onlineFollowersIds = await getOnlineFollowers(sourceCommunityId, requestsIds);
+  let onlineFollowersIds = [];
+
+  let moreFriends = true;
+  while (moreFriends) {
+    console.log('Current number of friends to invite: ', onlineFollowersIds.length);
+    const answer = await question('Add more friends? (y/n) ');
+    if (answer.toLowerCase() === 'n') {
+      moreFriends = false;
+    } else {
+      onlineFollowersIds = [...onlineFollowersIds, ...await getOnlineFollowers(sourceCommunityId, requestsIds)];
+    }
+  }
 
   if (onlineFollowersIds.length <= 0) {
     console.log('No followers to add as friends found.');
     return;
   }
 
-  const messagesHandlerInterval = setInterval(() => {
+  messagesHandlerInterval = setInterval(() => {
     const followerId = onlineFollowersIds.shift(); // dequeue follower
     if (!followerId) {
+      clearInterval(messagesHandlerInterval);
       return;
     }
     console.log(`Friend request will be sent to: ${followerId}`);
     sendFriendRequest(followerId)
       .then(response => console.log(`Friend request sent to: ${followerId}`))
-      .catch(err => console.log(err));
+      // .catch(err => console.log(err));
   }, 5000);
 }
 
