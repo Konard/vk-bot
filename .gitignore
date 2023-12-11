@@ -131,3 +131,6 @@ dist
 
 # app
 token
+
+# vscode
+.vscode/settings.json
