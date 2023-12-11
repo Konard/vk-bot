@@ -39,9 +39,9 @@ const questionClarifications = [
   "С чем связан заданный вопрос?"
 ];
 
-const doWeKnowEachOtherRegex = /^(мы\s*)?знакомы(\s*с\s*(тобой|вами))?\s*[?)\\]*$/i;
+const acquaintedRegex = /^(мы\s*)?знакомы(\s*с\s*(тобой|вами))?\s*[?)\\]*$/i;
 
-const meetingSuggestions = [
+const acquaintanceSuggestions = [
   "Ещё нет. Однако это просто исправить, я программист. А ты? (можно на ты?)",
   "Мы не знакомы, но это можно исправить. Я программист, а ты? (можем на ты?)",
   "Нет, ещё не знакомы. Можно пробовать исправить: я программист.",
@@ -103,11 +103,11 @@ vk.updates.on(['message_new'], (request) => {
       }
     });
   }
-  if (doWeKnowEachOtherRegex.test(message)) {
+  if (acquaintedRegex.test(message)) {
     enqueueMessage({
       request,
       response: {
-        message: getRandomElement(meetingSuggestions)
+        message: getRandomElement(acquaintanceSuggestions)
       }
     });
   }
