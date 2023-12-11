@@ -111,6 +111,8 @@ async function main() {
     const answer = await question('Add more friends? (y/n) ');
     if (answer.toLowerCase() === 'n') {
       moreFriends = false;
+      readline.close();
+      readline.removeAllListeners();
     } else {
       onlineFollowersIds = [...onlineFollowersIds, ...await getOnlineFollowers(sourceCommunityId, requestsIds)];
     }
@@ -121,16 +123,42 @@ async function main() {
     return;
   }
 
+  // messagesHandlerInterval = setInterval(() => {
+  //   const followerId = onlineFollowersIds.shift(); // dequeue follower
+  //   if (!followerId) {
+  //     clearInterval(messagesHandlerInterval);
+  //     return;
+  //   }
+  //   console.log(`Friend request will be sent to: ${followerId}`);
+  //   sendFriendRequest(followerId)
+  //     .then(response => console.log(`Friend request sent to: ${followerId}`))
+  //     // .catch(err => console.log(err));
+  // }, 5000);
+
   messagesHandlerInterval = setInterval(() => {
     const followerId = onlineFollowersIds.shift(); // dequeue follower
+    // console.log(followerId, !followerId);
     if (!followerId) {
+      // console.log('messagesHandlerInterval', messagesHandlerInterval);
       clearInterval(messagesHandlerInterval);
       return;
     }
     console.log(`Friend request will be sent to: ${followerId}`);
     sendFriendRequest(followerId)
       .then(response => console.log(`Friend request sent to: ${followerId}`))
-      // .catch(err => console.log(err));
+      .catch(e => {
+        if (e.code === 8) {
+          console.log('Friend requests limit reached (40 per day or 10000 requests+friends).')
+          clearInterval(messagesHandlerInterval);
+          return;
+        }
+        console.log(e)
+      });
+    // try {
+    //   await sendFriendRequest(followerId);
+    // } catch (e) {
+    //   console.log(e);
+    // }
   }, 5000);
 }
 
