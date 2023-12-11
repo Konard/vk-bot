@@ -26,13 +26,21 @@ const handleOutgoingMessage = async () => {
   }
   queue.shift(); // dequeue message
   console.log('response', context.response);
-  if (context.request) {
-    await context.request.send(context.response); // send response within the request's context
-  } else if (context.vk) {
-    await context.vk.api.messages.send({
-      random_id: Math.random(),
-      ...context.response
-    }); 
+  try {
+    if (context.request) {
+      await context.request.send(context.response); // send response within the request's context
+    } else if (context.vk) {
+      await context.vk.api.messages.send({
+        random_id: Math.random(),
+        ...context.response
+      }); 
+    }
+  } catch (e) {
+    if (e.code === 902) { // Can't send messages to this user due to their privacy settings
+      return; // This error requires to do nothing.
+    } else {
+      throw e;
+    }
   }
 };
 
