@@ -2,15 +2,9 @@ const fs = require('fs');
 const { VK } = require('vk-io');
 const { handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages');
 
-const greetingRegex = /^(салам|ку|хай|йо(y)?|привет|здравствуй|здравствуйте|добрый\s*день|доброе\s*утро|добрый\s*вечер)\s*[.?!]*$/gi;
+const greetingRegex = /^(салам|ку|хай|йо(y)?|привет(ствую)?|здравствуй(те)?|добр(ый\s*(день|вечер)|ое\s*утро))\s*[.?!]*$/gi;
 
-const greetings = [
-  "Привет",
-  "Здравствуй",
-  "Здравствуйте",
-];
-
-const stickers = [
+const greetingStickersIds = [
   72789,
   3003,
   76459,
@@ -96,7 +90,7 @@ vk.updates.on(['message_new'], (request) => {
     enqueueMessage({
       request,
       response: {
-        sticker_id: getRandomElement(stickers),
+        sticker_id: getRandomElement(greetingStickersIds),
         random_id: Math.random() // to make each message unique
       }
     });
