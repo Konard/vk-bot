@@ -44,14 +44,19 @@ const handleOutgoingMessage = async () => {
   if (context.waitTicksLeft > 0) // we have a message to send - wait for the set interval
   {
     const ticksPassed = context.maxWaitTicks - context.waitTicksLeft;
+    console.log('context.ticksToTyping', context.ticksToTyping);
     console.log('ticksPassed', ticksPassed);
-    if (context.ticksToTyping >= ticksPassed && (ticksPassed - context.ticksToTyping) % 5 == 0) { 
+    console.log('context.ticksToTyping >= ticksPassed', ticksPassed >= context.ticksToTyping);
+    console.log('((ticksPassed - context.ticksToTyping) % 5 == 0)', ((ticksPassed - context.ticksToTyping) % 5 == 0));
+    if (ticksPassed >= context.ticksToTyping && ((ticksPassed - context.ticksToTyping) % 5 == 0)) { 
       const peerId = context?.request?.peerId;
       if (peerId && context.vk) {
+        console.log('typing status starting request');
         await context.vk.api.messages.setActivity({
           peer_id: peerId,
           type: 'typing'
         });
+        console.log('typing status request completed');
       }
     }
     console.log('context.waitTicksLeft', context.waitTicksLeft);
