@@ -106,6 +106,7 @@ vk.updates.on(['message_new'], (request) => {
   console.log('request', JSON.stringify(request, null, 2));
 
   const message = (request.text || "").trim();
+  const reactionEnqueued = false;
 
   if (greetingRegex.test(message) || hasGreetingSticker(request)) {
     enqueueMessage({
@@ -115,6 +116,7 @@ vk.updates.on(['message_new'], (request) => {
         random_id: Math.random() // to make each message unique
       }
     });
+    reactionEnqueued = true;
   }
   if (questionRegex.test(message)) {
     enqueueMessage({
@@ -123,6 +125,7 @@ vk.updates.on(['message_new'], (request) => {
         message: getRandomElement(questionClarifications)
       }
     });
+    reactionEnqueued = true;
   }
   if (acquaintedRegex.test(message)) {
     enqueueMessage({
@@ -131,6 +134,7 @@ vk.updates.on(['message_new'], (request) => {
         message: getRandomElement(acquaintanceSuggestions)
       }
     });
+    reactionEnqueued = true;
   }
   if (gratitudeRegex.test(message)) {
     enqueueMessage({
@@ -139,6 +143,15 @@ vk.updates.on(['message_new'], (request) => {
         sticker_id: gratitudeResponseSticker,
       }
     });
+    reactionEnqueued = true;
+  }
+  if (reactionEnqueued) {
+    const userId = request.senderId; // The user who sent a message
+    vk.api.messages.markAsRead({ 
+        peer_id: userId, 
+        start_message_id: request.id // Get the id of the new message
+      
+    }).catch(console.error);
   }
 });
 
