@@ -9,8 +9,10 @@ function randomInRange(min, max) {
 }
 
 function enqueueMessage(options) {
+  const ticksToTyping = randomInRange(1, 4);
   const maxWaitTicks = randomInRange(3, 7);
   queue.push({
+    ticksToTyping,
     maxWaitTicks,
     waitTicksLeft: maxWaitTicks,
     ...options
@@ -26,7 +28,7 @@ const handleOutgoingMessage = async () => {
   {
     const ticksPassed = context.maxWaitTicks - context.waitTicksLeft;
     console.log('ticksPassed', ticksPassed);
-    if (ticksPassed % 5 == 0) {
+    if (context.ticksToTyping >= ticksPassed && (ticksPassed - context.ticksToTyping) % 5 == 0) { 
       const peerId = context?.request?.peerId;
       if (peerId && context.vk) {
         await context.vk.api.messages.setActivity({
