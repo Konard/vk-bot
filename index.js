@@ -4,7 +4,6 @@ const { handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages')
 
 const greetingRegex = /^(салам|ку|хай|йо(y)?|привет(ствую)?|здравствуй(те)?|добр(ый\s*(день|вечер)|ое\s*утро))\s*[.?!]*$/gi;
 
-// TODO: split incoming and outgoing sticker ids.
 const commonGreetingStickersIds = [
   72789,
   3003,
@@ -97,10 +96,10 @@ const incomingGratitudeStickersIds = [
 
 const outgoingGratitudeResponseStickerId = 60075;
 
-function getRandomElement(array){
-  return array[Math.floor(Math.random()*array.length)];
+function getRandomElement(array) {
+  return array[Math.floor(Math.random() * array.length)];
 }
-  
+
 const token = require('fs').readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
 
@@ -172,9 +171,9 @@ vk.updates.on(['message_new'], (request) => {
   }
   if (reactionEnqueued) {
     const userId = request.senderId; // The user who sent a message
-    vk.api.messages.markAsRead({ 
-        peer_id: userId, 
-        start_message_id: request.id // Get the id of the new message
+    vk.api.messages.markAsRead({
+      peer_id: userId,
+      start_message_id: request.id // Get the id of the new message
     }).catch(console.error);
   }
 });
@@ -182,3 +181,13 @@ vk.updates.on(['message_new'], (request) => {
 vk.updates.start().catch(console.error);
 
 const messagesHandlerInterval = setInterval(handleOutgoingMessage, 1000);
+
+const minute = 60 * 1000;
+const setOnlineInterval = setInterval(async () => {
+  try {
+    await vk.api.account.setOnline();
+    console.log('Online status is set.');
+  } catch (e) {
+    console.log('Could not set online status.', e);
+  }
+}, 14 * minute);
