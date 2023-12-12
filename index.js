@@ -82,14 +82,14 @@ function getRandomElement(array){
   
 const token = require('fs').readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
-let self;
 
-async function getSelf() {
-  const [user] = await vk.api.users.get({});
-  console.log('self', JSON.stringify(user));
-  self = user;
-}
-getSelf().catch(console.error);
+// let self;
+// async function getSelf() {
+//   const [user] = await vk.api.users.get({});
+//   console.log('self', JSON.stringify(user));
+//   self = user;
+// }
+// getSelf().catch(console.error);
 
 vk.updates.on(['message_new'], (request) => {
   console.log('request.isGroup', request.isGroup);
@@ -99,14 +99,14 @@ vk.updates.on(['message_new'], (request) => {
   if (!request.isFromUser) {
     return;
   }
-  if (request.senderId === self?.id) {
+  if (request.isOutbox) {
     return;
   }
 
   console.log('request', JSON.stringify(request, null, 2));
 
   const message = (request.text || "").trim();
-  const reactionEnqueued = false;
+  let reactionEnqueued = false;
 
   if (greetingRegex.test(message) || hasGreetingSticker(request)) {
     enqueueMessage({
