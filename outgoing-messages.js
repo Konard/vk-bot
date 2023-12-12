@@ -1,5 +1,7 @@
 const queue = [];
 
+const tickSize = 1000;
+
 function randomInRange(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -7,8 +9,10 @@ function randomInRange(min, max) {
 }
 
 function enqueueMessage(options) {
+  const maxWaitTicks = randomInRange(3, 7);
   queue.push({
-    wait: randomInRange(3, 7),
+    maxWaitTicks,
+    waitTicksLeft: maxWaitTicks,
     ...options
   });
 }
@@ -18,14 +22,26 @@ const handleOutgoingMessage = async () => {
   if (!context) { // no messages to send - to nothing
     return;
   }
-  if (context.wait > 0) // we have a message to send - wait for the set interval
+  if (context.waitTicksLeft > 0) // we have a message to send - wait for the set interval
   {
-    console.log('message.wait', context.wait);
-    context.wait--;
+    const ticksPassed = context.maxWaitTicks - context.waitTicksLeft;
+    console.log('ticksPassed', ticksPassed);
+    if (ticksPassed % 5 == 0) {
+      const peerId = context?.request?.peerId;
+      if (peerId && context.vk) {
+        await context.vk.api.messages.setActivity({
+          peer_id: peerId,
+          type: 'typing'
+        });
+      }
+    }
+    console.log('context.waitTicksLeft', context.waitTicksLeft);
+    context.waitTicksLeft--;
     return;
   }
   queue.shift(); // dequeue message
-  console.log('response', context.response);
+  console.log('context.request', context.response);
+  console.log('context.response', context.response);
   try {
     if (context.request) {
       await context.request.send(context.response); // send response within the request's context
@@ -44,4 +60,4 @@ const handleOutgoingMessage = async () => {
   }
 };
 
-module.exports = { randomInRange, handleOutgoingMessage, enqueueMessage }
+module.exports = { randomInRange, handleOutgoingMessage, enqueueMessage, tickSize }

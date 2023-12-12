@@ -5,7 +5,7 @@ const { handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages')
 const greetingRegex = /^(салам|ку|хай|йо(y)?|привет(ствую)?|здравствуй(те)?|добр(ый\s*(день|вечер)|ое\s*утро))\s*[.?!]*$/gi;
 
 // TODO: split incoming and outgoing sticker ids.
-const greetingStickersIds = [
+const commonGreetingStickersIds = [
   72789,
   3003,
   76459,
@@ -22,14 +22,31 @@ const greetingStickersIds = [
   60062,
   134,
   4917,
-  15346
+  15346,
+  79160,
+  73601,
+];
+
+const incomingGreetingStickersIds = [
+  ...commonGreetingStickersIds,
+  53610,
+  3462,
+  58052,
+  85099,
+  20341,
+  3952,
+  87057,
+];
+
+const outgoingGreetingStickersIds = [
+  ...commonGreetingStickersIds,
 ];
 
 const hasGreetingSticker = (context) => {
   for (const attachment of context?.attachments || []) {
     const stickerId = attachment?.id;
     console.log('stickerId', stickerId);
-    return greetingStickersIds.includes(stickerId);
+    return incomingGreetingStickersIds.includes(stickerId);
   }
   return false;
 }
@@ -74,7 +91,11 @@ const acquaintanceSuggestions = [
 
 const gratitudeRegex = /^(благодарю|(большое\s*)?спасибо)[\s.!😊👍✅🙏]*$/i;
 
-const gratitudeResponseSticker = 60075;
+const incomingGratitudeStickersIds = [
+  6342,
+]
+
+const outgoingGratitudeResponseStickerId = 60075;
 
 function getRandomElement(array){
   return array[Math.floor(Math.random()*array.length)];
@@ -110,9 +131,10 @@ vk.updates.on(['message_new'], (request) => {
 
   if (greetingRegex.test(message) || hasGreetingSticker(request)) {
     enqueueMessage({
+      vk,
       request,
       response: {
-        sticker_id: getRandomElement(greetingStickersIds),
+        sticker_id: getRandomElement(outgoingGreetingStickersIds),
         random_id: Math.random() // to make each message unique
       }
     });
@@ -120,6 +142,7 @@ vk.updates.on(['message_new'], (request) => {
   }
   if (questionRegex.test(message)) {
     enqueueMessage({
+      vk,
       request,
       response: {
         message: getRandomElement(questionClarifications)
@@ -129,6 +152,7 @@ vk.updates.on(['message_new'], (request) => {
   }
   if (acquaintedRegex.test(message)) {
     enqueueMessage({
+      vk,
       request,
       response: {
         message: getRandomElement(acquaintanceSuggestions)
@@ -138,9 +162,10 @@ vk.updates.on(['message_new'], (request) => {
   }
   if (gratitudeRegex.test(message)) {
     enqueueMessage({
+      vk,
       request,
       response: {
-        sticker_id: gratitudeResponseSticker,
+        sticker_id: outgoingGratitudeResponseStickerId,
       }
     });
     reactionEnqueued = true;
@@ -150,7 +175,6 @@ vk.updates.on(['message_new'], (request) => {
     vk.api.messages.markAsRead({ 
         peer_id: userId, 
         start_message_id: request.id // Get the id of the new message
-      
     }).catch(console.error);
   }
 });

@@ -152,7 +152,7 @@ async function main() {
           clearInterval(messagesHandlerInterval);
           return;
         }
-        console.log(e)
+        console.log(e);
       });
     // try {
     //   await sendFriendRequest(followerId);
