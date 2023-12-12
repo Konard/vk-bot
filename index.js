@@ -4,6 +4,7 @@ const { handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages')
 
 const greetingRegex = /^(салам|ку|хай|йо(y)?|привет(ствую)?|здравствуй(те)?|добр(ый\s*(день|вечер)|ое\s*утро))\s*[.?!]*$/gi;
 
+// TODO: split incoming and outgoing sticker ids.
 const greetingStickersIds = [
   72789,
   3003,
@@ -23,6 +24,15 @@ const greetingStickersIds = [
   4917,
   15346
 ];
+
+const hasGreetingSticker = (context) => {
+  for (const attachment of context?.attachments || []) {
+    const stickerId = attachment?.id;
+    console.log('stickerId', stickerId);
+    return greetingStickersIds.includes(stickerId);
+  }
+  return false;
+}
 
 const questionRegex = /^(м)?\?+$/i;
 
@@ -72,6 +82,14 @@ function getRandomElement(array){
   
 const token = require('fs').readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
+let self;
+
+async function getSelf() {
+  const [user] = await vk.api.users.get({});
+  console.log('self', JSON.stringify(user));
+  self = user;
+}
+getSelf().catch(console.error);
 
 vk.updates.on(['message_new'], (request) => {
   console.log('request.isGroup', request.isGroup);
@@ -81,12 +99,15 @@ vk.updates.on(['message_new'], (request) => {
   if (!request.isFromUser) {
     return;
   }
+  if (request.senderId === self?.id) {
+    return;
+  }
 
   console.log('request', JSON.stringify(request, null, 2));
 
   const message = (request.text || "").trim();
 
-  if (greetingRegex.test(message)) {
+  if (greetingRegex.test(message) || hasGreetingSticker(request)) {
     enqueueMessage({
       request,
       response: {
