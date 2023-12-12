@@ -3,7 +3,7 @@ const queue = [];
 const tickSize = 1000;
 
 const defaultTypingSpeedCharactersPerMinute = 300;
-const defaultTypingSpeedCharactersPerSecond = typingSpeedCharactersPerMinute / 60;
+const defaultTypingSpeedCharactersPerSecond = defaultTypingSpeedCharactersPerMinute / 60;
 
 const calculateMinimumSecondsToType = (text, speed = defaultTypingSpeedCharactersPerSecond) => {
   return Math.floor(text.length / speed);
@@ -21,8 +21,8 @@ function enqueueMessage(options) {
     maxWaitTicks: randomInRange(3, 7),
   };
   if (options?.response?.sticker_id) {
-    defaultOptions.ticksToTyping = 10,
-    defaultOptions.maxWaitTicks = randomInRange(2, 5),
+    defaultOptions.ticksToTyping = 10;
+    defaultOptions.maxWaitTicks = randomInRange(2, 5);
   } else if (options?.response?.message) {
     defaultOptions.maxWaitTicks += calculateMinimumSecondsToType(options?.response?.message);
   }
