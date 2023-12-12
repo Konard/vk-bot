@@ -37,7 +37,6 @@ async function congratulateFriendsWithBD() {
               const [day, month] = friend.bdate.split('.');
               if (day == currentDay && month == currentMonth) {
                   console.log('friend.id', friend.id);
-
                   enqueueMessage({
                     vk,
                     response: {
@@ -47,7 +46,6 @@ async function congratulateFriendsWithBD() {
                   });
                   enqueueMessage({
                     vk,
-                    wait: randomInRange(5, 15),
                     response: {
                       user_id: friend.id,
                       message: birthdayCongratulation

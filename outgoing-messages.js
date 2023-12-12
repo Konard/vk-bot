@@ -2,6 +2,13 @@ const queue = [];
 
 const tickSize = 1000;
 
+const defaultTypingSpeedCharactersPerMinute = 300;
+const defaultTypingSpeedCharactersPerSecond = typingSpeedCharactersPerMinute / 60;
+
+const calculateMinimumSecondsToType = (text, speed = defaultTypingSpeedCharactersPerSecond) => {
+  return Math.floor(text.length / speed);
+};
+
 function randomInRange(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -9,14 +16,24 @@ function randomInRange(min, max) {
 }
 
 function enqueueMessage(options) {
-  const ticksToTyping = randomInRange(1, 4);
-  const maxWaitTicks = randomInRange(3, 7);
-  queue.push({
-    ticksToTyping,
-    maxWaitTicks,
-    waitTicksLeft: maxWaitTicks,
+  let defaultOptions = {
+    ticksToTyping: randomInRange(1, 4),
+    maxWaitTicks: randomInRange(3, 7),
+  };
+  if (options?.response?.sticker_id) {
+    defaultOptions.ticksToTyping = 10,
+    defaultOptions.maxWaitTicks = randomInRange(2, 5),
+  } else if (options?.response?.message) {
+    defaultOptions.maxWaitTicks += calculateMinimumSecondsToType(options?.response?.message);
+  }
+  const combinedOptions = {
+    ...defaultOptions,
     ...options
-  });
+  };
+  if (!combinedOptions.waitTicksLeft) {
+    combinedOptions.waitTicksLeft = combinedOptions.maxWaitTicks;
+  }
+  queue.push(combinedOptions);
 }
 
 const handleOutgoingMessage = async () => {
@@ -62,4 +79,12 @@ const handleOutgoingMessage = async () => {
   }
 };
 
-module.exports = { randomInRange, handleOutgoingMessage, enqueueMessage, tickSize }
+module.exports = { 
+  tickSize,
+  defaultTypingSpeedCharactersPerMinute,
+  defaultTypingSpeedCharactersPerSecond,
+  calculateMinimumSecondsToType,
+  randomInRange, 
+  handleOutgoingMessage, 
+  enqueueMessage
+};
