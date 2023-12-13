@@ -52,6 +52,7 @@ const incomingGreetingStickersIds = [
   87057,
   8472,
   7878,
+  60272,
 ];
 
 const outgoingGreetingStickersIds = [
@@ -216,6 +217,7 @@ vk.updates.start().catch(console.error);
 const messagesHandlerInterval = setInterval(handleOutgoingMessage, 1000);
 
 const minute = 60 * 1000;
+
 const setOnlineInterval = setInterval(async () => {
   try {
     await vk.api.account.setOnline();
@@ -224,3 +226,19 @@ const setOnlineInterval = setInterval(async () => {
     console.log('Could not set online status.', e);
   }
 }, 14 * minute);
+
+const acceptFriendRequestsInterval = setInterval(async () => {
+  try {
+    const requests = await vk.api.friends.getRequests({ count: 23 });
+    for (let i = 0; i < requests.items.length; i++) {
+        await vk.api.friends.add({ user_id: requests.items[i], text: '' });
+    }
+    if (requests?.items?.length <= 0) {
+      console.log('No incoming friend requests to be accepted.');
+    } else {
+      console.log('Incoming friend requests accepted:', JSON.stringify(requests, null, 2));
+    }
+  } catch (error) {
+    console.log('Could not accept friend requests:', e);
+  }
+}, 30 * minute);
