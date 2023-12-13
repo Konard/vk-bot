@@ -2,7 +2,7 @@ const fs = require('fs');
 const { VK } = require('vk-io');
 const { handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages');
 
-const greetingRegex = /^(салам|ку|хай|йо(y)?|привет(ствую)?|здравствуй(те)?|добр(ый\s*(день|вечер)|ое\s*утро))\s*[.?!]*$/gi;
+const greetingRegex = /^(салам|з?д[ао]ров[ао]?|ку|qq|шалом|хай|йоу?|привет(ствую)?|здравствуй(те)?|дд|добр(ый\s*(день|вечер)|ое\s*утро|ого\s*времени\s*суток))\s*[.?!]*$/ui;
 
 const commonGreetingStickersIds = [
   72789,
@@ -35,6 +35,8 @@ const incomingGreetingStickersIds = [
   20341,
   3952,
   87057,
+  8472,
+  7878,
 ];
 
 const outgoingGreetingStickersIds = [
@@ -50,7 +52,7 @@ const hasGreetingSticker = (context) => {
   return false;
 }
 
-const questionRegex = /^(м)?\?+$/i;
+const questionRegex = /^(м)?\?+$/ui;
 
 const questionClarifications = [
   "Ответ на какой конкретный вопрос интересует?",
@@ -65,7 +67,7 @@ const questionClarifications = [
   "С чем связан заданный вопрос?"
 ];
 
-const acquaintedRegex = /^(мы\s*)?знакомы(\s*с\s*(тобой|вами))?\s*[?)\\]*$/i;
+const acquaintedRegex = /^(мы\s*)?знакомы(\s*с\s*(тобой|вами))?\s*[?)\\]*$/ui;
 
 const acquaintanceSuggestions = [
   "Ещё нет. Однако это просто исправить, я программист. А ты? (можно на ты?)",
@@ -88,7 +90,7 @@ const acquaintanceSuggestions = [
   "Мы еще не знакомы, но может исправить это? Я программист :) А ты? (можно на ты?)",
 ];
 
-const gratitudeRegex = /^(благодарю|(большое\s*)?спасибо)[\s.!😊👍✅🙏]*$/i;
+const gratitudeRegex = /^(благодарю|(большое\s*)?спасибо)[\s.!😊👍✅🙏]*$/ui;
 
 const incomingGratitudeStickersIds = [
   6342,
