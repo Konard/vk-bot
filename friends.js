@@ -143,7 +143,7 @@ async function main() {
       clearInterval(messagesHandlerInterval);
       return;
     }
-    console.log(`Friend request will be sent to: ${followerId}`);
+    // console.log(`Friend request will be sent to: ${followerId}`);
     sendFriendRequest(followerId)
       .then(response => console.log(`Friend request sent to: ${followerId}`))
       .catch(e => {
