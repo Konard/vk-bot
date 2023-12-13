@@ -23,6 +23,9 @@ function enqueueMessage(options) {
   if (options?.response?.sticker_id) {
     defaultOptions.ticksToTyping = 10;
     defaultOptions.maxWaitTicks = randomInRange(2, 5);
+    if (!options?.response?.random_id) {
+      options.response.random_id = Math.random();
+    }
   } else if (options?.response?.message) {
     defaultOptions.maxWaitTicks += calculateMinimumSecondsToType(options?.response?.message);
   }
