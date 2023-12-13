@@ -4,6 +4,10 @@ const { handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages')
 
 const peers = {}; // TODO: keep state about what triggers then last triggered for each peer
 
+function getRandomElement(array) {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
 const hasSticker = (context, stickersIds) => {
   for (const attachment of context?.attachments || []) {
     const stickerId = attachment?.id;
@@ -63,8 +67,7 @@ const greetingTrigger = {
       vk: context.vk,
       request: context.request,
       response: {
-        sticker_id: getRandomElement(outgoingGreetingStickersIds),
-        random_id: Math.random() // to make each message unique
+        sticker_id: getRandomElement(outgoingGreetingStickersIds)
       }
     });
   }
@@ -81,9 +84,24 @@ const questionClarifications = [
   "В чём вопрос?",
   "В чём суть вопроса?",
   "Чего касается заданный вопрос?",
-  "C чем связан вопрос?",
+  "С чем связан вопрос?",
   "С чем связан заданный вопрос?"
 ];
+
+const undefinedQuestionTrigger = {
+  condition: (context) => {
+    return questionRegex.test(context.request.text);
+  },
+  action: (context) => {
+    enqueueMessage({
+      vk: context.vk,
+      request: context.request,
+      response: {
+        message: getRandomElement(questionClarifications)
+      }
+    });
+  }
+};
 
 const acquaintedRegex = /^\s*(мы\s*)?знакомы(\s*с\s*(тобой|вами))?[\s?)\\]*$/ui;
 
@@ -108,7 +126,22 @@ const acquaintanceSuggestions = [
   "Мы еще не знакомы, но может исправить это? Я программист :) А ты? (можно на ты?)",
 ];
 
-const gratitudeRegex = /^\s*(благодарю|(большое\s*)?спасибо)[\s)\\.!😊👍✅🙏]*$/ui;
+const acquaintanceTrigger = {
+  condition: (context) => {
+    return acquaintedRegex.test(context.request.text);
+  },
+  action: (context) => {
+    enqueueMessage({
+      vk: context.vk,
+      request: context.request,
+      response: {
+        message: getRandomElement(acquaintanceSuggestions)
+      }
+    });
+  }
+};
+
+const gratitudeRegex = /^\s*(благодарю|(большое\s*)?спасибо(\s*огромное)?)[\s)\\.!☺😊👍✅🙏]*$/ui;
 
 const incomingGratitudeStickersIds = [
   6342,
@@ -116,9 +149,27 @@ const incomingGratitudeStickersIds = [
 
 const outgoingGratitudeResponseStickerId = 60075;
 
-function getRandomElement(array) {
-  return array[Math.floor(Math.random() * array.length)];
-}
+const gratitudeTrigger = {
+  condition: (context) => {
+    return gratitudeRegex.test(context.request.text);
+  },
+  action: (context) => {
+    enqueueMessage({
+      vk: context.vk,
+      request: context.request,
+      response: {
+        sticker_id: outgoingGratitudeResponseStickerId,
+      }
+    });
+  }
+};
+
+const triggers = [
+  greetingTrigger,
+  undefinedQuestionTrigger,
+  acquaintanceTrigger,
+  gratitudeTrigger
+];
 
 const token = require('fs').readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
@@ -142,44 +193,14 @@ vk.updates.on(['message_new'], (request) => {
   if (request.isOutbox) {
     return;
   }
-
   console.log('request', JSON.stringify(request, null, 2));
 
   let reactionTriggered = false;
-
-  if (greetingTrigger.condition({ vk, request })) {
-    greetingTrigger.action({ vk, request });
-    reactionTriggered = true;
-  }
-  if (questionRegex.test(request.text)) {
-    enqueueMessage({
-      vk,
-      request,
-      response: {
-        message: getRandomElement(questionClarifications)
-      }
-    });
-    reactionTriggered = true;
-  }
-  if (acquaintedRegex.test(request.text)) {
-    enqueueMessage({
-      vk,
-      request,
-      response: {
-        message: getRandomElement(acquaintanceSuggestions)
-      }
-    });
-    reactionTriggered = true;
-  }
-  if (gratitudeRegex.test(request.text)) {
-    enqueueMessage({
-      vk,
-      request,
-      response: {
-        sticker_id: outgoingGratitudeResponseStickerId,
-      }
-    });
-    reactionTriggered = true;
+  for (const trigger of triggers) {
+    if (trigger.condition({ vk, request })) {
+      trigger.action({ vk, request });
+      reactionTriggered = true;
+    }
   }
   if (reactionTriggered) {
     const userId = request.senderId; // The user who sent a message
