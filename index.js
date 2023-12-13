@@ -112,10 +112,10 @@ const vk = new VK({ token });
 // getSelf().catch(console.error);
 
 vk.updates.on(['message_new'], (request) => {
-  console.log('request.isGroup', request.isGroup);
-  console.log('request.isFromGroup', request.isFromGroup);
-  console.log('request.isUser', request.isUser);
-  console.log('request.isFromUser', request.isFromUser);
+  // console.log('request.isGroup', request.isGroup);
+  // console.log('request.isFromGroup', request.isFromGroup);
+  // console.log('request.isUser', request.isUser);
+  // console.log('request.isFromUser', request.isFromUser);
   if (!request.isFromUser) {
     return;
   }
