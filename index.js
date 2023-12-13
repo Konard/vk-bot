@@ -2,7 +2,18 @@ const fs = require('fs');
 const { VK } = require('vk-io');
 const { handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages');
 
-const greetingRegex = /^(салам|з?д[ао]ров[ао]?|ку|qq|шалом|хай|йоу?|привет(ствую)?|здравствуй(те)?|дд|добр(ый\s*(день|вечер)|ое\s*утро|ого\s*времени\s*суток))\s*[.?!]*$/ui;
+const peers = {}; // TODO: keep state about what triggers then last triggered for each peer
+
+const hasSticker = (context, stickersIds) => {
+  for (const attachment of context?.attachments || []) {
+    const stickerId = attachment?.id;
+    console.log('stickerId', stickerId);
+    return stickersIds.includes(stickerId);
+  }
+  return false;
+}
+
+const greetingRegex = /^\s*(салам|з?д[ао]ров[ао]?|ку|qq|шалом|хай|йоу?|привет(ствую)?|здравствуй(те)?|дд|добр(ый\s*(день|вечер)|ое\s*утро|ого\s*времени\s*суток))[\s.?!]*$/ui;
 
 const commonGreetingStickersIds = [
   72789,
@@ -43,14 +54,21 @@ const outgoingGreetingStickersIds = [
   ...commonGreetingStickersIds,
 ];
 
-const hasGreetingSticker = (context) => {
-  for (const attachment of context?.attachments || []) {
-    const stickerId = attachment?.id;
-    console.log('stickerId', stickerId);
-    return incomingGreetingStickersIds.includes(stickerId);
+const greetingTrigger = {
+  condition: (context) => {
+    return greetingRegex.test(context.request.text) || hasSticker(context.request, incomingGreetingStickersIds);
+  },
+  action: (context) => {
+    enqueueMessage({
+      vk: context.vk,
+      request: context.request,
+      response: {
+        sticker_id: getRandomElement(outgoingGreetingStickersIds),
+        random_id: Math.random() // to make each message unique
+      }
+    });
   }
-  return false;
-}
+};
 
 const questionRegex = /^(м)?\?+$/ui;
 
@@ -67,7 +85,7 @@ const questionClarifications = [
   "С чем связан заданный вопрос?"
 ];
 
-const acquaintedRegex = /^(мы\s*)?знакомы(\s*с\s*(тобой|вами))?\s*[?)\\]*$/ui;
+const acquaintedRegex = /^\s*(мы\s*)?знакомы(\s*с\s*(тобой|вами))?[\s?)\\]*$/ui;
 
 const acquaintanceSuggestions = [
   "Ещё нет. Однако это просто исправить, я программист. А ты? (можно на ты?)",
@@ -90,7 +108,7 @@ const acquaintanceSuggestions = [
   "Мы еще не знакомы, но может исправить это? Я программист :) А ты? (можно на ты?)",
 ];
 
-const gratitudeRegex = /^(благодарю|(большое\s*)?спасибо)[\s.!😊👍✅🙏]*$/ui;
+const gratitudeRegex = /^\s*(благодарю|(большое\s*)?спасибо)[\s)\\.!😊👍✅🙏]*$/ui;
 
 const incomingGratitudeStickersIds = [
   6342,
@@ -127,21 +145,13 @@ vk.updates.on(['message_new'], (request) => {
 
   console.log('request', JSON.stringify(request, null, 2));
 
-  const message = (request.text || "").trim();
-  let reactionEnqueued = false;
+  let reactionTriggered = false;
 
-  if (greetingRegex.test(message) || hasGreetingSticker(request)) {
-    enqueueMessage({
-      vk,
-      request,
-      response: {
-        sticker_id: getRandomElement(outgoingGreetingStickersIds),
-        random_id: Math.random() // to make each message unique
-      }
-    });
-    reactionEnqueued = true;
+  if (greetingTrigger.condition({ vk, request })) {
+    greetingTrigger.action({ vk, request });
+    reactionTriggered = true;
   }
-  if (questionRegex.test(message)) {
+  if (questionRegex.test(request.text)) {
     enqueueMessage({
       vk,
       request,
@@ -149,9 +159,9 @@ vk.updates.on(['message_new'], (request) => {
         message: getRandomElement(questionClarifications)
       }
     });
-    reactionEnqueued = true;
+    reactionTriggered = true;
   }
-  if (acquaintedRegex.test(message)) {
+  if (acquaintedRegex.test(request.text)) {
     enqueueMessage({
       vk,
       request,
@@ -159,9 +169,9 @@ vk.updates.on(['message_new'], (request) => {
         message: getRandomElement(acquaintanceSuggestions)
       }
     });
-    reactionEnqueued = true;
+    reactionTriggered = true;
   }
-  if (gratitudeRegex.test(message)) {
+  if (gratitudeRegex.test(request.text)) {
     enqueueMessage({
       vk,
       request,
@@ -169,9 +179,9 @@ vk.updates.on(['message_new'], (request) => {
         sticker_id: outgoingGratitudeResponseStickerId,
       }
     });
-    reactionEnqueued = true;
+    reactionTriggered = true;
   }
-  if (reactionEnqueued) {
+  if (reactionTriggered) {
     const userId = request.senderId; // The user who sent a message
     vk.api.messages.markAsRead({
       peer_id: userId,
