@@ -15,6 +15,10 @@ function randomInRange(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
+function randomInteger() {
+  return randomInRange(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
+}
+
 function enqueueMessage(options) {
   let defaultOptions = {
     ticksToTyping: randomInRange(1, 4),
@@ -23,9 +27,6 @@ function enqueueMessage(options) {
   if (options?.response?.sticker_id) {
     defaultOptions.ticksToTyping = 10;
     defaultOptions.maxWaitTicks = randomInRange(2, 5);
-    if (!options?.response?.random_id) {
-      options.response.random_id = Math.random();
-    }
   } else if (options?.response?.message) {
     defaultOptions.maxWaitTicks += calculateMinimumSecondsToType(options?.response?.message);
   }
@@ -33,6 +34,10 @@ function enqueueMessage(options) {
     ...defaultOptions,
     ...options
   };
+  if (!combinedOptions?.response?.random_id) {
+    combinedOptions.response.random_id = randomInteger();
+    console.log('combinedOptions.response.random_id', options.response.random_id)
+  }
   if (!combinedOptions.waitTicksLeft) {
     combinedOptions.waitTicksLeft = combinedOptions.maxWaitTicks;
   }
