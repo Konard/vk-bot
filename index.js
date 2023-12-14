@@ -1,78 +1,10 @@
 const fs = require('fs');
 const { VK } = require('vk-io');
 const { handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages');
+const { greetingTrigger } = require('./triggers/greeting');
+const { hasSticker, getRandomElement } = require('./triggers/utils');
 
 const peers = {}; // TODO: keep state about what triggers then last triggered for each peer
-
-function getRandomElement(array) {
-  return array[Math.floor(Math.random() * array.length)];
-}
-
-const hasSticker = (context, stickersIds) => {
-  for (const attachment of context?.attachments || []) {
-    const stickerId = attachment?.id;
-    console.log('stickerId', stickerId);
-    return stickersIds.includes(stickerId);
-  }
-  return false;
-}
-
-const greetingRegex = /^\s*(салам|з?д[ао]ров[ао]?|ку|qq|шалом|хай|йоу?|привет(ствую)?|здравствуй(те)?|дд|добр(ый\s*(день|вечер)|ое\s*утро|ой\s*ночи|ого\s*времени\s*суток))[\s.?!]*$/ui;
-
-const commonGreetingStickersIds = [
-  72789,
-  3003,
-  76459,
-  73071,
-  51417,
-  72437,
-  69175,
-  4639,
-  14409,
-  21,
-  75306,
-  73151,
-  77664,
-  60062,
-  134,
-  4917,
-  15346,
-  79160,
-  73601,
-];
-
-const incomingGreetingStickersIds = [
-  ...commonGreetingStickersIds,
-  53610,
-  3462,
-  58052,
-  85099,
-  20341,
-  3952,
-  87057,
-  8472,
-  7878,
-  60272,
-];
-
-const outgoingGreetingStickersIds = [
-  ...commonGreetingStickersIds,
-];
-
-const greetingTrigger = {
-  condition: (context) => {
-    return greetingRegex.test(context.request.text) || hasSticker(context.request, incomingGreetingStickersIds);
-  },
-  action: (context) => {
-    enqueueMessage({
-      vk: context.vk,
-      request: context.request,
-      response: {
-        sticker_id: getRandomElement(outgoingGreetingStickersIds)
-      }
-    });
-  }
-};
 
 const questionRegex = /^(м)?\?+$/ui;
 
