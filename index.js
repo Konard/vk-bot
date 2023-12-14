@@ -142,7 +142,7 @@ const acquaintanceTrigger = {
   }
 };
 
-const gratitudeRegex = /^\s*(благодарю|(большое\s*)?спасибо(\s*огромное)?)[\s)\\.!☺😊👍✅🙏]*$/ui;
+const gratitudeRegex = /^\s*(благодарю|(большое\s*)?спасибо(\s*огромное)?)[\s)\\.!☺😊👍✅🙏🤝]*$/ui;
 
 const incomingGratitudeStickersIds = [
   6342,
