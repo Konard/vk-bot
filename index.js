@@ -2,39 +2,10 @@ const fs = require('fs');
 const { VK } = require('vk-io');
 const { handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages');
 const { greetingTrigger } = require('./triggers/greeting');
+const { undefinedQuestionTrigger } = require('./triggers/undefined-question');
 const { hasSticker, getRandomElement } = require('./triggers/utils');
 
 const peers = {}; // TODO: keep state about what triggers then last triggered for each peer
-
-const questionRegex = /^(м)?\?+$/ui;
-
-const questionClarifications = [
-  "Ответ на какой конкретный вопрос интересует?",
-  "Что является предметом вопроса?",
-  "О каком вопросе идет речь?",
-  "Какой вопрос подразумевается?",
-  "Что конкретно интересует?",
-  "В чём вопрос?",
-  "В чём суть вопроса?",
-  "Чего касается заданный вопрос?",
-  "С чем связан вопрос?",
-  "С чем связан заданный вопрос?"
-];
-
-const undefinedQuestionTrigger = {
-  condition: (context) => {
-    return questionRegex.test(context.request.text);
-  },
-  action: (context) => {
-    enqueueMessage({
-      vk: context.vk,
-      request: context.request,
-      response: {
-        message: getRandomElement(questionClarifications)
-      }
-    });
-  }
-};
 
 const acquaintedRegex = /^\s*(мы\s*)?знакомы(\s*с\s*(тобой|вами))?[\s?)\\]*$/ui;
 
