@@ -110,23 +110,21 @@ async function main() {
   const numberOfFriendsToAdd = await question('How many friends to add?');
   const targetFriendsCount = parseInt(numberOfFriendsToAdd);
 
-  let moreFriends = true;
+  // Input is finished
+  readline.close();
+  readline.removeAllListeners();
+
   while (onlineFollowersIds.length < targetFriendsCount) {
+    onlineFollowersIds = [...onlineFollowersIds, ...await getOnlineFollowers(sourceCommunityId, requestsIds)];
     console.log('Current number of friends to invite: ', onlineFollowersIds.length);
-    // const answer = await question('Add more friends? (y/n) ');
-    // if (answer.toLowerCase() === 'n') {
-    //   moreFriends = false;
-    //   readline.close();
-    //   readline.removeAllListeners();
-    // } else {
-      onlineFollowersIds = [...onlineFollowersIds, ...await getOnlineFollowers(sourceCommunityId, requestsIds)];
-    // }
     await sleep(5000);
   }
 
   if (onlineFollowersIds.length <= 0) {
     console.log('No followers to add as friends found.');
     return;
+  } else {
+    console.log(`${onlineFollowersIds.length} followers will be added as friends.`);
   }
 
   // messagesHandlerInterval = setInterval(() => {
