@@ -22,8 +22,7 @@ const undefinedQuestionTrigger = {
   },
   action: (context) => {
     enqueueMessage({
-      vk: context.vk,
-      request: context.request,
+      ...context,
       response: {
         message: getRandomElement(questionClarifications)
       }

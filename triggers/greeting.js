@@ -49,8 +49,7 @@ const greetingTrigger = {
   },
   action: (context) => {
     enqueueMessage({
-      vk: context.vk,
-      request: context.request,
+      ...context,
       response: {
         sticker_id: getRandomElement(outgoingGreetingStickersIds)
       }
