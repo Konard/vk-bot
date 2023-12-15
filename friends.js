@@ -101,21 +101,27 @@ async function sendFriendRequest(userId) {
 
 let messagesHandlerInterval;
 
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
 async function main() {
   const requestsIds = await fetchAllRequests();
   let onlineFollowersIds = [];
 
+  const numberOfFriendsToAdd = await question('How many friends to add?');
+  const targetFriendsCount = parseInt(numberOfFriendsToAdd);
+
   let moreFriends = true;
-  while (moreFriends) {
+  while (onlineFollowersIds.length < targetFriendsCount) {
     console.log('Current number of friends to invite: ', onlineFollowersIds.length);
-    const answer = await question('Add more friends? (y/n) ');
-    if (answer.toLowerCase() === 'n') {
-      moreFriends = false;
-      readline.close();
-      readline.removeAllListeners();
-    } else {
+    // const answer = await question('Add more friends? (y/n) ');
+    // if (answer.toLowerCase() === 'n') {
+    //   moreFriends = false;
+    //   readline.close();
+    //   readline.removeAllListeners();
+    // } else {
       onlineFollowersIds = [...onlineFollowersIds, ...await getOnlineFollowers(sourceCommunityId, requestsIds)];
-    }
+    // }
+    await sleep(5000);
   }
 
   if (onlineFollowersIds.length <= 0) {
