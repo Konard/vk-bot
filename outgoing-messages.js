@@ -56,7 +56,7 @@ const handleOutgoingMessage = async () => {
     console.log('ticksPassed', ticksPassed);
     console.log('context.ticksToTyping >= ticksPassed', ticksPassed >= context.ticksToTyping);
     console.log('((ticksPassed - context.ticksToTyping) % 5 == 0)', ((ticksPassed - context.ticksToTyping) % 5 == 0));
-    if (ticksPassed >= context.ticksToTyping && ((ticksPassed - context.ticksToTyping) % 5 == 0)) { 
+    if (ticksPassed >= context.ticksToTyping && ((ticksPassed - context.ticksToTyping) % 5 == 0)) {
       const peerId = context?.request?.peerId;
       if (peerId && context.vk) {
         console.log('typing status starting request');
@@ -81,7 +81,7 @@ const handleOutgoingMessage = async () => {
       await context.vk.api.messages.send({
         random_id: Math.random(),
         ...context.response
-      }); 
+      });
     }
   } catch (e) {
     if (e.code === 902) { // Can't send messages to this user due to their privacy settings
@@ -92,12 +92,12 @@ const handleOutgoingMessage = async () => {
   }
 };
 
-module.exports = { 
+module.exports = {
   tickSize,
   defaultTypingSpeedCharactersPerMinute,
   defaultTypingSpeedCharactersPerSecond,
   calculateMinimumSecondsToType,
-  randomInRange, 
-  handleOutgoingMessage, 
+  randomInRange,
+  handleOutgoingMessage,
   enqueueMessage
 };

@@ -75,7 +75,7 @@ const acceptFriendRequestsInterval = setInterval(async () => {
   try {
     const requests = await vk.api.friends.getRequests({ count: 23 });
     for (let i = 0; i < requests.items.length; i++) {
-        await vk.api.friends.add({ user_id: requests.items[i], text: '' });
+      await vk.api.friends.add({ user_id: requests.items[i], text: '' });
     }
     if (requests?.items?.length <= 0) {
       console.log('No incoming friend requests to be accepted.');
