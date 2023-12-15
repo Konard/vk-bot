@@ -4,32 +4,10 @@ const { handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages')
 const { greetingTrigger } = require('./triggers/greeting');
 const { undefinedQuestionTrigger } = require('./triggers/undefined-question');
 const { acquaintanceTrigger } = require('./triggers/acquaintance');
+const { gratitudeTrigger } = require('./triggers/gratitude');
 const { hasSticker, getRandomElement } = require('./triggers/utils');
 
 const peers = {}; // TODO: keep state about what triggers then last triggered for each peer
-
-const gratitudeRegex = /^\s*(благодарю|(большое\s*)?спасибо(\s*огромное)?)[\s)\\.!☺😊👍✅🙏🤝]*$/ui;
-
-const incomingGratitudeStickersIds = [
-  6342,
-]
-
-const outgoingGratitudeResponseStickerId = 60075;
-
-const gratitudeTrigger = {
-  condition: (context) => {
-    return gratitudeRegex.test(context.request.text);
-  },
-  action: (context) => {
-    enqueueMessage({
-      vk: context.vk,
-      request: context.request,
-      response: {
-        sticker_id: outgoingGratitudeResponseStickerId,
-      }
-    });
-  }
-};
 
 const triggers = [
   greetingTrigger,
