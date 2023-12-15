@@ -107,7 +107,7 @@ async function main() {
   const requestsIds = await fetchAllRequests();
   let onlineFollowersIds = [];
 
-  const numberOfFriendsToAdd = await question('How many friends to add?');
+  const numberOfFriendsToAdd = await question('How many friends to add? ');
   const targetFriendsCount = parseInt(numberOfFriendsToAdd);
 
   // Input is finished
