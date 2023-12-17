@@ -20,9 +20,9 @@ function clean(obj) {
       ) {
       delete obj[propName];
     }
-    if(typeof obj[propName] === 'object'){
-      clean(obj[propName]); //recursive for nested objects
-    }
+    // if(typeof obj[propName] === 'object'){
+    //   clean(obj[propName]); //recursive for nested objects
+    // }
   }
   return obj;
 }
