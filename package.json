@@ -4,7 +4,10 @@
   "description": "vk-bot",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "node"
   },
   "repository": {
     "type": "git",
@@ -22,5 +25,8 @@
   "homepage": "https://github.com/Konard/vk-bot#readme",
   "dependencies": {
     "vk-io": "^4.8.3"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
