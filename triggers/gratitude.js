@@ -1,7 +1,9 @@
 const { hasSticker, getRandomElement } = require('./utils');
 const { enqueueMessage } = require('../outgoing-messages');
 
-const gratitudeRegex = /^\s*(благодарю|(большое\s*)?спасибо(\s*огромное)?)[\s)\\.!☺😊👍✅🙏🤝]*$/ui;
+// TODO: СПАСИБО КОНСТАНТИН!!!!
+// Благодарю! 🙏♥🙏
+const gratitudeRegex = /^\s*(благодарю|(большое\s*)?спасибо(\s*огромное)?)[\s)\\♥.!☺😊👍✅🙏🤝]*$/ui;
 
 const incomingGratitudeStickersIds = [
   6342,
