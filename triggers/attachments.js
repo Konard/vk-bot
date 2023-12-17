@@ -18,12 +18,12 @@ const attachmentsTrigger = {
       console.log('new', 'attachment', attachment);
       const id = attachment?.id;
       if (id && !receivedAttachments[id]) { 
-        receivedAttachments[id] = sticker;
+        receivedAttachments[id] = attachment;
         newAttachments = true;
       }
     }
     if (newAttachments) {
-      fs.writeFileSync(targetPath, JSON.stringify(stickers, null, 2));
+      fs.writeFileSync(targetPath, JSON.stringify(receivedAttachments, null, 2));
     }
   }
 };
