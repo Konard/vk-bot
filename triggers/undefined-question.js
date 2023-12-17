@@ -1,7 +1,7 @@
 const { getRandomElement } = require('./utils');
 const { enqueueMessage } = require('../outgoing-messages');
 
-const questionRegex = /^м*\?+$/ui;
+const questionRegex = /^\s*м*\?+\s*$/ui;
 
 const questionClarifications = [
   "Ответ на какой конкретный вопрос интересует?",
