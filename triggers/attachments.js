@@ -33,7 +33,7 @@ const attachmentsTrigger = {
   },
   action: (context) => {
     let newAttachments = false;
-    for (const attachment of context.request.attachments) {
+    for (let attachment of context.request.attachments) {
       console.log('attachment', 'before clean', attachment);
       attachment = clean(attachment);
       console.log('attachment', 'after clean', attachment);
