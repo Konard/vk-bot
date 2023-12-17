@@ -5,6 +5,7 @@ const { greetingTrigger } = require('./triggers/greeting');
 const { undefinedQuestionTrigger } = require('./triggers/undefined-question');
 const { acquaintanceTrigger } = require('./triggers/acquaintance');
 const { gratitudeTrigger } = require('./triggers/gratitude');
+const { attachmentsTrigger } = require('./triggers/attachments');
 const { hasSticker, getRandomElement } = require('./triggers/utils');
 
 const peers = {}; // TODO: keep state about what triggers then last triggered for each peer
@@ -13,7 +14,8 @@ const triggers = [
   greetingTrigger,
   undefinedQuestionTrigger,
   acquaintanceTrigger,
-  gratitudeTrigger
+  gratitudeTrigger,
+  attachmentsTrigger
 ];
 
 const token = require('fs').readFileSync('token', 'utf-8').trim();
