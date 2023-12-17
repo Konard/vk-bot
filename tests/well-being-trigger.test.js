@@ -16,7 +16,7 @@ describe('wellBeingTrigger', () => {
   test.each([
     ['Как дела?'],
     ['Как жизнь?']
-  ])('matches well being question and gives expected response', (incomingMessage) => {
+  ])('matches "%s" well being question and gives expected response', (incomingMessage) => {
     const context = { request: { text: incomingMessage } };
     expect(wellBeingTrigger.condition(context)).toBe(true);
     if (wellBeingTrigger.condition(context)) {
@@ -31,7 +31,7 @@ describe('wellBeingTrigger', () => {
   test.each([
     ['Чем занимаешься?'], 
     ['Какая цель добавления в друзья?']
-  ])('does not match other questions', (incomingMessage) => {
+  ])('does not match "%s" question', (incomingMessage) => {
     const context = { request: { text: incomingMessage } };
     expect(wellBeingTrigger.condition(context)).toBe(false);
     if (wellBeingTrigger.condition(context)) {
