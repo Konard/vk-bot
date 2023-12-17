@@ -47,6 +47,7 @@ const incomingGreetingStickersIds = [
   64785, // ПРИВЕТ
   84235, // ПРИВЕТ
   84236, // ХЕЛЛОУ
+  70753,
 ];
 
 const outgoingGreetingStickersIds = [
