@@ -1,4 +1,4 @@
-const fs = require('fs');
+// const fs = require('fs');
 const { VK } = require('vk-io');
 const { handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages');
 const { greetingTrigger } = require('./triggers/greeting');

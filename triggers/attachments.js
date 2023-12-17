@@ -1,4 +1,4 @@
-const { getRandomElement } = require('./utils');
+const fs = require('fs');
 
 const targetPath = 'received-attachments.json';
 
