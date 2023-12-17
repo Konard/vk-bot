@@ -40,6 +40,8 @@ const attachmentsTrigger = {
       const id = attachment?.id;
       if (id && !receivedAttachments[id]) {
         receivedAttachments[id] = attachment;
+        console.log('attachment.images', JSON.stringify(attachment?.images || null, null, 2));
+        console.log('attachment.imagesWithBackground', JSON.stringify(attachment?.imagesWithBackground || null, null, 2));
         newAttachments = true;
       }
     }
