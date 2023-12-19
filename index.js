@@ -67,9 +67,9 @@ const minute = 60 * 1000;
 const setOnlineInterval = setInterval(async () => {
   try {
     await vk.api.account.setOnline();
-    console.log('Online status is set.');
+    console.log('Online status is set');
   } catch (e) {
-    console.log('Could not set online status.', e);
+    console.log('Could not set online status', e);
   }
 }, 14 * minute);
 
@@ -81,7 +81,7 @@ const acceptFriendRequestsInterval = setInterval(async () => {
       await sleep(3000);
     }
     if (requests?.items?.length <= 0) {
-      console.log('No incoming friend requests to be accepted.');
+      console.log('No incoming friend requests to be accepted');
     } else {
       console.log('Incoming friend requests accepted:', JSON.stringify(requests, null, 2));
     }
@@ -93,7 +93,7 @@ const acceptFriendRequestsInterval = setInterval(async () => {
 const deleteDeactivatedFriendsInterval = setInterval(async () => {
   const step = 5000;
   const deactivatedValues = ['banned', 'deleted'];
-  const deletedFriends = [];
+  const deletedFriendsIds = [];
   let offset = 0;
   while (true) {
     try {
@@ -101,7 +101,7 @@ const deleteDeactivatedFriendsInterval = setInterval(async () => {
       const deactivatedFriends = friends.items.filter(friend => friend.deactivated && deactivatedValues.includes(friend.deactivated));
       for (const friend of deactivatedFriends) {
         try {
-          deletedFriends.push(friend.id);
+          deletedFriendsIds.push(friend.id);
           await vk.api.friends.delete({ user_id: friend.id });
           console.log('Deactivated friend', friend.id, 'was deleted');
           await sleep(3000);
@@ -110,7 +110,11 @@ const deleteDeactivatedFriendsInterval = setInterval(async () => {
         }
       }
       if (offset + step >= 10000 || friends.items.length < step) {
-        console.log(`Deleted deactivated friends: ${deletedFriends}`);
+        if (deletedFriendsIds?.length <= 0) {
+          console.log('No deactivated friends to be deleted');
+        } else {
+          console.log(`Deleted deactivated friends: ${deletedFriendsIds}`);
+        }
         break;
       }
       offset += step;
