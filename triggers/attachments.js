@@ -16,7 +16,7 @@ if (fs.existsSync(targetPath)) {
     receivedAttachments = JSON.parse(rawData);
 }
 
-function clean(rawData) {
+function clean(obj) {
   for (var propName in obj) { 
     if (obj[propName] === null || obj[propName] === undefined || obj[propName]?.length === 0) {
       delete obj[propName];
