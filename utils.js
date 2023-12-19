@@ -11,7 +11,10 @@ const hasSticker = (context, stickersIds) => {
   return false;
 }
 
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
 module.exports = {
   getRandomElement,
-  hasSticker
+  hasSticker,
+  sleep
 };

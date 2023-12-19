@@ -6,7 +6,7 @@ const { undefinedQuestionTrigger } = require('./triggers/undefined-question');
 const { acquaintanceTrigger } = require('./triggers/acquaintance');
 const { gratitudeTrigger } = require('./triggers/gratitude');
 const { attachmentsTrigger } = require('./triggers/attachments');
-const { hasSticker, getRandomElement } = require('./triggers/utils');
+const { hasSticker, getRandomElement, sleep } = require('./utils');
 
 const peers = {}; // TODO: keep state about what triggers then last triggered for each peer
 
@@ -78,6 +78,7 @@ const acceptFriendRequestsInterval = setInterval(async () => {
     const requests = await vk.api.friends.getRequests({ count: 23 });
     for (let i = 0; i < requests.items.length; i++) {
       await vk.api.friends.add({ user_id: requests.items[i], text: '' });
+      await sleep(3000);
     }
     if (requests?.items?.length <= 0) {
       console.log('No incoming friend requests to be accepted.');
@@ -87,4 +88,34 @@ const acceptFriendRequestsInterval = setInterval(async () => {
   } catch (error) {
     console.log('Could not accept friend requests:', e);
   }
-}, 10 * minute);
+}, 5 * minute);
+
+const deleteDeactivatedFriendsInterval = setInterval(async () => {
+  const step = 5000;
+  const deactivatedValues = ['banned', 'deleted'];
+  const deletedFriends = [];
+  let offset = 0;
+  while (true) {
+    try {
+      const friends = await vk.api.friends.get({ count: step, offset, fields: ['deactivated'] });
+      const deactivatedFriends = friends.items.filter(friend => friend.deactivated && deactivatedValues.includes(friend.deactivated));
+      for (const friend of deactivatedFriends) {
+        try {
+          deletedFriends.push(friend.id);
+          // await vk.api.friends.delete({ user_id: friend.id });
+          console.log('deactivated friend', friend.id, 'should be deleted');
+          await sleep(3000);
+        } catch (err) {
+          console.error(`Failed to delete deactivated friend: ${err}`);
+        }
+      }
+      if (offset + step >= 10000 || friends.items.length < step) {
+        console.log(`Deleted deactivated friends: ${deletedFriends}`);
+        break;
+      }
+      offset += step;
+    } catch (err) {
+      console.error(`Could not retrieve friends to delete deactivated ones: ${err}`);
+    }
+  }
+}, 1 * minute);

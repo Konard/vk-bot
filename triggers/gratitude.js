@@ -1,4 +1,4 @@
-const { hasSticker, getRandomElement } = require('./utils');
+const { hasSticker, getRandomElement } = require('../utils');
 const { enqueueMessage } = require('../outgoing-messages');
 const { stickers } = require('../stickers');
 

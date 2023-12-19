@@ -1,4 +1,5 @@
 const { VK } = require('vk-io');
+const { sleep } = require('./utils');
 const token = require('fs').readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
 
@@ -101,8 +102,6 @@ async function sendFriendRequest(userId) {
 
 let messagesHandlerInterval;
 
-const sleep = ms => new Promise(r => setTimeout(r, ms));
-
 async function main() {
   const requestsIds = await fetchAllRequests();
   let onlineFollowersIds = [];
@@ -117,7 +116,7 @@ async function main() {
   while (onlineFollowersIds.length < targetFriendsCount) {
     onlineFollowersIds = [...onlineFollowersIds, ...await getOnlineFollowers(sourceCommunityId, requestsIds)];
     console.log('Current number of friends to invite: ', onlineFollowersIds.length);
-    await sleep(5000);
+    await sleep(3000);
   }
 
   if (onlineFollowersIds.length <= 0) {

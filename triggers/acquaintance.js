@@ -1,4 +1,4 @@
-const { getRandomElement } = require('./utils');
+const { getRandomElement } = require('../utils');
 const { enqueueMessage } = require('../outgoing-messages');
 
 const acquaintedRegex = /^\s*(мы\s*)?знакомы(\s*с\s*(тобой|вами))?[\s?)\\]*$/ui;

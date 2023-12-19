@@ -1,4 +1,4 @@
-const { getRandomElement } = require('./utils');
+const { getRandomElement } = require('../utils');
 const { enqueueMessage } = require('../outgoing-messages');
 
 const questionRegex = /^\s*м*\?+\s*$/ui;
