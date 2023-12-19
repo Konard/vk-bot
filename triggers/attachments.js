@@ -7,7 +7,7 @@ if (fs.existsSync(targetPath)) {
     const rawData = fs.readFileSync(targetPath);
 
     // Clean on start up
-    for (var propName in rawData) {
+    for (const propName in rawData) {
       rawData[propName] = clean(rawData[propName]);
     }
 
