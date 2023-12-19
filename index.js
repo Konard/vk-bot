@@ -102,8 +102,8 @@ const deleteDeactivatedFriendsInterval = setInterval(async () => {
       for (const friend of deactivatedFriends) {
         try {
           deletedFriends.push(friend.id);
-          // await vk.api.friends.delete({ user_id: friend.id });
-          console.log('deactivated friend', friend.id, 'should be deleted');
+          await vk.api.friends.delete({ user_id: friend.id });
+          console.log('Deactivated friend', friend.id, 'was deleted');
           await sleep(3000);
         } catch (err) {
           console.error(`Failed to delete deactivated friend: ${err}`);
@@ -118,4 +118,4 @@ const deleteDeactivatedFriendsInterval = setInterval(async () => {
       console.error(`Could not retrieve friends to delete deactivated ones: ${err}`);
     }
   }
-}, 1 * minute);
+}, 4 * minute);
