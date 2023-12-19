@@ -5,10 +5,16 @@ const targetPath = 'received-attachments.json';
 let receivedAttachments = {};
 if (fs.existsSync(targetPath)) {
     const rawData = fs.readFileSync(targetPath);
+
+    // Clean on start up
+    for (var propName in rawData) {
+      rawData[propName] = clean(rawData[propName]);
+    }
+
     receivedAttachments = JSON.parse(rawData);
 }
 
-function clean(obj) {
+function clean(rawData) {
   for (var propName in obj) { 
     if (obj[propName] === null || obj[propName] === undefined || obj[propName]?.length === 0) {
       delete obj[propName];
