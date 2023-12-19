@@ -5,7 +5,8 @@ const { stickers } = require('../stickers');
 // TODO: СПАСИБО КОНСТАНТИН!!!!
 // Благодарю! 🙏♥🙏
 // 🙂Спасибо!
-const gratitudeRegex = /^[\s🙂]*(благодарю|(большое\s*)?спасибо(\s*огромное)?)[\s)\\♥.!☺😊👍✅🙏🤝]*$/ui;
+// Спасибо большое!
+const gratitudeRegex = /^[\s🙂]*(благодарю|(огромное|большое\s*)?спасибо(\s*(огромное|большое))?)[\s)\\♥.!☺😊👍✅🙏🤝]*$/ui;
 
 const incomingGratitudeStickersIds = [
   6342,
