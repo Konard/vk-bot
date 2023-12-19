@@ -8,7 +8,9 @@ if (fs.existsSync(targetPath)) {
 
     // Clean on start up
     for (const propName in rawData) {
-      rawData[propName] = clean(rawData[propName]);
+      if (rawData[propName]) {
+        rawData[propName] = clean(rawData[propName]);
+      }
     }
 
     receivedAttachments = JSON.parse(rawData);
