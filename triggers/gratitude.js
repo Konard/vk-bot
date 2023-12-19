@@ -10,6 +10,7 @@ const gratitudeRegex = /^[\s🙂]*(благодарю|(огромное|боль
 
 const incomingGratitudeStickersIds = [
   6342,
+  66407, // СПАСИБО
   stickers["oni-chan"].gratitute.id,
 ];
 
