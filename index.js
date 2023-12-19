@@ -122,4 +122,4 @@ const deleteDeactivatedFriendsInterval = setInterval(async () => {
       console.error(`Could not retrieve friends to delete deactivated ones: ${err}`);
     }
   }
-}, 4 * minute);
+}, 20 * minute);
