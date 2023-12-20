@@ -18,6 +18,7 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const decode = (encoded, encoding = 'cp1251') => {
   var iconv = new Iconv(encoding, 'utf-8');
   const decoded = iconv.convert(encoded).toString();
+  return decoded;
 }
 
 module.exports = {
