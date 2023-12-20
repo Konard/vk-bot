@@ -28,6 +28,10 @@ function clean(obj) {
   return obj;
 }
 
+function eraseMetadata(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
 const attachmentsTrigger = {
   condition: (context) => {
     return context?.request?.attachments?.length > 0;
@@ -35,6 +39,7 @@ const attachmentsTrigger = {
   action: (context) => {
     let newAttachments = false;
     for (let attachment of context.request.attachments) {
+      attachment = eraseMetadata(attachment);
       console.log('attachment', 'before clean', attachment);
       attachment = clean(attachment);
       console.log('attachment', 'after clean', attachment);
