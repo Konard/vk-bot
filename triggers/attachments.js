@@ -38,6 +38,8 @@ const attachmentsTrigger = {
   action: (context) => {
     let newAttachments = false;
     for (let attachment of context.request.attachments) {
+      const attachmentType = typeof attachment;
+      console.log('attachmentType', attachmentType);
       attachment = eraseMetadata(attachment);
       console.log('attachment', 'before clean', attachment);
       attachment = clean(attachment);
