@@ -6,7 +6,7 @@ const { undefinedQuestionTrigger } = require('./triggers/undefined-question');
 const { acquaintanceTrigger } = require('./triggers/acquaintance');
 const { gratitudeTrigger } = require('./triggers/gratitude');
 const { attachmentsTrigger } = require('./triggers/attachments');
-const { hasSticker, getRandomElement, sleep } = require('./utils');
+const { hasSticker, getRandomElement, sleep, decode } = require('./utils');
 
 const peers = {}; // TODO: keep state about what triggers then last triggered for each peer
 
@@ -41,6 +41,7 @@ vk.updates.on(['message_new'], (request) => {
     return;
   }
   console.log('request', JSON.stringify(request, null, 2));
+  console.log('decoded request.text', decode(request?.text));
 
   let reactionTriggered = false;
   for (const trigger of triggers) {
