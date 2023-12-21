@@ -1,5 +1,5 @@
 const { VK } = require('vk-io');
-const { hasSticker, getRandomElement } = require('../utils');
+const { getRandomElement } = require('utils');
 const { randomInRange, handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages');
 const token = require('fs').readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
