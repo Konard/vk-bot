@@ -85,7 +85,7 @@ const acceptFriendRequestsInterval = setInterval(async () => {
     } else {
       console.log('Incoming friend requests accepted:', JSON.stringify(requests, null, 2));
     }
-  } catch (error) {
+  } catch (e) {
     console.log('Could not accept friend requests:', e);
   }
 }, 5 * minute);
