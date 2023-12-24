@@ -19,7 +19,7 @@ const questionClarifications = [
 const undefinedQuestionTrigger = {
   name: "UndefinedQuestionTrigger",
   condition: (context) => {
-    return request.isOutbox
+    return context.request.isOutbox
         && questionRegex.test(context.request.text);
   },
   action: (context) => {

@@ -27,7 +27,7 @@ const acquaintanceSuggestions = [
 const acquaintanceTrigger = {
   name: "AcquaintanceTrigger",
   condition: (context) => {
-    return request.isOutbox
+    return context.request.isOutbox
         && acquaintedRegex.test(context.request.text);
   },
   action: (context) => {

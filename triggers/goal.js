@@ -12,7 +12,7 @@ const goalAnswers = [
 const goalTrigger = {
   name: "GoalTrigger",
   condition: (context) => {
-    return request.isOutbox
+    return context.request.isOutbox
         && goalQuestionRegex.test(context.request.text);
   },
   action: (context) => {
