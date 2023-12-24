@@ -12,7 +12,8 @@ const goalAnswers = [
 const goalTrigger = {
   name: "GoalTrigger",
   condition: (context) => {
-    return goalQuestionRegex.test(context.request.text);
+    return request.isOutbox
+        && goalQuestionRegex.test(context.request.text);
   },
   action: (context) => {
     enqueueMessage({

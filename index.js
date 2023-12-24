@@ -1,5 +1,6 @@
 // const fs = require('fs');
 const { VK } = require('vk-io');
+const { DateTime } = require('luxon');
 const { handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages');
 const { greetingTrigger } = require('./triggers/greeting');
 const { undefinedQuestionTrigger } = require('./triggers/undefined-question');
@@ -37,22 +38,18 @@ vk.updates.on(['message_new'], (request) => {
   if (!request.isFromUser) {
     return;
   }
-  if (request.isOutbox) {
-    return;
-  }
   console.log('request', JSON.stringify(request, null, 2));
 
   let reactionTriggered = false;
   for (const trigger of triggers) {
     if (!trigger.condition || trigger.condition({ vk, request })) {
-      trigger.action({ vk, request });
+      trigger.action({ state: peers[request.peerId], vk, request });
       reactionTriggered = true;
-
-      if(trigger.name) {
+      if (trigger.name) {
         const peer = peers[request.peerId] ??= {};
         const triggers = peer.triggers ??= {};
         const triggerState = triggers[trigger.name] ??= {};
-        triggerState.lastTriggered = new Date();
+        triggerState.lastTriggered = DateTime.now();
         console.log('peers', JSON.stringify(peers, null, 2));
       }
     }

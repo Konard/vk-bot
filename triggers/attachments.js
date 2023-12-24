@@ -34,7 +34,8 @@ function eraseMetadata(obj) {
 const attachmentsTrigger = {
   name: "AttachmentsTrigger",
   condition: (context) => {
-    return context?.request?.attachments?.length > 0;
+    return request.isOutbox
+        && context?.request?.attachments?.length > 0;
   },
   action: (context) => {
     let newAttachments = false;

@@ -1,5 +1,6 @@
 const { hasSticker, getRandomElement } = require('../utils');
 const { enqueueMessage } = require('../outgoing-messages');
+const { DateTime } = require('luxon');
 
 const greetingRegex = /^\s*(салам|з?д[ао]ров[ао]?|ку|qq|шалом|хай|йоу?|привет(ствую)?|здравствуй(те)?|дд|добр(ый\s*(день|вечер)|ое\s*утро|ой\s*ночи|ого\s*времени\s*суток))[\s.?!]*$/ui;
 
@@ -57,7 +58,13 @@ const outgoingGreetingStickersIds = [
 const greetingTrigger = {
   name: "GreetingTrigger",
   condition: (context) => {
-    return greetingRegex.test(context.request.text) || hasSticker(context.request, incomingGreetingStickersIds);
+    const now = DateTime.now();
+    const lastTriggered = context?.state?.triggers?.[greetingTrigger.name]?.lastTriggered;
+    const lastTriggeredDiff = lastTriggered ? now.diff(lastTriggered, 'days').days : 0;
+    console.log('lastTriggeredDiff', lastTriggeredDiff);
+    return lastTriggeredDiff <= 1
+        || greetingRegex.test(context.request.text)
+        || hasSticker(context.request, incomingGreetingStickersIds);
   },
   action: (context) => {
     enqueueMessage({
