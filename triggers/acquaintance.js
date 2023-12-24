@@ -27,7 +27,11 @@ const acquaintanceSuggestions = [
 const acquaintanceTrigger = {
   name: "AcquaintanceTrigger",
   condition: (context) => {
-    return context.request.isOutbox
+    const now = DateTime.now();
+    const lastTriggered = context?.state?.triggers?.[greetingTrigger.name]?.lastTriggered;
+    const lastTriggeredDiff = lastTriggered ? now.diff(lastTriggered, 'days').days : Number.MAX_SAFE_INTEGER;
+    return lastTriggeredDiff >= 1
+        && context.request.isOutbox
         && acquaintedRegex.test(context.request.text);
   },
   action: (context) => {
