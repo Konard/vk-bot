@@ -2,7 +2,7 @@ const { hasSticker, getRandomElement } = require('../utils');
 const { enqueueMessage } = require('../outgoing-messages');
 const { DateTime } = require('luxon');
 
-const greetingRegex = /^\s*(салам|з?д[ао]ров[ао]?|ку|qq|шалом|хай|йоу?|привет(ствую)?|здравствуй(те)?|дд|добр(ый\s*(день|вечер)|ое\s*утро|ой\s*ночи|ого\s*времени\s*суток))[\s.?!]*$/ui;
+const greetingRegex = /^\s*(салам|з?д[ао]ров[ао]?|ку|q+|шалом|хай|йоу?|привет(ствую|ики?)?|здравствуй(те)?|дд|добр(ый\s*(день|вечер)|ое\s*утро|ой\s*ночи|ого\s*времени\s*суток))(\s*(тебе|вам))?[\s.?!]*$/ui;
 
 const commonGreetingStickersIds = [
   72789,
@@ -78,5 +78,7 @@ const greetingTrigger = {
 };
 
 module.exports = {
-  greetingTrigger
+  greetingTrigger,
+  incomingGreetingStickersIds,
+  outgoingGreetingStickersIds
 };
