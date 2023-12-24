@@ -9,4 +9,10 @@ describe('set function', () => {
     _.set(object, ['foo', 'bar'], 1);
     expect(object.foo.bar).toBe(1);
   });
+  test.each([
+    [{}],
+  ])('set for object "%s"', (object) => {
+    ((object ??= {}).foo ??= {}).bar = 1;
+    expect(object.foo.bar).toBe(1);
+  });
 });
