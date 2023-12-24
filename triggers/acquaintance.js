@@ -2,7 +2,7 @@ const { getRandomElement } = require('../utils');
 const { enqueueMessage } = require('../outgoing-messages');
 const { DateTime } = require('luxon');
 
-const acquaintedRegex = /^\s*(мы\s*)?знакомы(\s*с\s*(тобой|вами))?[\s?)\\]*$/ui;
+const acquaintedRegex = /^\s*(мы\s*)?знакомы(\s*с\s*(тобой|вами))?\s*\?[)\\]*$/ui;
 
 const acquaintanceSuggestions = [
   "Ещё нет. Однако это просто исправить, я программист. А ты? (можно на ты?)",
