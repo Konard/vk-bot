@@ -67,9 +67,12 @@ const greetingTrigger = {
     const lastTriggered = context?.state?.triggers?.[greetingTrigger.name]?.lastTriggered;
     const lastTriggeredDiff = lastTriggered ? now.diff(lastTriggered, 'days').days : Number.MAX_SAFE_INTEGER;
     console.log('lastTriggeredDiff', lastTriggeredDiff);
+    console.log('lastTriggeredDiff >= 1', lastTriggeredDiff >= 1);
     return lastTriggeredDiff >= 1
-        || greetingRegex.test(context.request.text)
-        || hasSticker(context.request, incomingGreetingStickersIds);
+        && (
+            greetingRegex.test(context.request.text)
+        ||  hasSticker(context.request, incomingGreetingStickersIds);
+        );
   },
   action: (context) => {
     enqueueMessage({
