@@ -40,11 +40,12 @@ vk.updates.on(['message_new'], (request) => {
   }
   console.log('request', JSON.stringify(request, null, 2));
 
+  const state = peers[request.peerId];
+  console.log('state', state);
   let reactionTriggered = false;
   for (const trigger of triggers) {
-    if (!trigger.condition || trigger.condition({ vk, request })) {
-      console.log('peers[request.peerId]', peers[request.peerId])
-      trigger.action({ state: peers[request.peerId], vk, request });
+    if (!trigger.condition || trigger.condition({ vk, request, state })) {
+      trigger.action({ vk, request, state });
       reactionTriggered = true;
       if (trigger.name) {
         const peer = peers[request.peerId] ??= {};
