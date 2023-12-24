@@ -65,9 +65,9 @@ const greetingTrigger = {
     console.log('context?.state?.triggers?.[greetingTrigger.name]', context?.state?.triggers?.[greetingTrigger.name]);
     console.log('context?.state?.triggers?.[greetingTrigger.name]?.lastTriggered', context?.state?.triggers?.[greetingTrigger.name]?.lastTriggered);
     const lastTriggered = context?.state?.triggers?.[greetingTrigger.name]?.lastTriggered;
-    const lastTriggeredDiff = lastTriggered ? now.diff(lastTriggered, 'days').days : 0;
+    const lastTriggeredDiff = lastTriggered ? now.diff(lastTriggered, 'days').days : Number.MAX_SAFE_INTEGER;
     console.log('lastTriggeredDiff', lastTriggeredDiff);
-    return lastTriggeredDiff <= 1
+    return lastTriggeredDiff >= 1
         || greetingRegex.test(context.request.text)
         || hasSticker(context.request, incomingGreetingStickersIds);
   },
