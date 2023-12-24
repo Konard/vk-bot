@@ -71,7 +71,7 @@ const greetingTrigger = {
     return lastTriggeredDiff >= 1
         && (
             greetingRegex.test(context.request.text)
-        ||  hasSticker(context.request, incomingGreetingStickersIds);
+        ||  hasSticker(context.request, incomingGreetingStickersIds)
         );
   },
   action: (context) => {
