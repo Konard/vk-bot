@@ -17,6 +17,7 @@ const questionClarifications = [
 ];
 
 const undefinedQuestionTrigger = {
+  name: "UndefinedQuestionTrigger",
   condition: (context) => {
     return questionRegex.test(context.request.text);
   },

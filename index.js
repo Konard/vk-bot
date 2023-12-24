@@ -21,6 +21,34 @@ const triggers = [
 const token = require('fs').readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
 
+
+// Object.prototype.set = (keys, value) => { 
+//   const last = keys.pop();
+
+//   if (last) {
+//     this[last] = value;
+//   }
+
+//   // keys.reduce((o, k) => o[k] ??= {}, this)[last] = value
+
+//   return this;
+// };
+
+// Object.prototype.set = (keys, value) => { 
+//   const last = keys.pop();
+// console.log('last', last);
+
+//   if (last) {
+//     this[laast] = value;
+//     console.log(this[last])
+//       console.log(this)
+//   }
+
+//   // keys.reduce((o, k) => o[k] ??= {}, this)[last] = value
+
+//   // return this;
+// };
+
 // let self;
 // async function getSelf() {
 //   const [user] = await vk.api.users.get({});
@@ -47,6 +75,10 @@ vk.updates.on(['message_new'], (request) => {
     if (trigger.condition({ vk, request })) {
       trigger.action({ vk, request });
       reactionTriggered = true;
+
+      // peers[request.peerId] = {
+      //   lastTriggered: 
+      // } new Date(),
     }
   }
   if (reactionTriggered) {

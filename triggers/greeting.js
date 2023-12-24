@@ -55,6 +55,7 @@ const outgoingGreetingStickersIds = [
 ];
 
 const greetingTrigger = {
+  name: "GreetingTrigger",
   condition: (context) => {
     return greetingRegex.test(context.request.text) || hasSticker(context.request, incomingGreetingStickersIds);
   },

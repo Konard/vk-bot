@@ -10,6 +10,7 @@ const goalAnswers = [
 ];
 
 const goalTrigger = {
+  name: "GoalTrigger",
   condition: (context) => {
     return goalQuestionRegex.test(context.request.text);
   },

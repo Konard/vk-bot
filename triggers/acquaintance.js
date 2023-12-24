@@ -25,6 +25,7 @@ const acquaintanceSuggestions = [
 ];
 
 const acquaintanceTrigger = {
+  name: "AcquaintanceTrigger",
   condition: (context) => {
     return acquaintedRegex.test(context.request.text);
   },

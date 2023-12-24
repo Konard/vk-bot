@@ -11,6 +11,7 @@ const wellBeingAnswers = [
 ];
 
 const wellBeingTrigger = {
+  name: "WellBeingTrigger",
   condition: (context) => {
     return wellBeingQuestionRegex.test(context.request.text);
   },
