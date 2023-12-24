@@ -1,6 +1,6 @@
-const { wellBeingTrigger } = require('../triggers/well-being');
-const { enqueueMessage } = require('../outgoing-messages');
-jest.mock('../outgoing-messages');
+const { wellBeingTrigger } = require('../../triggers/well-being');
+const { enqueueMessage } = require('../../outgoing-messages');
+jest.mock('../../outgoing-messages');
 
 const expectedOutgoingMessages = [
   'Хорошо',
