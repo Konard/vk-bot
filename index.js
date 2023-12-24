@@ -72,7 +72,7 @@ vk.updates.on(['message_new'], (request) => {
 
   let reactionTriggered = false;
   for (const trigger of triggers) {
-    if (trigger.condition({ vk, request })) {
+    if (!trigger.condition || trigger.condition({ vk, request })) {
       trigger.action({ vk, request });
       reactionTriggered = true;
 
