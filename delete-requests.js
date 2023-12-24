@@ -5,7 +5,7 @@ const vk = new VK({ token });
 
 async function deleteFriendRequests() {
   try {
-      const requests = await vk.api.friends.getRequests({ count: 23, out: 1 });
+      const requests = await vk.api.friends.getRequests({ count: 23, out: 1, need_viewed: 1 });
       for (let i = 0; i < requests.items.length; i++) {
           await vk.api.friends.delete({ user_id: requests.items[i] });
           console.log('deleted friend request:', requests.items[i])
