@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/Konard/vk-bot#readme",
   "dependencies": {
+    "lodash": "^4.17.21",
     "vk-io": "^4.8.3"
   },
   "devDependencies": {
