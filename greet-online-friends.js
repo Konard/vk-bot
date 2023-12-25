@@ -30,6 +30,7 @@ async function greetOnlineFriends() {
 
     for (const friend of response.items) {
       if (friend.online) {
+        console.log(friend);
         gratitudeTrigger.action({
           vk,
           response: {
