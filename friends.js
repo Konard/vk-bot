@@ -126,27 +126,12 @@ async function main() {
     console.log(`${onlineFollowersIds.length} followers will be added as friends.`);
   }
 
-  // messagesHandlerInterval = setInterval(() => {
-  //   const followerId = onlineFollowersIds.shift(); // dequeue follower
-  //   if (!followerId) {
-  //     clearInterval(messagesHandlerInterval);
-  //     return;
-  //   }
-  //   console.log(`Friend request will be sent to: ${followerId}`);
-  //   sendFriendRequest(followerId)
-  //     .then(response => console.log(`Friend request sent to: ${followerId}`))
-  //     // .catch(err => console.log(err));
-  // }, 5000);
-
   messagesHandlerInterval = setInterval(() => {
     const followerId = onlineFollowersIds.shift(); // dequeue follower
-    // console.log(followerId, !followerId);
     if (!followerId) {
-      // console.log('messagesHandlerInterval', messagesHandlerInterval);
       clearInterval(messagesHandlerInterval);
       return;
     }
-    // console.log(`Friend request will be sent to: ${followerId}`);
     sendFriendRequest(followerId)
       .then(response => console.log(`Friend request sent to: ${followerId}`))
       .catch(e => {

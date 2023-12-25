@@ -29,7 +29,7 @@ describe('wellBeingTrigger', () => {
   });
 
   test.each([
-    ['Чем занимаешься?'], 
+    ['Чем занимаешься?'],
     ['Какая цель добавления в друзья?']
   ])('does not match "%s" question', (incomingMessage) => {
     const context = { request: { isOutbox: true, text: incomingMessage } };
