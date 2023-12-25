@@ -68,7 +68,7 @@ const greetingTrigger = {
         );
   },
   action: (context) => {
-    if (!context.request.isOutbox) {
+    if (context.request.isOutbox) {
       return;
     }
     enqueueMessage({
