@@ -3,9 +3,6 @@ const { enqueueMessage } = require('../outgoing-messages');
 const { stickers } = require('../stickers');
 
 // TODO: СПАСИБО КОНСТАНТИН!!!!
-// Благодарю! 🙏♥🙏
-// 🙂Спасибо!
-// Спасибо большое!
 const gratitudeRegex = /^[\s🙂]*(благодарю|(огромное|большое\s*)?спасибо(\s*(огромное|большое))?)[\s)\\♥.!☺😊👍✅🙏🤝]*$/ui;
 
 const incomingGratitudeStickersIds = [
@@ -36,5 +33,6 @@ const gratitudeTrigger = {
 };
 
 module.exports = {
-  gratitudeTrigger
+  gratitudeTrigger,
+  outgoingGratitudeResponseStickerId
 };
