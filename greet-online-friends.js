@@ -7,9 +7,6 @@ const vk = new VK({ token });
 
 async function greetOnlineFriends() {
   let offset = 0;
-  // const currentDate = new Date();
-  // const currentDay = currentDate.getDate();
-  // const currentMonth = currentDate.getMonth() + 1;
 
   while (true) {
     if (offset >= 10000) {
@@ -17,12 +14,10 @@ async function greetOnlineFriends() {
     }
 
     const response = await vk.api.friends.get({
-      fields: ['bdate', 'online'],
+      fields: ['online'],
       count: 5000,
       offset,
     });
-
-    console.log('response.items.length', response.items.length);
 
     if (response.items.length === 0) {
       break;
@@ -37,29 +32,7 @@ async function greetOnlineFriends() {
             user_id: friend.id,
           }
         });
-        // return;
-        // if (friend.bdate) {
-        //   const [day, month] = friend.bdate.split('.');
-        //   if (day == currentDay && month == currentMonth) {
-        //     console.log('friend.id', friend.id);
-        //     enqueueMessage({
-        //       vk,
-        //       response: {
-        //         user_id: friend.id,
-        //         sticker_id: getRandomElement(birthdayStickerIds),
-        //       }
-        //     });
-        //     enqueueMessage({
-        //       vk,
-        //       response: {
-        //         user_id: friend.id,
-        //         message: getRandomElement(birthdayCongratulations)
-        //       }
-        //     });
-        //   }
-        // }
       }
-
     }
 
     offset += 5000;
