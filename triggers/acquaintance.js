@@ -32,7 +32,7 @@ const acquaintanceTrigger = {
     const lastTriggered = context?.state?.triggers?.[acquaintanceTrigger.name]?.lastTriggered;
     const lastTriggeredDiff = lastTriggered ? now.diff(lastTriggered, 'days').days : Number.MAX_SAFE_INTEGER;
     return lastTriggeredDiff >= 1
-        && !context.request.isOutbox
+        && !context?.request?.isOutbox
         && acquaintedRegex.test(context.request.text);
   },
   action: (context) => {
