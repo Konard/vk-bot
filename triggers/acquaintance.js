@@ -29,7 +29,7 @@ const acquaintanceTrigger = {
   name: "AcquaintanceTrigger",
   condition: (context) => {
     const now = DateTime.now();
-    const lastTriggered = context?.state?.triggers?.[greetingTrigger.name]?.lastTriggered;
+    const lastTriggered = context?.state?.triggers?.[acquaintanceTrigger.name]?.lastTriggered;
     const lastTriggeredDiff = lastTriggered ? now.diff(lastTriggered, 'days').days : Number.MAX_SAFE_INTEGER;
     return lastTriggeredDiff >= 1
         && context.request.isOutbox
