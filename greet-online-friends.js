@@ -37,7 +37,7 @@ async function greetOnlineFriends() {
             user_id: friend.id,
           }
         });
-        return;
+        // return;
         // if (friend.bdate) {
         //   const [day, month] = friend.bdate.split('.');
         //   if (day == currentDay && month == currentMonth) {
