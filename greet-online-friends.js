@@ -1,5 +1,6 @@
 const { VK } = require('vk-io');
 const { getRandomElement } = require('./utils');
+const { gratitudeTrigger } = require('./triggers/gratitude');
 const { randomInRange, handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages');
 const token = require('fs').readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
@@ -28,27 +29,31 @@ async function greetOnlineFriends() {
     }
 
     for (const friend of response.items) {
-      console.log('friend.online', friend.online)
-      // if (friend.bdate) {
-      //   const [day, month] = friend.bdate.split('.');
-      //   if (day == currentDay && month == currentMonth) {
-      //     console.log('friend.id', friend.id);
-      //     enqueueMessage({
-      //       vk,
-      //       response: {
-      //         user_id: friend.id,
-      //         sticker_id: getRandomElement(birthdayStickerIds),
-      //       }
-      //     });
-      //     enqueueMessage({
-      //       vk,
-      //       response: {
-      //         user_id: friend.id,
-      //         message: getRandomElement(birthdayCongratulations)
-      //       }
-      //     });
-      //   }
-      // }
+      if (friend.online) {
+        gratitudeTrigger.action();
+        return;
+        // if (friend.bdate) {
+        //   const [day, month] = friend.bdate.split('.');
+        //   if (day == currentDay && month == currentMonth) {
+        //     console.log('friend.id', friend.id);
+        //     enqueueMessage({
+        //       vk,
+        //       response: {
+        //         user_id: friend.id,
+        //         sticker_id: getRandomElement(birthdayStickerIds),
+        //       }
+        //     });
+        //     enqueueMessage({
+        //       vk,
+        //       response: {
+        //         user_id: friend.id,
+        //         message: getRandomElement(birthdayCongratulations)
+        //       }
+        //     });
+        //   }
+        // }
+      }
+      
     }
 
     offset += 5000;
