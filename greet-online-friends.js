@@ -30,7 +30,7 @@ async function greetOnlineFriends() {
 
     for (const friend of response.items) {
       if (friend.online) {
-        gratitudeTrigger.action();
+        gratitudeTrigger.action({ vk });
         return;
         // if (friend.bdate) {
         //   const [day, month] = friend.bdate.split('.');
