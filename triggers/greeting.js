@@ -74,6 +74,7 @@ const greetingTrigger = {
     enqueueMessage({
       ...context,
       response: {
+        ...context.response,
         sticker_id: getRandomElement(outgoingGreetingStickersIds)
       }
     });

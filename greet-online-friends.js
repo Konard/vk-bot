@@ -30,7 +30,12 @@ async function greetOnlineFriends() {
 
     for (const friend of response.items) {
       if (friend.online) {
-        gratitudeTrigger.action({ vk });
+        gratitudeTrigger.action({
+          vk,
+          response: {
+            user_id: friend.id,
+          }
+        });
         return;
         // if (friend.bdate) {
         //   const [day, month] = friend.bdate.split('.');
@@ -53,7 +58,7 @@ async function greetOnlineFriends() {
         //   }
         // }
       }
-      
+
     }
 
     offset += 5000;
