@@ -36,6 +36,9 @@ const acquaintanceTrigger = {
         && acquaintedRegex.test(context.request.text);
   },
   action: (context) => {
+    if (!context.request.isOutbox) {
+      return;
+    }
     enqueueMessage({
       ...context,
       response: {
