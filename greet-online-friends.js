@@ -25,26 +25,30 @@ async function greetOnlineFriends() {
     }
 
     for (const friend of response.items) {
-      if (friend.online && friend.can_access_closed && !friend.is_closed) {
-        console.log(friend);
-
-        const response = await vk.api.messages.getConversationsById({
-          peer_ids: [friend.id],
-          count: 1
-        });
-
-        const lastMessage = response;
-        console.log('Here is the latest message: ', lastMessage);
-
-        await sleep(2000);
-
-        // greetingTrigger.action({
-        //   vk,
-        //   response: {
-        //     user_id: friend.id,
-        //   }
-        // });
+      if (!friend.online || !friend.can_access_closed || friend.is_closed) {
+        continue;
       }
+      console.log(friend);
+
+      const response = await vk.api.messages.getConversationsById({
+        peer_ids: [friend.id],
+        count: 1
+      });
+      await sleep(2000);
+
+      const conversation = response.items[0];
+
+      if (conversation.last_message_id != 0 || conversation.last_conversation_message_id != 0)
+      {
+        continue;
+      }
+
+      greetingTrigger.action({
+        vk,
+        response: {
+          user_id: friend.id,
+        }
+      });
     }
 
     offset += 5000;
