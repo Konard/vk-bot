@@ -38,12 +38,12 @@ async function greetOnlineFriends() {
 
         await sleep(2000);
 
-        greetingTrigger.action({
-          vk,
-          response: {
-            user_id: friend.id,
-          }
-        });
+        // greetingTrigger.action({
+        //   vk,
+        //   response: {
+        //     user_id: friend.id,
+        //   }
+        // });
       }
     }
 
