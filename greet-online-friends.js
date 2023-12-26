@@ -34,7 +34,7 @@ async function greetOnlineFriends() {
         peer_ids: [friend.id],
         count: 1
       });
-      await sleep(2000);
+      await sleep(10000);
 
       const conversation = response.items[0];
 
