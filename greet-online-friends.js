@@ -19,6 +19,7 @@ async function greetOnlineFriends() {
       count: 5000,
       offset,
     });
+    await sleep(10000);
 
     if (response.items.length === 0) {
       break;
