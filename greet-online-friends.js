@@ -25,11 +25,11 @@ async function greetOnlineFriends() {
     }
 
     for (const friend of response.items) {
-      if (friend.online) {
+      if (friend.online && friend.can_access_closed && !friend.is_closed) {
         console.log(friend);
 
-        const response = await vk.api.messages.getConversations({
-          user_ids: [friend.id],
+        const response = await vk.api.messages.getConversationsById({
+          peer_ids: [friend.id],
           count: 1
         });
 
