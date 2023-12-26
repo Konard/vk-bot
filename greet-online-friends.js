@@ -33,7 +33,7 @@ async function greetOnlineFriends() {
           count: 1
         });
 
-        const lastMessage = response.items[0].last_message;
+        const lastMessage = response;
         console.log('Here is the latest message: ', lastMessage);
 
         await sleep(2000);
