@@ -54,7 +54,3 @@ async function greetOnlineFriends() {
 greetOnlineFriends().catch(console.error);
 
 const messagesHandlerInterval = setInterval(handleOutgoingMessage, 1000);
-
-
-
-.catch(console.error);
