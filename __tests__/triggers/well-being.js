@@ -17,7 +17,7 @@ describe('wellBeingTrigger', () => {
     ['Как дела?'],
     ['Как жизнь?']
   ])('matches "%s" well being question and gives expected response', (incomingMessage) => {
-    const context = { request: { isOutbox: true, text: incomingMessage } };
+    const context = { request: { isOutbox: false, text: incomingMessage } };
     expect(wellBeingTrigger.condition(context)).toBe(true);
     if (wellBeingTrigger.condition(context)) {
       wellBeingTrigger.action(context);
@@ -32,7 +32,7 @@ describe('wellBeingTrigger', () => {
     ['Чем занимаешься?'],
     ['Какая цель добавления в друзья?']
   ])('does not match "%s" question', (incomingMessage) => {
-    const context = { request: { isOutbox: true, text: incomingMessage } };
+    const context = { request: { isOutbox: false, text: incomingMessage } };
     expect(wellBeingTrigger.condition(context)).toBe(false);
     if (wellBeingTrigger.condition(context)) {
       wellBeingTrigger.action(context);

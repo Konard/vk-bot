@@ -13,7 +13,7 @@ describe('gratitudeTrigger', () => {
     ['Спасибо большое!'],
     ['Спасибо'],
   ])('matches "%s" greeting trigger and gives expected response', (incomingMessage) => {
-    const context = { request: { isOutbox: true, text: incomingMessage } };
+    const context = { request: { isOutbox: false, text: incomingMessage } };
     expect(gratitudeTrigger.condition(context)).toBe(true);
     if (gratitudeTrigger.condition(context)) {
       gratitudeTrigger.action(context);
