@@ -3,7 +3,7 @@ const { enqueueMessage } = require('../outgoing-messages');
 
 // Вы что-то хотели?
 // Ты что-то хотел?
-const goalQuestionRegex = /^\s*[вт]ы что-то хотели?[\s?)\\]*$/ui;
+const goalQuestionRegex = /^[^\p{L}\?]*[вт]ы[^\p{L}\?]*что-то[^\p{L}\?]*хотели?[^\p{L}\?]*\?+[^\p{L}]*$/ui;
 
 const goalAnswers = [
   "Да, предложить дружбу.",
@@ -26,5 +26,6 @@ const goalTrigger = {
 };
 
 module.exports = {
-  goalTrigger
+  goalTrigger,
+  goalAnswers
 };

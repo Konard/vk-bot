@@ -2,7 +2,7 @@ const { hasSticker, getRandomElement } = require('../utils');
 const { enqueueMessage } = require('../outgoing-messages');
 const { DateTime } = require('luxon');
 
-const greetingRegex = /^\s*(салам|з?д[ао]ров[ао]?|ку|q+|шалом|хай|йоу?|привет(ствую|ики?)?|здравствуй(те)?|дд|добр(ый\s*(день|вечер)|ое\s*утро|ой\s*ночи|ого\s*времени\s*суток))(\s*(тебе|вам))?[\s.?!]*$/ui;
+const greetingRegex = /^[^\p{L}]*(салам|з?д[ао]ров[ао]?|ку|q+|шалом|хай|йоу?|привет(ствую|ики?)?|здравствуй(те)?|дд|добр(ый[^\p{L}]*(день|вечер)|ое[^\p{L}]*утро|ой[^\p{L}]*ночи|ого[^\p{L}]*времени[^\p{L}]*суток))([^\p{L}]*(тебе|вам))?[^\p{L}]*$/ui;
 
 const commonGreetingStickersIds = [
   72789,

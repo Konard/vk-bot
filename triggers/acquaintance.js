@@ -2,7 +2,7 @@ const { getRandomElement } = require('../utils');
 const { enqueueMessage } = require('../outgoing-messages');
 const { DateTime } = require('luxon');
 
-const acquaintedRegex = /^\s*(мы\s*)?знакомы(\s*с\s*(тобой|вами))?\s*\?[)\\]*$/ui;
+const acquaintedRegex = /^[^\p{L}\?]*(мы[^\p{L}\?]*)?знакомы([^\p{L}\?]*с[^\p{L}\?]*(тобой|вами))?[^\p{L}\?]*\?+[^\p{L}]*$/ui;
 
 const acquaintanceSuggestions = [
   "Ещё нет. Однако это просто исправить, я программист. А ты? (можно на ты?)",
@@ -46,5 +46,6 @@ const acquaintanceTrigger = {
 };
 
 module.exports = {
-  acquaintanceTrigger
+  acquaintanceTrigger,
+  acquaintanceSuggestions
 };

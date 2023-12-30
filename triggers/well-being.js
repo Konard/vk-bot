@@ -1,9 +1,7 @@
 const { getRandomElement } = require('../utils');
 const { enqueueMessage } = require('../outgoing-messages');
 
-// Как дела?
-// Как жизнь?
-const wellBeingQuestionRegex = /^\s*Как (дела|жизнь)[\s?)\\]*$/ui;
+const wellBeingQuestionRegex = /^[^\p{L}\?]*Как[^\p{L}\?]*(дела|жизнь)[^\p{L}\?]*\?+[^\p{L}]*$/ui;
 
 const wellBeingAnswers = [
   "Хорошо",

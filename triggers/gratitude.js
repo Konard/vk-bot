@@ -3,7 +3,7 @@ const { enqueueMessage } = require('../outgoing-messages');
 const { stickers } = require('../stickers');
 
 // TODO: СПАСИБО КОНСТАНТИН!!!!
-const gratitudeRegex = /^[\s🙂]*(благодарю|(огромное|большое\s*)?спасибо(\s*(огромное|большое))?)[\s)\\♥.!☺😊👍✅🙏🤝]*$/ui;
+const gratitudeRegex = /^[^\p{L}]*(благодарю|(огромное|большое[^\p{L}]*)?спасибо([^\p{L}]*(огромное|большое))?)[^\p{L}]*$/ui;
 
 const incomingGratitudeStickersIds = [
   6342,
