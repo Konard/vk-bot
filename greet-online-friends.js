@@ -7,13 +7,7 @@ const token = require('fs').readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
 
 async function greetOnlineFriends() {
-  let offset = 0;
-
-  while (true) {
-    if (offset >= 10000) {
-      break;
-    }
-
+  for (let offset = 0; offset < 10000; offset += 5000) {
     const response = await vk.api.friends.get({
       fields: ['online'],
       count: 5000,
@@ -51,8 +45,6 @@ async function greetOnlineFriends() {
         }
       });
     }
-
-    offset += 5000;
   }
 }
 
