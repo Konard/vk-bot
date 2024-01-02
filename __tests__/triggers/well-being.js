@@ -1,12 +1,6 @@
-const { wellBeingTrigger } = require('../../triggers/well-being');
+const { wellBeingTrigger, wellBeingAnswers } = require('../../triggers/well-being');
 const { enqueueMessage } = require('../../outgoing-messages');
 jest.mock('../../outgoing-messages');
-
-const expectedOutgoingMessages = [
-  'Хорошо',
-  'Всё хорошо'
-];
-const expectedOutgoingMessagesRegex = new RegExp(expectedOutgoingMessages.join('|'), "i");
 
 describe('wellBeingTrigger', () => {
   beforeEach(() => {
@@ -26,7 +20,7 @@ describe('wellBeingTrigger', () => {
     expect(enqueueMessage).toHaveBeenCalled();
     const callArg = enqueueMessage.mock.calls[0][0];
     expect(callArg).toEqual(expect.objectContaining(context));
-    expect(callArg.response.message).toMatch(expectedOutgoingMessagesRegex);
+    expect(wellBeingAnswers).toContain(callArg.response.message);
   });
 
   test.each([

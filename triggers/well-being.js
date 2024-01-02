@@ -25,5 +25,6 @@ const wellBeingTrigger = {
 };
 
 module.exports = {
-  wellBeingTrigger
+  wellBeingTrigger,
+  wellBeingAnswers
 };
