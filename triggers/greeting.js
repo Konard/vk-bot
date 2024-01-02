@@ -14,7 +14,7 @@ const commonGreetingStickersIds = [
   69175,
   4639,
   14409,
-  21,
+  // 21,
   75306,
   73151,
   77664,
