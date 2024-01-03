@@ -3,10 +3,7 @@ const { sleep } = require('./utils');
 const token = require('fs').readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
 
-const readline = require('readline').createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+const targetFriendsCount = Number(process.argv[2]) || 0;
 
 const sourceCommunityId = 54530371;
 
@@ -16,14 +13,6 @@ const sex = {
 
 const requestsLimit = 10000; // Maximum number of requests you expect
 const requestsSegmentSize = 1000; // Number of requests fetched per segment
-
-const question = (prompt) => {
-  return new Promise((resolve) => {
-    readline.question(prompt, (answer) => {
-      resolve(answer);
-    });
-  });
-};
 
 async function fetchRequests(segment, offset) {
   const req = await vk.api.friends.getRequests({ out: 1, count: segment, offset: offset });
@@ -103,15 +92,12 @@ async function sendFriendRequest(userId) {
 let messagesHandlerInterval;
 
 async function main() {
+  if (targetFriendsCount <= 0) {
+    return;
+  }
+
   const requestsIds = await fetchAllRequests();
   let onlineFollowersIds = [];
-
-  const numberOfFriendsToAdd = await question('How many friends to add? ');
-  const targetFriendsCount = parseInt(numberOfFriendsToAdd);
-
-  // Input is finished
-  readline.close();
-  readline.removeAllListeners();
 
   while (onlineFollowersIds.length < targetFriendsCount) {
     onlineFollowersIds = [...onlineFollowersIds, ...await getOnlineFollowers(sourceCommunityId, requestsIds)];
