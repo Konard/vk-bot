@@ -1,0 +1,33 @@
+const { getRandomElement } = require('../utils');
+const { enqueueMessage } = require('../outgoing-messages');
+
+// Кто ты?
+const questionRegex = /^[^\p{L}\?]*кто[^\p{L}\?]*ты[^\p{L}\?]*\?+[^\p{L}]*$/ui;
+
+const answers = [
+  "Я программист, а ты?",
+];
+
+const trigger = {
+  name: "WhoSingularTrigger",
+  condition: (context) => {
+    return !context?.request?.isOutbox
+        && questionRegex.test(context.request.text);
+  },
+  action: (context) => {
+    if (context?.state) {
+      context.state.peerPrefersDistance = false;
+    }
+    enqueueMessage({
+      ...context,
+      response: {
+        message: getRandomElement(answers)
+      }
+    });
+  }
+};
+
+module.exports = {
+  trigger,
+  answers
+};

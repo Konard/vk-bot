@@ -2,21 +2,28 @@
 const { VK } = require('vk-io');
 const { DateTime } = require('luxon');
 const { handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages');
+const { acquaintanceTrigger } = require('./triggers/acquaintance');
+const { attachmentsTrigger } = require('./triggers/attachments');
+const { goalTrigger } = require('./triggers/goal');
+const { gratitudeTrigger } = require('./triggers/gratitude');
 const { greetingTrigger } = require('./triggers/greeting');
 const { undefinedQuestionTrigger } = require('./triggers/undefined-question');
-const { acquaintanceTrigger } = require('./triggers/acquaintance');
-const { gratitudeTrigger } = require('./triggers/gratitude');
-const { attachmentsTrigger } = require('./triggers/attachments');
+const { wellBeingTrigger } = require('./triggers/well-being')
+
 const { hasSticker, getRandomElement, sleep } = require('./utils');
 
 const peers = {}; // TODO: keep state about what triggers then last triggered for each peer
 
 const triggers = [
+  acquaintanceTrigger,
+  attachmentsTrigger,
+  goalTrigger,
+  gratitudeTrigger,
   greetingTrigger,
   undefinedQuestionTrigger,
-  acquaintanceTrigger,
-  gratitudeTrigger,
-  attachmentsTrigger
+  wellBeingTrigger,
+  require('./triggers/who-multiple').trigger,
+  require('./triggers/who-singular').trigger,
 ];
 
 const token = require('fs').readFileSync('token', 'utf-8').trim();
