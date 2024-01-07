@@ -7,6 +7,9 @@ const deletedFriendsRequestsCount = Number(process.argv[2]) || 0;
 
 async function deleteFriendRequests() {
   try {
+    if (deletedFriendsRequestsCount <= 0) {
+      return;
+    }
     const requests = await vk.api.friends.getRequests({ count: deletedFriendsRequestsCount, out: 1, need_viewed: 1 });
     for (let i = 0; i < requests.items.length; i++) {
       await vk.api.friends.delete({ user_id: requests.items[i] });
