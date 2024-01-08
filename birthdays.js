@@ -1,6 +1,6 @@
 const { VK } = require('vk-io');
 const { getRandomElement } = require('./utils');
-const { randomInRange, handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages');
+const { randomInRange, handleOutgoingMessage, enqueueMessage, queue } = require('./outgoing-messages');
 const token = require('fs').readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
 
@@ -83,6 +83,22 @@ async function congratulateFriendsWithBD() {
   }
 }
 
-congratulateFriendsWithBD().catch(console.error);
+const finished = false;
+
+congratulateFriendsWithBD().then(() => { 
+  finished = true
+}).catch((e) => {
+  finished = true;
+  console.error(e);
+});
 
 const messagesHandlerInterval = setInterval(handleOutgoingMessage, 1000);
+
+const finalizerInterval = setInterval(() => {
+  if (finished && queue.length == 0) {
+    setTimeout(() => {
+      clearInterval(messagesHandlerInterval);
+    }, 10000);
+    clearInterval(finalizerInterval);
+  }
+}, 1000);

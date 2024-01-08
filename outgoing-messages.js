@@ -93,6 +93,7 @@ const handleOutgoingMessage = async () => {
 };
 
 module.exports = {
+  queue,
   tickSize,
   defaultTypingSpeedCharactersPerMinute,
   defaultTypingSpeedCharactersPerSecond,
