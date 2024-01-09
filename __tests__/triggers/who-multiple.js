@@ -12,6 +12,7 @@ describe(triggerDescription, () => {
   test.each([
     ['Кто вы?'],
     ['Вы кто?'],
+    ['А вы кто ?'],
   ])(`matches "%s" ${triggerDescription} and gives expected response`, (incomingMessage) => {
     const context = { request: { isOutbox: false, text: incomingMessage } };
     expect(trigger.condition(context)).toBe(true);

@@ -1,7 +1,7 @@
 const { getRandomElement } = require('../utils');
 const { enqueueMessage } = require('../outgoing-messages');
 
-const questionRegex = /^[^\p{L}\?]*(кто[^\p{L}\?]*ты|ты[^\p{L}\?]*кто)[^\p{L}\?]*\?+[^\p{L}]*$/ui;
+const questionRegex = /^[^\p{L}\?]*(а)?[^\p{L}\?]*(кто[^\p{L}\?]*ты|ты[^\p{L}\?]*кто)[^\p{L}\?]*\?+[^\p{L}]*$/ui;
 
 const answers = [
   "Я программист, а ты?",
