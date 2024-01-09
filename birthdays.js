@@ -83,7 +83,7 @@ async function congratulateFriendsWithBD() {
   }
 }
 
-const finished = false;
+let finished = false;
 
 congratulateFriendsWithBD().then(() => { 
   finished = true
