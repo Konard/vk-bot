@@ -6,6 +6,9 @@ const { sleep } = require('./utils');
 const token = require('fs').readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
 
+const maxFriendsToGreet = Number(process.argv[2]) || 0;
+const greetedFriends = 0;
+
 async function greetOnlineFriends() {
   for (let offset = 0; offset < 10000; offset += 5000) {
     const response = await vk.api.friends.get({
@@ -44,10 +47,17 @@ async function greetOnlineFriends() {
           user_id: friend.id,
         }
       });
+
+      greetedFriends++;
+      if (greetedFriends >= maxFriendsToGreet) {
+        break;
+      }
     }
   }
 }
 
-greetOnlineFriends().catch(console.error);
+if (maxFriendsToGreet > 0) {
+  greetOnlineFriends().catch(console.error);
 
-const messagesHandlerInterval = setInterval(handleOutgoingMessage, 1000);
+  const messagesHandlerInterval = setInterval(handleOutgoingMessage, 1000);
+}
