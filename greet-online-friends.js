@@ -7,7 +7,7 @@ const token = require('fs').readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
 
 const maxFriendsToGreet = Number(process.argv[2]) || 0;
-const greetedFriends = 0;
+let greetedFriends = 0;
 
 async function greetOnlineFriends() {
   for (let offset = 0; offset < 10000; offset += 5000) {
