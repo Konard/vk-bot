@@ -49,6 +49,7 @@ async function greetOnlineFriends() {
       });
 
       greetedFriends++;
+      console.log('greetedFriends:', greetedFriends);
       if (greetedFriends >= maxFriendsToGreet) {
         break;
       }
