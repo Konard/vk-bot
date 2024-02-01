@@ -19,7 +19,6 @@ async function deleteFriendRequests() {
     await sleep(3000);
     console.log('suggestions: ', suggestions.length);
     const candidates = suggestions.filter(s => s.can_post && s.can_see_all_posts && s.can_write_private_message && s.can_access_closed);
-    // console.log(candidates);
     console.log('candidates: ', candidates.length);
     const candidatesWithMutualFriendsCount = [];
     for (const candidate of candidates) {
@@ -27,24 +26,17 @@ async function deleteFriendRequests() {
       await sleep(3000);
       candidatesWithMutualFriendsCount.push([candidate.id, mutualFriendsCount]);
     }
-    // console.log('candidatesWithMutualFriendsCount', candidatesWithMutualFriendsCount);
-
     candidatesWithMutualFriendsCount.sort((a, b) => b[1] - a[1]);
-
     console.log('candidatesWithMutualFriendsCount', candidatesWithMutualFriendsCount);
-
-    // let acceptedSuggestions = 0;
-
     for (const candidate of candidatesWithMutualFriendsCount) {
       const candidateId = candidate[0];
       const candidateMutualFriends = candidate[1];
-      (await vk.api.friends.add({ user_id: candidateId }));
-      await sleep(3000);
-      console.log('Friend request to', candidateId, 'sent.');
-      // acceptedSuggestions++;
       if (candidateMutualFriends <= minimumMutualFriendsToAcceptSuggestion) {
         break;
       }
+      (await vk.api.friends.add({ user_id: candidateId }));
+      await sleep(3000);
+      console.log('Friend request to', candidateId, 'sent.');
     }
   } catch (error) {
     console.error(error);
