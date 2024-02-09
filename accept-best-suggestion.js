@@ -12,7 +12,7 @@ async function deleteFriendRequests() {
     if (minimumMutualFriendsToAcceptSuggestion <= 0) {
       return;
     }
-    const count = 500;
+    const count = 100;
     var currentUserId = (await vk.api.users.get())[0].id;
     console.log('currentUserId', currentUserId);
     const suggestions = (await vk.api.friends.getSuggestions({ filter: "mutual", fields: "online,can_post,can_see_all_posts,can_write_private_message,contacts,counters", count, offset: 0 })).items;
