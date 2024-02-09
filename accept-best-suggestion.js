@@ -3,13 +3,13 @@ const { VK } = require('vk-io');
 const token = require('fs').readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
 
-const minimumMutualFriendsToAcceptSuggestion = Number(process.argv[2]) || 0;
+const maximumSuggestionsToAccept = Number(process.argv[2]) || 0;
 
-console.log('minimumMutualFriendsToAcceptSuggestion', minimumMutualFriendsToAcceptSuggestion);
+console.log('maximumSuggestionsToAccept', maximumSuggestionsToAccept);
 
 async function deleteFriendRequests() {
   try {
-    if (minimumMutualFriendsToAcceptSuggestion <= 0) {
+    if (maximumSuggestionsToAccept <= 0) {
       return;
     }
     const count = 100;
@@ -28,15 +28,17 @@ async function deleteFriendRequests() {
     }
     candidatesWithMutualFriendsCount.sort((a, b) => b[1] - a[1]);
     console.log('candidatesWithMutualFriendsCount', candidatesWithMutualFriendsCount);
+    const suggestionsAccepted = 0;
     for (const candidate of candidatesWithMutualFriendsCount) {
-      const candidateId = candidate[0];
-      const candidateMutualFriends = candidate[1];
-      if (candidateMutualFriends <= minimumMutualFriendsToAcceptSuggestion) {
+      if (candidateMutualFriends >= maximumSuggestionsToAccept) {
         break;
       }
+      const candidateId = candidate[0];
+      const candidateMutualFriends = candidate[1];
       (await vk.api.friends.add({ user_id: candidateId }));
       await sleep(3000);
       console.log('Friend request to', candidateId, 'sent.');
+      suggestionsAccepted++;
     }
   } catch (error) {
     console.error(error);
