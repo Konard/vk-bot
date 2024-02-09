@@ -28,9 +28,9 @@ async function deleteFriendRequests() {
     }
     candidatesWithMutualFriendsCount.sort((a, b) => b[1] - a[1]);
     console.log('candidatesWithMutualFriendsCount', candidatesWithMutualFriendsCount);
-    const suggestionsAccepted = 0;
+    let suggestionsAccepted = 0;
     for (const candidate of candidatesWithMutualFriendsCount) {
-      if (candidateMutualFriends >= maximumSuggestionsToAccept) {
+      if (suggestionsAccepted >= maximumSuggestionsToAccept) {
         break;
       }
       const candidateId = candidate[0];
