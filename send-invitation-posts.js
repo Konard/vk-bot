@@ -23,9 +23,7 @@ const postMessage = `Я программист.
 
 Принимаю все заявки в друзья.
 
-Ждать потребуется не более 10 минут.
-
-А ещё дружить хочет https://vk.com/backend_duty`;
+Ждать потребуется не более 10 минут.`;
 
 async function sendInvitationPosts() {
   try {
