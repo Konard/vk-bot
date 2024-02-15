@@ -20,15 +20,19 @@ const communitiesIds = [
 ];
 
 const postMessage = `Я программист.
-
 Принимаю все заявки в друзья.
+Ждать потребуется не более 10 минут.
 
-Ждать потребуется не более 10 минут.`;
+Ещё рекомендую подружиться с моей подругой https://vk.com/oleviia_cyber
+И обязательно послушайте её музыку.`;
+
+const neuronalMiracleAudio = 'audio-2001064727_125064727';
+const daysOfMiraclesAudio = 'audio-2001281499_119281499';
 
 async function sendInvitationPosts() {
   try {
     for (const communityId of communitiesIds) {
-      const response = await vk.api.wall.post({ owner_id: '-' + communityId.toString(), message: postMessage })
+      const response = await vk.api.wall.post({ owner_id: '-' + communityId.toString(), message: postMessage, attachments: `${neuronalMiracleAudio},${daysOfMiraclesAudio}` })
       console.log('Post is sent to', communityId, 'community.');
       await sleep(5000);
     }
