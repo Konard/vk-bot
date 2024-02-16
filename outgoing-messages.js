@@ -1,11 +1,38 @@
 const queue = [];
 
-const tickSize = 1000;
+const tickSize = 1000; // ms
 
-const defaultTypingSpeedCharactersPerMinute = 300;
-const defaultTypingSpeedCharactersPerSecond = defaultTypingSpeedCharactersPerMinute / 60;
+const typingSpeedInCharactersPerMinute = 400;
+const typingSpeedInCharactersPerSecond = typingSpeedInCharactersPerMinute / 60;
 
-const calculateMinimumSecondsToType = (text, speed = defaultTypingSpeedCharactersPerSecond) => {
+const typingInterval = 5;
+
+const minTicksToRead = 2;
+const maxTicksToRead = 4;
+
+const minTicksToTyping = 6;
+const maxTicksToTyping = 8;
+
+const minTicksToSticker = 6;
+const maxTicksToSticker = 8;
+
+const minTicksToReply = 10;
+const minTicksToReply = 14;
+
+if (maxTicksToRead > minTicksToTyping)
+{
+  throw new Error('maxSecondsBeforeRead > minSecondsToStartTyping')
+}
+if (maxTicksToRead > minTicksToSticker)
+{
+  throw new Error('maxSecondsBeforeRead > minSecondsToSendSticker')
+}
+if (maxTicksToTyping > minTicksToReply)
+{
+  throw new Error('maxSecondsToStartTyping > minSecondsToReply')
+}
+
+const calculateMinimumSecondsToType = (text, speed = typingSpeedInCharactersPerSecond) => {
   return Math.floor(text.length / speed);
 };
 
@@ -19,14 +46,26 @@ function randomInteger() {
   return randomInRange(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
 }
 
+function activateTyping(context) {
+  const peerId = context?.request?.peerId;
+  if (peerId && context.vk) {
+    console.log('Activating typing status...');
+    await context.vk.api.messages.setActivity({
+      peer_id: peerId,
+      type: 'typing'
+    });
+    console.log('Typing status is activated.');
+  }
+}
+
 function markMessagesAsRead(options) {
   if (!options?.vk) {
     return;
   }
-  const timeout = randomInRange(2000, 4000);
+  const timeout = randomInRange(minTicksToRead * tickSize, maxTicksToRead * tickSize);
   console.log(`Messages before ${options.request.id} for user ${options.request.senderId} will be marked as read in ${timeout}ms.`);
-  setTimeout(() => {
-    options.vk.api.messages.markAsRead({
+  setTimeout(async () => {
+    await options.vk.api.messages.markAsRead({
       peer_id: options.request.senderId,
       start_message_id: options.request.id
     }).catch(console.error);
@@ -34,14 +73,18 @@ function markMessagesAsRead(options) {
   }, timeout);
 }
 
+function disableTypingIndication(options) {
+  options.ticksToTyping = Number.MAX_SAFE_INTEGER;
+}
+
 function enqueueMessage(options) {
   let defaultOptions = {
-    ticksToTyping: randomInRange(5, 12),
-    waitTicks: randomInRange(8, 18),
+    ticksToTyping: randomInRange(minTicksToTyping, maxTicksToTyping),
+    waitTicks: randomInRange(minTicksToReply, minTicksToReply),
   };
   if (options?.response?.sticker_id) {
-    defaultOptions.ticksToTyping = 10;
-    defaultOptions.waitTicks = randomInRange(3, 6);
+    disableTypingIndication(options);
+    defaultOptions.waitTicks = randomInRange(minTicksToSticker, maxTicksToSticker);
   } else if (options?.response?.message) {
     defaultOptions.waitTicks += calculateMinimumSecondsToType(options?.response?.message);
   }
@@ -71,17 +114,9 @@ const handleOutgoingMessage = async () => {
     console.log('context.ticksToTyping', context.ticksToTyping);
     console.log('ticksPassed', ticksPassed);
     console.log('context.ticksToTyping >= ticksPassed', ticksPassed >= context.ticksToTyping);
-    console.log('((ticksPassed - context.ticksToTyping) % 5 == 0)', ((ticksPassed - context.ticksToTyping) % 5 == 0));
-    if (ticksPassed >= context.ticksToTyping && ((ticksPassed - context.ticksToTyping) % 5 == 0)) {
-      const peerId = context?.request?.peerId;
-      if (peerId && context.vk) {
-        console.log('typing status starting request');
-        await context.vk.api.messages.setActivity({
-          peer_id: peerId,
-          type: 'typing'
-        });
-        console.log('typing status request completed');
-      }
+    console.log('((ticksPassed - context.ticksToTyping) % typingInterval == 0)', ((ticksPassed - context.ticksToTyping) % typingInterval == 0));
+    if (ticksPassed >= context.ticksToTyping && ((ticksPassed - context.ticksToTyping) % typingInterval == 0)) {
+      await activateTyping(context);
     }
     console.log('context.waitTicksLeft', context.waitTicksLeft);
     context.waitTicksLeft--;
@@ -92,7 +127,7 @@ const handleOutgoingMessage = async () => {
   console.log('context.response', context.response);
   try {
     if (context.request) {
-      await context.request.send(context.response); // send response within the request's context
+      await context.request.send(context.response);
     } else if (context.vk) {
       await context.vk.api.messages.send({
         random_id: Math.random(),
@@ -102,6 +137,10 @@ const handleOutgoingMessage = async () => {
   } catch (e) {
     if (e.code === 902) { // Can't send messages to this user due to their privacy settings
       return; // This error requires to do nothing.
+      const peerId = context?.request?.peerId;
+      console.log(`${peerId} peer does not allow to send messages to him.`)
+      // TODO: unfriend or block user
+      // TODO: or make a script that check all such users, and unfriends them or blocks them
     } else {
       throw e;
     }
@@ -111,8 +150,8 @@ const handleOutgoingMessage = async () => {
 module.exports = {
   queue,
   tickSize,
-  defaultTypingSpeedCharactersPerMinute,
-  defaultTypingSpeedCharactersPerSecond,
+  typingSpeedInCharactersPerMinute,
+  typingSpeedInCharactersPerSecond,
   calculateMinimumSecondsToType,
   randomInRange,
   handleOutgoingMessage,
