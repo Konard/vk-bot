@@ -23,7 +23,8 @@ function markMessagesAsRead(options) {
   if (!options?.vk) {
     return;
   }
-  const interval = randomInRange(2, 4) * 1000;
+  const interval = randomInRange(2000, 4000);
+  console.log(`Messages before ${options.request.id} for user ${options.request.senderId} will be marked as read in ${interval}ms.`);
   setInterval(() => {
     options.vk.api.messages.markAsRead({
       peer_id: options.request.senderId,
@@ -40,7 +41,7 @@ function enqueueMessage(options) {
   };
   if (options?.response?.sticker_id) {
     defaultOptions.ticksToTyping = 10;
-    defaultOptions.waitTicks = randomInRange(2, 5);
+    defaultOptions.waitTicks = randomInRange(3, 6);
   } else if (options?.response?.message) {
     defaultOptions.waitTicks += calculateMinimumSecondsToType(options?.response?.message);
   }
