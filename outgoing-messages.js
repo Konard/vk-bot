@@ -23,15 +23,15 @@ function markMessagesAsRead(options) {
   if (!options?.vk) {
     return;
   }
-  const interval = randomInRange(2000, 4000);
-  console.log(`Messages before ${options.request.id} for user ${options.request.senderId} will be marked as read in ${interval}ms.`);
-  setInterval(() => {
+  const timeout = randomInRange(2000, 4000);
+  console.log(`Messages before ${options.request.id} for user ${options.request.senderId} will be marked as read in ${timeout}ms.`);
+  setTimeout(() => {
     options.vk.api.messages.markAsRead({
       peer_id: options.request.senderId,
       start_message_id: options.request.id
     }).catch(console.error);
     console.log(`Messages before ${options.request.id} for user ${options.request.senderId} are marked as read.`);
-  }, interval);
+  }, timeout);
 }
 
 function enqueueMessage(options) {
