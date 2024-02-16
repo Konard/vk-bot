@@ -49,11 +49,9 @@ vk.updates.on(['message_new'], (request) => {
 
   const state = peers[request.peerId];
   console.log('state', state);
-  let reactionTriggered = false;
   for (const trigger of triggers) {
     if (!trigger.condition || trigger.condition({ vk, request, state })) {
       trigger.action({ vk, request, state });
-      reactionTriggered = true;
       if (trigger.name) {
         const peer = peers[request.peerId] ??= {};
         const triggers = peer.triggers ??= {};
@@ -62,13 +60,6 @@ vk.updates.on(['message_new'], (request) => {
         console.log('peers', JSON.stringify(peers, null, 2));
       }
     }
-  }
-  if (reactionTriggered) {
-    const userId = request.senderId; // The user who sent a message
-    vk.api.messages.markAsRead({
-      peer_id: userId,
-      start_message_id: request.id // Get the id of the new message
-    }).catch(console.error);
   }
 });
 
