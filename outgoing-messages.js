@@ -17,19 +17,19 @@ const minTicksToSticker = 6;
 const maxTicksToSticker = 8;
 
 const minTicksToReply = 10;
-const minTicksToReply = 14;
+const maxTicksToReply = 14;
 
 if (maxTicksToRead > minTicksToTyping)
 {
-  throw new Error('maxSecondsBeforeRead > minSecondsToStartTyping')
+  throw new Error('maxTicksToRead > minTicksToTyping')
 }
 if (maxTicksToRead > minTicksToSticker)
 {
-  throw new Error('maxSecondsBeforeRead > minSecondsToSendSticker')
+  throw new Error('maxTicksToRead > minTicksToSticker')
 }
 if (maxTicksToTyping > minTicksToReply)
 {
-  throw new Error('maxSecondsToStartTyping > minSecondsToReply')
+  throw new Error('maxTicksToTyping > minTicksToReply')
 }
 
 const calculateMinimumSecondsToType = (text, speed = typingSpeedInCharactersPerSecond) => {
@@ -80,7 +80,7 @@ function disableTypingIndication(options) {
 function enqueueMessage(options) {
   let defaultOptions = {
     ticksToTyping: randomInRange(minTicksToTyping, maxTicksToTyping),
-    waitTicks: randomInRange(minTicksToReply, minTicksToReply),
+    waitTicks: randomInRange(minTicksToReply, maxTicksToReply),
   };
   if (options?.response?.sticker_id) {
     disableTypingIndication(options);
