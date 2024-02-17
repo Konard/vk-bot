@@ -46,7 +46,7 @@ function randomInteger() {
   return randomInRange(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
 }
 
-function activateTyping(context) {
+async function activateTyping(context) {
   const peerId = context?.request?.peerId;
   if (peerId && context.vk) {
     console.log('Activating typing status...');
