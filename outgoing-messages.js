@@ -59,7 +59,7 @@ async function activateTyping(context) {
 }
 
 function markMessagesAsRead(options) {
-  if (!options?.vk) {
+  if (!options?.vk || !options?.request) {
     return;
   }
   const timeout = randomInRange(minTicksToRead * tickSize, maxTicksToRead * tickSize);
