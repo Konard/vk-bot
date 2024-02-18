@@ -27,10 +27,29 @@ const postMessage = `Я программист.
 const neuronalMiracleAudio = 'audio-2001064727_125064727';
 const daysOfMiraclesAudio = 'audio-2001281499_119281499';
 
+const postsSearchRequest = `Я программист.`;
+
 async function sendInvitationPosts() {
   try {
     for (const communityId of communitiesIds) {
-      const response = await vk.api.wall.post({ owner_id: '-' + communityId.toString(), message: postMessage, attachments: `${neuronalMiracleAudio},${daysOfMiraclesAudio}` })
+      const ownerId = '-' + communityId.toString();
+
+      const previousPosts = await vk.api.wall.search({ owner_id: ownerId, query: postsSearchRequest, count: 5 });
+      console.log(`Found ${previousPosts.count} previous posts.`);
+      console.log(previousPosts);
+      await sleep(5000);
+
+      for (const post of previousPosts.items) {
+        console.log(post.text.includes(postsSearchRequest))
+        if (!post.text.includes(postsSearchRequest)) {
+          continue;
+        }
+        const response = await vk.api.wall.delete({ owner_id: ownerId, post_id: post.id });
+        console.log(`Post ${post.id} is deleted.`);
+        await sleep(5000);
+      }
+
+      const response = await vk.api.wall.post({ owner_id: ownerId, message: postMessage, attachments: `${neuronalMiracleAudio},${daysOfMiraclesAudio}` })
       console.log('Post is sent to', communityId, 'community.');
       await sleep(5000);
     }
