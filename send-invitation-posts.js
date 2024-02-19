@@ -22,7 +22,7 @@ const communitiesIds = [
 const postMessage = `Я программист.
 Принимаю все заявки в друзья. Ждать потребуется не более 10 минут.
 
-И если тебе нравится прикреплённая музыка, то рекомендую подружиться с https://vk.com/oleviia_cyber`;
+И если тебе нравится прикреплённая музыка, то рекомендую подписаться на группу https://vk.com/oleviia`;
 
 const neuronalMiracleAudio = 'audio-2001064727_125064727';
 const daysOfMiraclesAudio = 'audio-2001281499_119281499';
