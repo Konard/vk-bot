@@ -34,19 +34,25 @@ async function sendInvitationPosts() {
     for (const communityId of communitiesIds) {
       const ownerId = '-' + communityId.toString();
 
-      const previousPosts = await vk.api.wall.search({ owner_id: ownerId, query: postsSearchRequest, count: 5 });
+      const previousPosts = await vk.api.wall.search({ owner_id: ownerId, query: postsSearchRequest, count: 10 });
       console.log(`Found ${previousPosts.count} previous posts.`);
       console.log(previousPosts);
       await sleep(5000);
 
       for (const post of previousPosts.items) {
         console.log(post.text.includes(postsSearchRequest))
-        if (!post.text.includes(postsSearchRequest)) {
+        if (!post.can_delete || !post.text.includes(postsSearchRequest)) {
           continue;
         }
-        const response = await vk.api.wall.delete({ owner_id: ownerId, post_id: post.id });
-        console.log(`Post ${post.id} is deleted.`);
-        await sleep(5000);
+        try {
+          const response = await vk.api.wall.delete({ owner_id: ownerId, post_id: post.id });
+          console.log(`Post ${post.id} is deleted.`);
+          await sleep(5000);
+        } catch (e) {
+          if (e.code != 100) { // Ignore error: One of the parameters specified was missing or invalid: no post with this post_id
+            throw e;
+          }
+        }
       }
 
       const response = await vk.api.wall.post({ owner_id: ownerId, message: postMessage, attachments: `${neuronalMiracleAudio},${daysOfMiraclesAudio}` })
