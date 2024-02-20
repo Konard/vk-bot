@@ -36,11 +36,11 @@ async function sendInvitationPosts() {
 
       const previousPosts = await vk.api.wall.search({ owner_id: ownerId, query: postsSearchRequest, count: 10 });
       console.log(`Found ${previousPosts.count} previous posts.`);
-      console.log(previousPosts);
+      // console.log(previousPosts);
       await sleep(5000);
 
       for (const post of previousPosts.items) {
-        console.log(post.text.includes(postsSearchRequest))
+        // console.log(post.text.includes(postsSearchRequest))
         if (!post.can_delete || !post.text.includes(postsSearchRequest)) {
           continue;
         }

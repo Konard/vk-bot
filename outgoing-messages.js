@@ -111,14 +111,14 @@ const handleOutgoingMessage = async () => {
   if (context.waitTicksLeft > 0) // we have a message to send - wait for the set interval
   {
     const ticksPassed = context.waitTicks - context.waitTicksLeft;
-    console.log('context.ticksToTyping', context.ticksToTyping);
+    // console.log('context.ticksToTyping', context.ticksToTyping);
     console.log('ticksPassed', ticksPassed);
-    console.log('context.ticksToTyping >= ticksPassed', ticksPassed >= context.ticksToTyping);
-    console.log('((ticksPassed - context.ticksToTyping) % typingInterval == 0)', ((ticksPassed - context.ticksToTyping) % typingInterval == 0));
+    // console.log('context.ticksToTyping >= ticksPassed', ticksPassed >= context.ticksToTyping);
+    // console.log('((ticksPassed - context.ticksToTyping) % typingInterval == 0)', ((ticksPassed - context.ticksToTyping) % typingInterval == 0));
     if (ticksPassed >= context.ticksToTyping && ((ticksPassed - context.ticksToTyping) % typingInterval == 0)) {
       await activateTyping(context);
     }
-    console.log('context.waitTicksLeft', context.waitTicksLeft);
+    // console.log('context.waitTicksLeft', context.waitTicksLeft);
     context.waitTicksLeft--;
     return;
   }
