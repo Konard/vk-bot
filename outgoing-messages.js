@@ -144,7 +144,7 @@ const handleOutgoingMessage = async () => {
     } if (e.code === 7) { // Permission to perform this action is denied
       return; // This error requires to do nothing.
       const peerId = context?.request?.peerId;
-      console.log(`${peerId} peer is deactivated (blocker or deleted).`);
+      console.log(`${peerId} peer is deactivated (blocked or deleted).`);
       // TODO: unfriend
     } else {
       throw e;
