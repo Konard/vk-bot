@@ -138,9 +138,14 @@ const handleOutgoingMessage = async () => {
     if (e.code === 902) { // Can't send messages to this user due to their privacy settings
       return; // This error requires to do nothing.
       const peerId = context?.request?.peerId;
-      console.log(`${peerId} peer does not allow to send messages to him.`)
+      console.log(`${peerId} peer does not allow to send messages to him.`);
       // TODO: unfriend or block user
       // TODO: or make a script that check all such users, and unfriends them or blocks them
+    } if (e.code === 7) { // Permission to perform this action is denied
+      return; // This error requires to do nothing.
+      const peerId = context?.request?.peerId;
+      console.log(`${peerId} peer is deactivated (blocker or deleted).`);
+      // TODO: unfriend
     } else {
       throw e;
     }
