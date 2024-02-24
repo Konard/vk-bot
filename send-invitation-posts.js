@@ -34,7 +34,7 @@ async function sendInvitationPosts() {
     for (const communityId of communitiesIds) {
       const ownerId = '-' + communityId.toString();
 
-      const previousPosts = await vk.api.wall.search({ owner_id: ownerId, query: postsSearchRequest, count: 10 });
+      const previousPosts = await vk.api.wall.search({ owner_id: ownerId, query: postsSearchRequest, count: 15 });
       console.log(`Found ${previousPosts.count} previous posts.`);
       // console.log(previousPosts);
       await sleep(5000);
