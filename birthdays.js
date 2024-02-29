@@ -31,7 +31,15 @@ const birthdayCongratulations = [
   `Самый душевный подарок — это знания, поэтому на твой день рождения, я предлагаю тебе в качестве подарка ответ на вопрос по программированию и автоматизации.
 
 С днём Рождения! 🎈`,
-]
+];
+
+const neuronalMiracleAudio = 'audio-2001064727_125064727';
+const daysOfMiraclesAudio = 'audio-2001281499_119281499';
+
+const audioAttachments = [
+  neuronalMiracleAudio,
+  daysOfMiraclesAudio
+];
 
 async function congratulateFriendsWithBD() {
   let offset = 0;
@@ -72,7 +80,8 @@ async function congratulateFriendsWithBD() {
             vk,
             response: {
               user_id: friend.id,
-              message: getRandomElement(birthdayCongratulations)
+              message: getRandomElement(birthdayCongratulations),
+              attachment: getRandomElement(audioAttachments)
             }
           });
         }
