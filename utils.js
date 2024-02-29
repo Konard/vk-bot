@@ -27,7 +27,7 @@ async function executeTrigger(trigger, vk, request, state) {
       const triggers = peer.triggers ??= {};
       const triggerState = triggers[trigger.name] ??= {};
       triggerState.lastTriggered = DateTime.now();
-      console.log('peers', JSON.stringify(peers, null, 2));
+      console.log('state', JSON.stringify(state, null, 2));
     }
   }
 }
