@@ -1,6 +1,5 @@
 // const fs = require('fs');
 const { VK } = require('vk-io');
-const { DateTime } = require('luxon');
 const { handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages');
 const { acquaintanceTrigger } = require('./triggers/acquaintance');
 const { attachmentsTrigger } = require('./triggers/attachments');
