@@ -1,4 +1,4 @@
-const { sleep } = require('./utils');
+const { sleep } = require('../utils');
 
 const communitiesIds = [
   195285978,
