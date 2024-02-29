@@ -31,7 +31,7 @@ async function sendInvitationPosts(context) {
     for (const communityId of communitiesIds) {
       const ownerId = '-' + communityId.toString();
 
-      const previousPosts = await constext.vk.api.wall.search({ owner_id: ownerId, query: postsSearchRequest, count: 15 });
+      const previousPosts = await context.vk.api.wall.search({ owner_id: ownerId, query: postsSearchRequest, count: 15 });
       console.log(`Found ${previousPosts.count} previous posts.`);
       // console.log(previousPosts);
       await sleep(5000);
@@ -42,7 +42,7 @@ async function sendInvitationPosts(context) {
           continue;
         }
         try {
-          const response = await constext.vk.api.wall.delete({ owner_id: ownerId, post_id: post.id });
+          const response = await context.vk.api.wall.delete({ owner_id: ownerId, post_id: post.id });
           console.log(`Post ${post.id} is deleted.`);
           await sleep(5000);
         } catch (e) {
@@ -52,7 +52,7 @@ async function sendInvitationPosts(context) {
         }
       }
 
-      const response = await constext.vk.api.wall.post({ owner_id: ownerId, message: postMessage, attachments: `${neuronalMiracleAudio},${daysOfMiraclesAudio}` })
+      const response = await context.vk.api.wall.post({ owner_id: ownerId, message: postMessage, attachments: `${neuronalMiracleAudio},${daysOfMiraclesAudio}` })
       console.log('Post is sent to', communityId, 'community.');
       await sleep(5000);
     }
