@@ -10,6 +10,9 @@ const goalAnswers = [
 const goalTrigger = {
   name: "GoalTrigger",
   condition: (context) => {
+    if (!context?.request?.isFromUser) {
+      return false;
+    }
     return !context?.request?.isOutbox
         && goalQuestionRegex.test(context.request.text);
   },

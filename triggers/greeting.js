@@ -58,6 +58,9 @@ const outgoingGreetingStickersIds = [
 const greetingTrigger = {
   name: "GreetingTrigger",
   condition: (context) => {
+    if (!context?.request?.isFromUser) {
+      return false;
+    }
     const now = DateTime.now();
     const lastTriggered = context?.state?.triggers?.[greetingTrigger.name]?.lastTriggered;
     const lastTriggeredDiff = lastTriggered ? now.diff(lastTriggered, 'days').days : Number.MAX_SAFE_INTEGER;

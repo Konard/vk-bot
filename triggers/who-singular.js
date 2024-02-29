@@ -10,6 +10,9 @@ const answers = [
 const trigger = {
   name: "WhoSingularTrigger",
   condition: (context) => {
+    if (!context?.request?.isFromUser) {
+      return false;
+    }
     return !context?.request?.isOutbox
         && questionRegex.test(context.request.text);
   },

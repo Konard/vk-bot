@@ -16,6 +16,9 @@ const outgoingGratitudeResponseStickerId = 60075;
 const gratitudeTrigger = {
   name: "GratitudeTrigger",
   condition: (context) => {
+    if (!context?.request?.isFromUser) {
+      return false;
+    }
     return !context?.request?.isOutbox
         && (
             gratitudeRegex.test(context.request.text)

@@ -17,6 +17,9 @@ const wellBeingAnswers = [
 const wellBeingTrigger = {
   name: "WellBeingTrigger",
   condition: (context) => {
+    if (!context?.request?.isFromUser) {
+      return false;
+    }
     return !context?.request?.isOutbox
         && wellBeingQuestionRegex.test(context.request.text);
   },

@@ -8,9 +8,10 @@ const { goalTrigger } = require('./triggers/goal');
 const { gratitudeTrigger } = require('./triggers/gratitude');
 const { greetingTrigger } = require('./triggers/greeting');
 const { undefinedQuestionTrigger } = require('./triggers/undefined-question');
-const { wellBeingTrigger } = require('./triggers/well-being')
+const { wellBeingTrigger } = require('./triggers/well-being');
+const { trigger: sendInvitationPostsForFriendsTrigger } = require('./triggers/send-invitation-posts-for-friends');
 
-const { hasSticker, getRandomElement, sleep } = require('./utils');
+const { hasSticker, getRandomElement, sleep, executeTrigger } = require('./utils');
 
 const peers = {}; // TODO: keep state about what triggers then last triggered for each peer
 
@@ -37,29 +38,9 @@ const vk = new VK({ token });
 // }
 // getSelf().catch(console.error);
 
-vk.updates.on(['message_new'], (request) => {
-  // console.log('request.isGroup', request.isGroup);
-  // console.log('request.isFromGroup', request.isFromGroup);
-  // console.log('request.isUser', request.isUser);
-  // console.log('request.isFromUser', request.isFromUser);
-  if (!request.isFromUser) {
-    return;
-  }
-  console.log('request', JSON.stringify(request, null, 2));
-
-  const state = peers[request.peerId];
-  console.log('state', state);
+vk.updates.on(['message_new'], async (request) => {
   for (const trigger of triggers) {
-    if (!trigger.condition || trigger.condition({ vk, request, state })) {
-      trigger.action({ vk, request, state });
-      if (trigger.name) {
-        const peer = peers[request.peerId] ??= {};
-        const triggers = peer.triggers ??= {};
-        const triggerState = triggers[trigger.name] ??= {};
-        triggerState.lastTriggered = DateTime.now();
-        console.log('peers', JSON.stringify(peers, null, 2));
-      }
-    }
+    await executeTrigger(trigger, vk, request, peers);
   }
 });
 
@@ -128,3 +109,7 @@ const deleteDeactivatedFriendsInterval = setInterval(async () => {
     }
   }
 }, 20 * minute);
+
+const sendInvitationPostsForFriendsInterval = setInterval(async () => {
+  await executeTrigger(sendInvitationPostsForFriendsTrigger, vk);
+}, 3 * 60 * minute);

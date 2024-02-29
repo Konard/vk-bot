@@ -19,6 +19,9 @@ const questionClarifications = [
 const undefinedQuestionTrigger = {
   name: "UndefinedQuestionTrigger",
   condition: (context) => {
+    if (!context?.request?.isFromUser) {
+      return false;
+    }
     return !context?.request?.isOutbox
         && questionRegex.test(context.request.text);
   },
