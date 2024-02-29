@@ -26,12 +26,12 @@ const daysOfMiraclesAudio = 'audio-2001281499_119281499';
 
 const postsSearchRequest = `Я программист.`;
 
-async function sendInvitationPosts() {
+async function sendInvitationPosts(context) {
   try {
     for (const communityId of communitiesIds) {
       const ownerId = '-' + communityId.toString();
 
-      const previousPosts = await vk.api.wall.search({ owner_id: ownerId, query: postsSearchRequest, count: 15 });
+      const previousPosts = await constext.vk.api.wall.search({ owner_id: ownerId, query: postsSearchRequest, count: 15 });
       console.log(`Found ${previousPosts.count} previous posts.`);
       // console.log(previousPosts);
       await sleep(5000);
@@ -42,7 +42,7 @@ async function sendInvitationPosts() {
           continue;
         }
         try {
-          const response = await vk.api.wall.delete({ owner_id: ownerId, post_id: post.id });
+          const response = await constext.vk.api.wall.delete({ owner_id: ownerId, post_id: post.id });
           console.log(`Post ${post.id} is deleted.`);
           await sleep(5000);
         } catch (e) {
@@ -52,7 +52,7 @@ async function sendInvitationPosts() {
         }
       }
 
-      const response = await vk.api.wall.post({ owner_id: ownerId, message: postMessage, attachments: `${neuronalMiracleAudio},${daysOfMiraclesAudio}` })
+      const response = await constext.vk.api.wall.post({ owner_id: ownerId, message: postMessage, attachments: `${neuronalMiracleAudio},${daysOfMiraclesAudio}` })
       console.log('Post is sent to', communityId, 'community.');
       await sleep(5000);
     }
@@ -64,7 +64,7 @@ async function sendInvitationPosts() {
 const trigger = {
   name: "SendInvitationPostsForFriends",
   action: async (context) => {
-    await sendInvitationPosts();
+    await sendInvitationPosts(context);
   }
 };
 
