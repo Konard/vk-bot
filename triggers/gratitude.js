@@ -171,9 +171,8 @@ const gratitudeRegexString = transform([
 
 const gratitudeRegex = new RegExp(gratitudeRegexString, "ui");
 
-console.log(gratitudeRegexString);
-
-console.log(gratitudeRegexString == gratitudeRegex.source);
+// console.log(gratitudeRegexString);
+// console.log(gratitudeRegexString == gratitudeRegex.source);
 
 // var lower = new RegExp(/--RegexCode--/);
 // var upper = new RegExp(/--RegexCode--/);
