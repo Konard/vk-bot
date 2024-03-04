@@ -11,7 +11,7 @@ describe('goalTrigger', () => {
     ['Вы что-то хотели?'],
     ['Ты что-то хотел?'],
   ])('matches "%s" greeting trigger and gives expected response', (incomingMessage) => {
-    const context = { request: { isOutbox: false, text: incomingMessage } };
+    const context = { request: { isFromUser: true, isOutbox: false, text: incomingMessage } };
     expect(goalTrigger.condition(context)).toBe(true);
     if (goalTrigger.condition(context)) {
       goalTrigger.action(context);

@@ -12,7 +12,7 @@ describe('wellBeingTrigger', () => {
     ['Как жизнь?'],
     ['Как поживаешь?']
   ])('matches "%s" well being question and gives expected response', (incomingMessage) => {
-    const context = { request: { isOutbox: false, text: incomingMessage } };
+    const context = { request: { isFromUser: true, isOutbox: false, text: incomingMessage } };
     expect(wellBeingTrigger.condition(context)).toBe(true);
     if (wellBeingTrigger.condition(context)) {
       wellBeingTrigger.action(context);

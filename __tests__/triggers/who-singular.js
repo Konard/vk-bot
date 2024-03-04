@@ -14,7 +14,7 @@ describe(triggerDescription, () => {
     ['Ты кто?'],
     ['А ты кто ?'],
   ])(`matches "%s" ${triggerDescription} and gives expected response`, (incomingMessage) => {
-    const context = { request: { isOutbox: false, text: incomingMessage } };
+    const context = { request: { isFromUser: true, isOutbox: false, text: incomingMessage } };
     expect(trigger.condition(context)).toBe(true);
     if (trigger.condition(context)) {
       trigger.action(context);

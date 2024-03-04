@@ -13,7 +13,9 @@ describe('greetingTrigger', () => {
     ['Приветик'],
     ['Приветики тебе!'],
   ])('matches "%s" greeting trigger and gives expected response', (incomingMessage) => {
-    const context = { request: { text: incomingMessage } };
+    const context = { request: { isFromUser: true, text: incomingMessage } };
+    // console.log(context);
+    // console.log('greetingTrigger.condition(context)', greetingTrigger.condition(context))
     expect(greetingTrigger.condition(context)).toBe(true);
     if (greetingTrigger.condition(context)) {
       greetingTrigger.action(context);

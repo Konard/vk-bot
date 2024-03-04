@@ -11,7 +11,7 @@ describe('acquaintanceTrigger', () => {
     ['Мы знакомы?'],
     ['Мы знакомы с тобой?'],
   ])('matches "%s" greeting trigger and gives expected response', (incomingMessage) => {
-    const context = { request: { isOutbox: false, text: incomingMessage } };
+    const context = { request: { isFromUser: true, isOutbox: false, text: incomingMessage } };
     expect(acquaintanceTrigger.condition(context)).toBe(true);
     if (acquaintanceTrigger.condition(context)) {
       acquaintanceTrigger.action(context);

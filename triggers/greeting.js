@@ -58,12 +58,26 @@ const outgoingGreetingStickersIds = [
 const greetingTrigger = {
   name: "GreetingTrigger",
   condition: (context) => {
+    // console.log('context!!', context)
+    // console.log('!context?.request?.isFromUser', !context?.request?.isFromUser)
     if (!context?.request?.isFromUser) {
       return false;
     }
     const now = DateTime.now();
     const lastTriggered = context?.state?.triggers?.[greetingTrigger.name]?.lastTriggered;
     const lastTriggeredDiff = lastTriggered ? now.diff(lastTriggered, 'days').days : Number.MAX_SAFE_INTEGER;
+    // console.log('lastTriggeredDiff >= 1', lastTriggeredDiff >= 1)
+    // console.log('greetingRegex.test(context.request.text)', greetingRegex.test(context.request.text))
+    // console.log('hasSticker(context.request, incomingGreetingStickersIds)', hasSticker(context.request, incomingGreetingStickersIds))
+    // console.log(`lastTriggeredDiff >= 1
+    // && (
+    //     greetingRegex.test(context.request.text)
+    // ||  hasSticker(context.request, incomingGreetingStickersIds)
+    // )`, lastTriggeredDiff >= 1
+    // && (
+    //     greetingRegex.test(context.request.text)
+    // ||  hasSticker(context.request, incomingGreetingStickersIds)
+    // ))
     return lastTriggeredDiff >= 1
         && (
             greetingRegex.test(context.request.text)

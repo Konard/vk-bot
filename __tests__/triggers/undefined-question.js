@@ -13,7 +13,7 @@ describe('undefinedQuestionTrigger', () => {
     ['м?'],
     ['мм?'],
   ])('matches "%s" greeting trigger and gives expected response', (incomingMessage) => {
-    const context = { request: { isOutbox: false, text: incomingMessage } };
+    const context = { request: { isFromUser: true, isOutbox: false, text: incomingMessage } };
     expect(undefinedQuestionTrigger.condition(context)).toBe(true);
     if (undefinedQuestionTrigger.condition(context)) {
       undefinedQuestionTrigger.action(context);

@@ -25,7 +25,7 @@ describe('gratitudeTrigger', () => {
     ['От Всей Души✋👋'],
     
     ['Спасибо за поздравление, мне приятно✨✨✨'],
-    ['Благодарю за поздравления! Очень приятно!']
+    ['Благодарю за поздравления! Очень приятно!'],
     ['Спасибо большое🙏💕!!! Мне очень приятно!)))'],
     ['Спасибо большое, очень приятно.)'],
 
@@ -56,7 +56,8 @@ describe('gratitudeTrigger', () => {
     ['Спасибо большое Костя'],
     ['Спасибо Константин! 🤝'],
   ])('matches "%s" greeting trigger and gives expected response', (incomingMessage) => {
-    const context = { request: { isOutbox: false, text: incomingMessage } };
+    // console.log('incomingMessage', incomingMessage);
+    const context = { request: { isFromUser: true, isOutbox: false, text: incomingMessage } };
     expect(gratitudeTrigger.condition(context)).toBe(true);
     if (gratitudeTrigger.condition(context)) {
       gratitudeTrigger.action(context);
