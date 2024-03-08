@@ -80,7 +80,7 @@ async function congratulateFriendsWithBD() {
             vk,
             response: {
               user_id: friend.id,
-              message: getRandomElement(birthdayCongratulations) + '\n\n А ещё я могу подарить 1 рубль в качестве подарка на баланс мобильного телефона.',
+              message: getRandomElement(birthdayCongratulations) + '\n\nА ещё я могу подарить 1 рубль в качестве подарка на баланс мобильного телефона.',
               attachment: getRandomElement(audioAttachments)
             }
           });
