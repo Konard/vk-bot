@@ -60,9 +60,9 @@ const greetingTrigger = {
   condition: (context) => {
     // console.log('context!!', context)
     // console.log('!context?.request?.isFromUser', !context?.request?.isFromUser)
-    if (!context?.request?.isFromUser) {
-      return false;
-    }
+    // if (!context?.request?.isFromUser) {
+    //   return false;
+    // }
     const now = DateTime.now();
     const lastTriggered = context?.state?.triggers?.[greetingTrigger.name]?.lastTriggered;
     const lastTriggeredDiff = lastTriggered ? now.diff(lastTriggered, 'days').days : Number.MAX_SAFE_INTEGER;
