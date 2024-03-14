@@ -116,4 +116,4 @@ const deleteOutgoingFriendRequestsInterval = setInterval(async () => {
 
 const sendInvitationPostsForFriendsInterval = setInterval(async () => {
   await executeTrigger(sendInvitationPostsForFriendsTrigger, { vk });
-}, 3 * 60 * minute);
+}, 2 * 60 * minute);
