@@ -1,6 +1,6 @@
 const { sleep } = require('../utils');
 
-async function deleteFriendOutgoingRequests(context) {
+async function deleteOutgoingFriendRequests(context) {
   try {
     const count = context?.options?.maxRequests;
     if (count <= 0) {
@@ -21,7 +21,7 @@ async function deleteFriendOutgoingRequests(context) {
 const trigger = {
   name: "DeleteOutgoingFriendRequests",
   action: async (context) => {
-    return await sendInvitationPosts(context);
+    return await deleteOutgoingFriendRequests(context);
   }
 };
 
