@@ -9,6 +9,7 @@ const { greetingTrigger } = require('./triggers/greeting');
 const { undefinedQuestionTrigger } = require('./triggers/undefined-question');
 const { wellBeingTrigger } = require('./triggers/well-being');
 const { trigger: sendInvitationPostsForFriendsTrigger } = require('./triggers/send-invitation-posts-for-friends');
+const { trigger: deleteOutgoingFriendRequestsTrigger } = require('./triggers/delete-outgoing-requests');
 
 const { hasSticker, getRandomElement, sleep, executeTrigger } = require('./utils');
 
@@ -39,7 +40,7 @@ const vk = new VK({ token });
 
 vk.updates.on(['message_new'], async (request) => {
   for (const trigger of triggers) {
-    await executeTrigger(trigger, vk, request, peers);
+    await executeTrigger(trigger, { vk, request }, peers);
   }
 });
 
@@ -109,6 +110,10 @@ const deleteDeactivatedFriendsInterval = setInterval(async () => {
   }
 }, 20 * minute);
 
+const deleteOutgoingFriendRequestsInterval = setInterval(async () => {
+  await executeTrigger(deleteOutgoingFriendRequestsTrigger, { vk, options: { maxRequests: 20 } });
+}, 8 * minute);
+
 const sendInvitationPostsForFriendsInterval = setInterval(async () => {
-  await executeTrigger(sendInvitationPostsForFriendsTrigger, vk);
+  await executeTrigger(sendInvitationPostsForFriendsTrigger, { vk });
 }, 3 * 60 * minute);

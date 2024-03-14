@@ -15,15 +15,19 @@ const hasSticker = (context, stickersIds) => {
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-async function executeTrigger(trigger, vk, request, state) {
-  let peerState;
-  if (request?.peerId) {
-    peerState = state?.[request.peerId];
+async function executeTrigger(trigger, context, state) {
+  if (!trigger) {
+    return;
   }
-  if (!trigger.condition || (await trigger.condition({ vk, request, peerState }))) {
-    await trigger.action({ vk, request, peerState });
-    if (state && trigger?.name) {
-      const peer = state[request.peerId] ??= {};
+  let peerState;
+  const peerId = context?.request?.peerId;
+  if (state && peerId) {
+    peerState = state[peerId];
+  }
+  if (!trigger.condition || (await trigger.condition({ ...context, peerState }))) {
+    await trigger.action({ ...context, peerState });
+    if (state && peerId && trigger.name) {
+      const peer = state[peerId] ??= {};
       const triggers = peer.triggers ??= {};
       const triggerState = triggers[trigger.name] ??= {};
       triggerState.lastTriggered = DateTime.now();

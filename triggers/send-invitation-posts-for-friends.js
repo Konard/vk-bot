@@ -64,7 +64,7 @@ async function sendInvitationPosts(context) {
 const trigger = {
   name: "SendInvitationPostsForFriends",
   action: async (context) => {
-    await sendInvitationPosts(context);
+    return await sendInvitationPosts(context);
   }
 };
 
