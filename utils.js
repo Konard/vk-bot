@@ -25,13 +25,18 @@ async function executeTrigger(trigger, context, state) {
     peerState = state[peerId];
   }
   if (!trigger.condition || (await trigger.condition({ ...context, peerState }))) {
-    await trigger.action({ ...context, peerState });
-    if (state && peerId && trigger.name) {
-      const peer = state[peerId] ??= {};
-      const triggers = peer.triggers ??= {};
-      const triggerState = triggers[trigger.name] ??= {};
-      triggerState.lastTriggered = DateTime.now();
-      console.log('state', JSON.stringify(state, null, 2));
+    try {
+      await trigger.action({ ...context, peerState });
+
+      if (state && peerId && trigger.name) {
+        const peer = state[peerId] ??= {};
+        const triggers = peer.triggers ??= {};
+        const triggerState = triggers[trigger.name] ??= {};
+        triggerState.lastTriggered = DateTime.now();
+        console.log('state', JSON.stringify(state, null, 2));
+      }
+    } catch (e) {
+      console.error(`Execution of '${trigger.name}' trigger is failed:`, e);
     }
   }
 }
