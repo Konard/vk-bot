@@ -7,9 +7,13 @@ async function deleteOutgoingFriendRequests(context) {
       return;
     }
     const requests = await context.vk.api.friends.getRequests({ count, out: 1, need_viewed: 1 });
+    if (requests.items.length <= 0) {
+      console.log('No outgoing friend requests to be deleted');
+      return requests;
+    }
     for (let i = 0; i < requests.items.length; i++) {
       await context.vk.api.friends.delete({ user_id: requests.items[i] });
-      console.log('deleted outgoing friend request:', requests.items[i])
+      console.log('Deleted outgoing friend request:', requests.items[i])
       await sleep(3000);
     }
     return requests;
