@@ -3,17 +3,17 @@ const { VK } = require('vk-io');
 const token = require('fs').readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
 
-const deletedFriendsRequestsCount = Number(process.argv[2]) || 0;
+const deletedFriendsOutgoingRequestsCount = Number(process.argv[2]) || 0;
 
-async function deleteFriendRequests() {
+async function deleteFriendOutgoingRequests() {
   try {
-    if (deletedFriendsRequestsCount <= 0) {
+    if (deletedFriendsOutgoingRequestsCount <= 0) {
       return;
     }
     const requests = await vk.api.friends.getRequests({ count: deletedFriendsRequestsCount, out: 1, need_viewed: 1 });
     for (let i = 0; i < requests.items.length; i++) {
       await vk.api.friends.delete({ user_id: requests.items[i] });
-      console.log('deleted friend request:', requests.items[i])
+      console.log('deleted outgoing friend request:', requests.items[i])
       await sleep(3000);
     }
     return requests;
@@ -22,4 +22,4 @@ async function deleteFriendRequests() {
   }
 }
 
-deleteFriendRequests();
+deleteFriendOutgoingRequests();
