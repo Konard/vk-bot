@@ -27,7 +27,8 @@ vk.updates.on(['message_new'], async (request) => {
 
 vk.updates.start().catch(console.error);
 
-const second = 1000;
+const ms = 1;
+const second = 1000 * ms;
 const minute = 60 * second;
 
 const { handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages');
