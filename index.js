@@ -1,5 +1,6 @@
 
 const { executeTrigger } = require('./utils');
+const { handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages');
 
 const peers = {}; // TODO: keep state about what triggers then last triggered for each peer
 
@@ -31,7 +32,6 @@ const ms = 1;
 const second = 1000 * ms;
 const minute = 60 * second;
 
-const { handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages');
 const messagesHandlerInterval = setInterval(handleOutgoingMessage, second);
 
 const { trigger: setOnlineStatusTrigger } = require('./triggers/set-online-status');
