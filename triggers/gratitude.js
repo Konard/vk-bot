@@ -193,7 +193,7 @@ const incomingGratitudeStickersIds = [
 
 const outgoingGratitudeResponseStickerId = 60075;
 
-const gratitudeTrigger = {
+const trigger = {
   name: "GratitudeTrigger",
   condition: (context) => {
     if (!context?.request?.isFromUser) {
@@ -216,6 +216,6 @@ const gratitudeTrigger = {
 };
 
 module.exports = {
-  gratitudeTrigger,
+  trigger,
   outgoingGratitudeResponseStickerId
 };

@@ -7,7 +7,7 @@ const goalAnswers = [
   "Да, предложить дружбу.",
 ];
 
-const goalTrigger = {
+const trigger = {
   name: "GoalTrigger",
   condition: (context) => {
     if (!context?.request?.isFromUser) {
@@ -27,6 +27,6 @@ const goalTrigger = {
 };
 
 module.exports = {
-  goalTrigger,
+  trigger,
   goalAnswers
 };

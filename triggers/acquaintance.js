@@ -25,14 +25,14 @@ const acquaintanceSuggestions = [
   "Мы еще не знакомы, но может исправить это? Я программист :) А ты? (можно на ты?)",
 ];
 
-const acquaintanceTrigger = {
+const trigger = {
   name: "AcquaintanceTrigger",
   condition: (context) => {
     if (!context?.request?.isFromUser) {
       return false;
     }
     const now = DateTime.now();
-    const lastTriggered = context?.state?.triggers?.[acquaintanceTrigger.name]?.lastTriggered;
+    const lastTriggered = context?.state?.triggers?.[trigger.name]?.lastTriggered;
     const lastTriggeredDiff = lastTriggered ? now.diff(lastTriggered, 'days').days : Number.MAX_SAFE_INTEGER;
     return lastTriggeredDiff >= 1
         && !context?.request?.isOutbox
@@ -49,6 +49,6 @@ const acquaintanceTrigger = {
 };
 
 module.exports = {
-  acquaintanceTrigger,
+  trigger,
   acquaintanceSuggestions
 };

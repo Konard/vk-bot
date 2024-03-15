@@ -3,7 +3,7 @@ const { enqueueMessage } = require('../outgoing-messages');
 
 const wellBeingQuestionRegex = /^[^\p{L}\?]*(как)[^\p{L}\?]*(поживаешь|дела|жизнь)[^\p{L}\?]*\?+[^\p{L}]*$/ui;
 
-const wellBeingAnswers = [
+const answers = [
   "Хорошо, программирую.",
   "Хорошо, программированием занимаюсь.",
   "Всё хорошо, программирую.",
@@ -14,7 +14,7 @@ const wellBeingAnswers = [
   "Всё хорошо, автоматизацией занимаюсь.",
 ];
 
-const wellBeingTrigger = {
+const trigger = {
   name: "WellBeingTrigger",
   condition: (context) => {
     if (!context?.request?.isFromUser) {
@@ -27,13 +27,13 @@ const wellBeingTrigger = {
     enqueueMessage({
       ...context,
       response: {
-        message: getRandomElement(wellBeingAnswers)
+        message: getRandomElement(answers)
       }
     });
   }
 };
 
 module.exports = {
-  wellBeingTrigger,
-  wellBeingAnswers
+  trigger,
+  answers
 };

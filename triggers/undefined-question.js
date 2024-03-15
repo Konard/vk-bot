@@ -16,7 +16,7 @@ const questionClarifications = [
   "С чем связан заданный вопрос?"
 ];
 
-const undefinedQuestionTrigger = {
+const trigger = {
   name: "UndefinedQuestionTrigger",
   condition: (context) => {
     if (!context?.request?.isFromUser) {
@@ -36,6 +36,6 @@ const undefinedQuestionTrigger = {
 };
 
 module.exports = {
-  undefinedQuestionTrigger,
+  trigger,
   questionClarifications
 };

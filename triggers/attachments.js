@@ -31,7 +31,7 @@ function eraseMetadata(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
-const attachmentsTrigger = {
+const trigger = {
   name: "AttachmentsTrigger",
   condition: (context) => {
     return !context?.request?.isOutbox
@@ -63,5 +63,5 @@ const attachmentsTrigger = {
 };
 
 module.exports = {
-  attachmentsTrigger
+  trigger
 };
