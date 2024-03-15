@@ -25,9 +25,9 @@ async function executeTrigger(trigger, context, state) {
     peerState = state[peerId];
   }
   console.log(`Checking for '${trigger.name}' trigger...`);
-  if (!trigger.condition || (await trigger.condition({ ...context, peerState }))) {
+  if (!trigger.condition || (await trigger.condition({ ...context, state: peerState }))) {
     try {
-      await trigger.action({ ...context, peerState });
+      await trigger.action({ ...context, state: peerState });
       console.log(`'${trigger.name}' trigger is executed.`);
 
       if (state && peerId && trigger.name) {
