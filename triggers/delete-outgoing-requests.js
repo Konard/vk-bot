@@ -12,13 +12,18 @@ async function deleteOutgoingFriendRequests(context) {
       return requests;
     }
     for (let i = 0; i < requests.items.length; i++) {
-      await context.vk.api.friends.delete({ user_id: requests.items[i] });
-      console.log('Deleted outgoing friend request:', requests.items[i])
+      try {
+        const friendId = requests.items[i];
+        await context.vk.api.friends.delete({ user_id: friendId });
+        console.log('Deleted outgoing friend request:', friendId)
+      } catch (error) {
+        console.error(`Failed to delete outgoing friend request: ${error}`);
+      }
       await sleep(3000);
     }
     return requests;
   } catch (error) {
-    console.error(error);
+    console.error(`Could not get or delete outgoing friend requests: ${error}`);
   }
 }
 
