@@ -64,9 +64,9 @@ const trigger = {
     //   return false;
     // }
     const now = DateTime.now();
-    console.log('now', now)
+    console.log('now', now);
     const lastTriggered = context?.state?.triggers?.[trigger.name]?.lastTriggered;
-    console.log('lastTriggered', lastTriggered >= 1)
+    console.log('lastTriggered', lastTriggered);
     const lastTriggeredDiff = lastTriggered ? now.diff(lastTriggered, 'days').days : Number.MAX_SAFE_INTEGER;
     console.log('lastTriggeredDiff >= 1', lastTriggeredDiff >= 1)
     console.log('greetingRegex.test(context.request.text)', greetingRegex.test(context.request.text))
