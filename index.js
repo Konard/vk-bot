@@ -68,4 +68,4 @@ const sendBirthDayCongratulationsInterval = setInterval(async () => {
     lastBirthday = currentDay;
     await executeTrigger(sendBirthDayCongratulationsTrigger, { vk });
   }
-}, 5 * second);
+}, 1 * 60 * minute);
