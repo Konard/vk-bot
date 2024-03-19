@@ -1,6 +1,6 @@
 const { VK } = require('vk-io');
 const { getRandomElement } = require('./utils');
-const { greetingTrigger } = require('./triggers/greeting');
+const { trigger: greetingTrigger } = require('./triggers/greeting');
 const { randomInRange, handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages');
 const { sleep } = require('./utils');
 const token = require('fs').readFileSync('token', 'utf-8').trim();
