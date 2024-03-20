@@ -94,6 +94,7 @@ friend.is_closed == ${friend.is_closed}.`)
       greetedFriends++;
       console.log('greetedFriends:', greetedFriends);
       if (greetedFriends >= maxFriendsToGreet) {
+        console.log(`No more friends to greet, ${maxFriendsToGreet} limit reached.`);
         break;
       }
     }
@@ -101,7 +102,26 @@ friend.is_closed == ${friend.is_closed}.`)
 }
 
 if (maxFriendsToGreet > 0) {
-  greetOnlineFriends().catch(console.error);
+  let finished = false;
+
+  greetOnlineFriends().then(() => { 
+    finished = true
+  }).catch((e) => {
+    finished = true;
+    console.error(e);
+  });
 
   const messagesHandlerInterval = setInterval(handleOutgoingMessage, 1000);
+
+  const finalizerInterval = setInterval(() => {
+    if (finished && queue.length == 0) {
+      setTimeout(() => {
+        clearInterval(messagesHandlerInterval);
+      }, 10000);
+      clearInterval(finalizerInterval);
+    }
+  }, 1000);
 }
+
+
+
