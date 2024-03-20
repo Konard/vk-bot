@@ -3,7 +3,8 @@ const { getRandomElement } = require('./utils');
 const { trigger: greetingTrigger } = require('./triggers/greeting');
 const { randomInRange, handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages');
 const { sleep } = require('./utils');
-const token = require('fs').readFileSync('token', 'utf-8').trim();
+const fs = require('fs');
+const token = fs.readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
 
 const maxFriendsToGreet = Number(process.argv[2]) || 0;
