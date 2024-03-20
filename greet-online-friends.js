@@ -9,6 +9,33 @@ const vk = new VK({ token });
 const maxFriendsToGreet = Number(process.argv[2]) || 0;
 let greetedFriends = 0;
 
+const targetPath = 'friends-conversations.json';
+
+let friendsConversations = {};
+if (fs.existsSync(targetPath)) {
+  friendsConversations = JSON.parse(fs.readFileSync(targetPath));
+}
+
+function clean(obj) {
+  for (var propName in obj) { 
+    if (obj[propName] === null || obj[propName] === undefined || obj[propName]?.length === 0) {
+      delete obj[propName];
+    }
+    // if(typeof obj[propName] === 'object'){
+    //   clean(obj[propName]); //recursive for nested objects
+    // }
+  }
+  return obj;
+}
+
+function eraseMetadata(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+function saveToFile() {
+  fs.writeFileSync(targetPath, JSON.stringify(receivedAttachments, null, 2));
+}
+
 async function greetOnlineFriends() {
   for (let offset = 0; offset < 10000; offset += 5000) {
     const response = await vk.api.friends.get({
@@ -32,17 +59,25 @@ friend.is_closed == ${friend.is_closed}.`)
       console.log(friend);
 
       console.log(`Loading conversations for ${friend.id} friend.`)
-      const response = await vk.api.messages.getConversationsById({
-        peer_ids: [friend.id],
-        count: 1
-      });
-      await sleep(20000);
+      if (friendsConversations[friend.id]) {
+        console.log(`Skipping friend ${friend.id} because conversation history is not empty (data loaded from cache).`);
+        continue;
+      } else {
+        const response = await vk.api.messages.getConversationsById({
+          peer_ids: [friend.id],
+          count: 1
+        });
+        await sleep(20000);
+      }
 
       const conversation = response.items[0];
 
       if (conversation.last_message_id != 0 || conversation.last_conversation_message_id != 0)
       {
-        console.log(`Skipping friend ${friend.id} because conversation history is not empty.`);
+        friendsConversations[friend.id] = clean(eraseMetadata(conversation));
+        saveToFile();
+
+        console.log(`Skipping friend ${friend.id} because conversation history is not empty (data loaded from VK server and saved to cache).`);
         continue;
       }
 

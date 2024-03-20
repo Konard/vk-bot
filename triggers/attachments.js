@@ -31,6 +31,10 @@ function eraseMetadata(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
+function saveToFile() {
+  fs.writeFileSync(targetPath, JSON.stringify(receivedAttachments, null, 2));
+}
+
 const trigger = {
   name: "AttachmentsTrigger",
   condition: (context) => {
@@ -57,7 +61,7 @@ const trigger = {
       }
     }
     if (newAttachments) {
-      fs.writeFileSync(targetPath, JSON.stringify(receivedAttachments, null, 2));
+      saveToFile();
     }
   }
 };
