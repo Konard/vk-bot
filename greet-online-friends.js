@@ -34,7 +34,7 @@ function eraseMetadata(obj) {
 }
 
 function saveToFile() {
-  fs.writeFileSync(targetPath, JSON.stringify(receivedAttachments, null, 2));
+  fs.writeFileSync(targetPath, JSON.stringify(friendsConversations, null, 2));
 }
 
 async function greetOnlineFriends() {
