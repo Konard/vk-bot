@@ -27,6 +27,7 @@ async function executeTrigger(trigger, context, state) {
   console.log(`Checking for '${trigger.name}' trigger...`);
   if (!trigger.condition || (await trigger.condition({ ...context, state: peerState }))) {
     try {
+      console.log(`'${trigger.name}' trigger will be executed.`);
       await trigger.action({ ...context, state: peerState });
       console.log(`'${trigger.name}' trigger is executed.`);
 
