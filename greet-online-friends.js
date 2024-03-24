@@ -51,7 +51,7 @@ async function greetOnlineFriends() {
     }
 
     for (const friend of response.items) {
-      if (!friend.can_access_closed || friend.is_closed) {
+      if (!friend.can_access_closed) {
         console.log(`Skipping friend ${friend.id}:
 friend.can_access_closed == ${friend.can_access_closed};
 friend.is_closed == ${friend.is_closed}.`)
