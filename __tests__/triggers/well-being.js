@@ -1,4 +1,4 @@
-const { wellBeingTrigger, wellBeingAnswers } = require('../../triggers/well-being');
+const { trigger: wellBeingTrigger, answers: wellBeingAnswers } = require('../../triggers/well-being');
 const { enqueueMessage } = require('../../outgoing-messages');
 jest.mock('../../outgoing-messages');
 

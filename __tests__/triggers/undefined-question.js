@@ -1,4 +1,4 @@
-const { undefinedQuestionTrigger, questionClarifications } = require('../../triggers/undefined-question');
+const { trigger: undefinedQuestionTrigger, questionClarifications } = require('../../triggers/undefined-question');
 const { enqueueMessage } = require('../../outgoing-messages');
 jest.mock('../../outgoing-messages');
 

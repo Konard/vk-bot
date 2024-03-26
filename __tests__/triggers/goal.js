@@ -1,4 +1,4 @@
-const { goalTrigger, goalAnswers } = require('../../triggers/goal');
+const { trigger: goalTrigger, goalAnswers } = require('../../triggers/goal');
 const { enqueueMessage } = require('../../outgoing-messages');
 jest.mock('../../outgoing-messages');
 

@@ -1,4 +1,4 @@
-const { greetingTrigger, outgoingGreetingStickersIds } = require('../../triggers/greeting');
+const { trigger: greetingTrigger, outgoingGreetingStickersIds } = require('../../triggers/greeting');
 const { enqueueMessage } = require('../../outgoing-messages');
 jest.mock('../../outgoing-messages');
 

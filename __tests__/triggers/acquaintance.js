@@ -1,4 +1,4 @@
-const { acquaintanceTrigger, acquaintanceSuggestions } = require('../../triggers/acquaintance');
+const { trigger: acquaintanceTrigger, acquaintanceSuggestions } = require('../../triggers/acquaintance');
 const { enqueueMessage } = require('../../outgoing-messages');
 jest.mock('../../outgoing-messages');
 
