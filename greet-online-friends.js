@@ -85,6 +85,11 @@ async function greetOnlineFriends() {
         continue;
       }
 
+      if (!conversation.can_write.allowed) {
+        console.log(`Skipping friend ${friend.id} because it is not allowed to send message to this friend.`);
+        continue;
+      }
+
       await greetingTrigger.action({
         vk,
         response: {
