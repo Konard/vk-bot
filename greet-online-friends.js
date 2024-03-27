@@ -15,6 +15,7 @@ const targetPath = 'friends-conversations.json';
 let friendsConversations = {};
 if (fs.existsSync(targetPath)) {
   friendsConversations = JSON.parse(fs.readFileSync(targetPath));
+  console.log('Object.keys(friendsConversations).length', Object.keys(friendsConversations).length)
 }
 
 function clean(obj) {
