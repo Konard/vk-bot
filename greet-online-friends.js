@@ -61,18 +61,20 @@ async function greetOnlineFriends() {
       console.log(friend);
 
       console.log(`Loading conversations for ${friend.id} friend.`)
+
+      let conversationsResponse;
       if (friendsConversations[friend.id]) {
         console.log(`Skipping friend ${friend.id} because conversation history is not empty (data loaded from cache).`);
         continue;
       } else {
-        const response = await vk.api.messages.getConversationsById({
+        conversationsResponse = await vk.api.messages.getConversationsById({
           peer_ids: [friend.id],
           count: 1
         });
         await sleep(20000);
       }
 
-      const conversation = response.items[0];
+      const conversation = conversationsResponse.items[0];
 
       if (conversation.last_message_id != 0 || conversation.last_conversation_message_id != 0)
       {
