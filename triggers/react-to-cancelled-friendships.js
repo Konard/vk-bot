@@ -1,5 +1,5 @@
 const { getRandomElement, sleep } = require('../utils');
-const { trigger: greetingTrigger } = require('./triggers/greeting');
+const { trigger: greetingTrigger } = require('./greeting');
 const { enqueueMessage } = require('../outgoing-messages');
 
 const questions = [
