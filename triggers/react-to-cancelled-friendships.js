@@ -14,7 +14,7 @@ async function reactToCancelledFriendships(context) {
     }
     const requests = await context.vk.api.friends.getRequests({ count, out: 1, need_viewed: 1 });
     if (requests.items.length <= 0) {
-      console.log('No outgoing friend requests to be deleted');
+      console.log('No cancelled friendships to react to.');
       return requests;
     }
     for (let i = 0; i < requests.items.length; i++) {
