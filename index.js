@@ -22,7 +22,7 @@ const vk = new VK({ token });
 
 vk.updates.on(['message_new'], async (request) => {
   for (const trigger of triggers) {
-    await executeTrigger(trigger, { vk, request }, peers);
+    await executeTrigger(trigger, { vk, request, states: peers });
   }
 });
 
@@ -49,10 +49,15 @@ const deleteDeactivatedFriendsInterval = setInterval(async () => {
   await executeTrigger(deleteDeactivatedFriendsTrigger, { vk });
 }, 20 * minute);
 
-const { trigger: deleteOutgoingFriendRequestsTrigger } = require('./triggers/delete-outgoing-requests');
-const deleteOutgoingFriendRequestsInterval = setInterval(async () => {
-  await executeTrigger(deleteOutgoingFriendRequestsTrigger, { vk, options: { maxRequests: 20 } });
-}, 8 * minute);
+const { trigger: reactToCancelledFriendships } = require('./triggers/react-to-cancelled-friendships');
+const reactToCancelledFriendshipsInterval = setInterval(async () => {
+  await executeTrigger(reactToCancelledFriendships, { vk, options: { maxRequests: 20 }, states: peers });
+}, 2 * minute);
+
+// const { trigger: deleteOutgoingFriendRequestsTrigger } = require('./triggers/delete-outgoing-requests');
+// const deleteOutgoingFriendRequestsInterval = setInterval(async () => {
+//   await executeTrigger(deleteOutgoingFriendRequestsTrigger, { vk, options: { maxRequests: 20 } });
+// }, 8 * minute);
 
 const { trigger: sendInvitationPostsForFriendsTrigger } = require('./triggers/send-invitation-posts-for-friends');
 const sendInvitationPostsForFriendsInterval = setInterval(async () => {

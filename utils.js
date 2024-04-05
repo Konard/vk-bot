@@ -15,28 +15,27 @@ const hasSticker = (context, stickersIds) => {
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-async function executeTrigger(trigger, context, state) {
+async function executeTrigger(trigger, context) {
   if (!trigger) {
     return;
   }
   let peerState;
   const peerId = context?.request?.peerId;
-  if (state && peerId) {
-    peerState = state[peerId];
+  if (context?.states && peerId) {
+    peerState = context?.states[peerId];
   }
+  const currentContext = { ...context, state: peerState };
   console.log(`Checking for '${trigger.name}' trigger...`);
-  if (!trigger.condition || (await trigger.condition({ ...context, state: peerState }))) {
+  if (!trigger.condition || (await trigger.condition(currentContext))) {
     try {
-      console.log(`'${trigger.name}' trigger will be executed.`);
-      await trigger.action({ ...context, state: peerState });
+      console.log(`'${trigger.name}' trigger selected to be executed.`);
+      await trigger.action(currentContext);
       console.log(`'${trigger.name}' trigger is executed.`);
-
-      if (state && peerId && trigger.name) {
-        const peer = state[peerId] ??= {};
-        const triggers = peer.triggers ??= {};
+      if (peerState && trigger.name) {
+        const triggers = peerState.triggers ??= {};
         const triggerState = triggers[trigger.name] ??= {};
         triggerState.lastTriggered = DateTime.now();
-        console.log(`'${trigger.name}' trigger has updated the state:`, JSON.stringify(state, null, 2));
+        console.log(`'${trigger.name}' trigger has updated the state for user ${peerId}:`, JSON.stringify(peerState, null, 2));
       }
     } catch (e) {
       console.error(`Execution of '${trigger.name}' trigger is failed:`, e);
