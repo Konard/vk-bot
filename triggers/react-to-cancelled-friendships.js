@@ -25,13 +25,13 @@ async function reactToCancelledFriendships(context) {
         }
 
         await greetingTrigger.action({
-          context.vk,
+          vk: context.vk,
           response: {
             user_id: friendId,
           }
         });
         enqueueMessage({
-          context.vk,
+          vk: context.vk,
           response: {
             user_id: friendId,
             message: getRandomElement(questions),
