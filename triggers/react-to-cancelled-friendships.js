@@ -38,7 +38,7 @@ async function reactToCancelledFriendships(context) {
           }
         });
 
-        const states = context?.states ??= {};
+        const states = context.states ??= {};
         const friendState = states[friendId] ??= {};
         friendState.reactedToCancelledFriendRequest = true;
 
