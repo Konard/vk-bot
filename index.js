@@ -21,6 +21,48 @@ const { VK } = require('vk-io');
 const vk = new VK({ token });
 
 vk.updates.on(['message_new'], async (request) => {
+  let peerState;
+  const peerId = request?.peerId;
+  if (peers && peerId) {
+    peerState = peers[peerId] ??= {};
+  }
+
+  if (peerState && !peerState.history) {
+    // Load the last 100 messages for the first time
+    try {
+      const response = await vk.api.messages.getHistory({
+        peer_id: peerId,
+        count: 100
+      });
+      // Store the loaded history in the peers object
+      peerState.history = response.items;
+
+      console.log(`History for peer ${peerId} (loaded from server): `, JSON.stringify(peerState.history, null, 2));
+    } catch (error) {
+      console.error(`An error occurred while loading message history for peer ${peerId}:`, error);
+    }
+  } else if (peerState) {
+    // Add the incoming message to the history
+    // You may need to adjust the message structure below based on the actual VK API response structure
+    peerState.history.unshift({
+      id: context.id,
+      date: context.date,
+      peer_id: peerId,
+      from_id: context.senderId,
+      text: context.text,
+      attachments: context.attachments,
+      important: context.important,
+      random_id: context.randomId,
+      // ... Add other fields you need from the message object
+      // Make sure to maintain consistency with the format returned by messages.getHistory
+    });
+
+    // Ensure we only keep the last 100 messages
+    peerState.history = peerState.history.slice(0, 100);
+
+    console.log(`History for peer ${peerId}: (updated by message event)`, JSON.stringify(peerState.history, null, 2));
+  }
+
   for (const trigger of triggers) {
     await executeTrigger(trigger, { vk, request, states: peers });
   }
