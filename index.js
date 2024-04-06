@@ -45,14 +45,14 @@ vk.updates.on(['message_new'], async (request) => {
     // Add the incoming message to the history
     // You may need to adjust the message structure below based on the actual VK API response structure
     peerState.history.unshift({
-      id: context.id,
-      date: context.date,
+      id: request?.id,
+      date: request?.date,
       peer_id: peerId,
-      from_id: context.senderId,
-      text: context.text,
-      attachments: context.attachments,
-      important: context.important,
-      random_id: context.randomId,
+      from_id: request?.senderId,
+      text: request?.text,
+      attachments: request?.attachments,
+      important: request?.important,
+      random_id: request?.randomId,
       // ... Add other fields you need from the message object
       // Make sure to maintain consistency with the format returned by messages.getHistory
     });
