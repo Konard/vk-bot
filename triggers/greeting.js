@@ -102,6 +102,8 @@ const trigger = {
 
 module.exports = {
   trigger,
+  commonGreetingStickersIds,
   incomingGreetingStickersIds,
-  outgoingGreetingStickersIds
+  outgoingGreetingStickersIds,
+  greetingRegex
 };
