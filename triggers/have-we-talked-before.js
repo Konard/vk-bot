@@ -25,7 +25,7 @@ const trigger = {
         console.log({ firstMessage, secondMessage });
 
         const firstGreetingSticker = hasSticker(history[0], commonGreetingStickersIds);
-        const secondGreetingSticker = hasSticker(history[0], commonGreetingStickersIds);
+        const secondGreetingSticker = hasSticker(history[1], commonGreetingStickersIds);
 
         console.log({ firstGreetingSticker, secondGreetingSticker });
   
