@@ -13,7 +13,7 @@ const trigger = {
     if (!context?.request?.isFromUser) {
       return false;
     }
-    const trigger = false;
+    let trigger = false;
     if (context?.state?.history) {
       const history = context?.state?.history;
       if (history && history.length == 2) {
