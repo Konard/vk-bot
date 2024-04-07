@@ -42,16 +42,19 @@ vk.updates.on(['message_new'], async (request) => {
       console.error(`An error occurred while loading message history for peer ${peerId}:`, error);
     }
   } else if (peerState) {
+
+    console.log('request': JSON.stringify(request, null, 2));
+
     // Add the incoming message to the history
     // You may need to adjust the message structure below based on the actual VK API response structure
     peerState.history.unshift({
-      id: request?.id,
+      id: request?.id, // +
       date: request?.date,
-      peer_id: peerId,
-      from_id: request?.senderId,
-      text: request?.text,
-      attachments: request?.attachments,
-      important: request?.important,
+      peer_id: peerId, // +
+      from_id: request?.senderId, // -
+      text: request?.text, // +
+      attachments: request?.attachments, 
+      important: request?.isImportant,
       random_id: request?.randomId,
       // ... Add other fields you need from the message object
       // Make sure to maintain consistency with the format returned by messages.getHistory
