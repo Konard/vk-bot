@@ -43,7 +43,7 @@ vk.updates.on(['message_new'], async (request) => {
     }
   } else if (peerState) {
 
-    console.log('request': JSON.stringify(request, null, 2));
+    console.log('request', JSON.stringify(request, null, 2));
 
     // Add the incoming message to the history
     // You may need to adjust the message structure below based on the actual VK API response structure
