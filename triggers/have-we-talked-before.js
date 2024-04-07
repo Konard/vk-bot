@@ -17,7 +17,7 @@ const trigger = {
     if (context?.state?.history) {
       const history = context?.state?.history;
       if (history && history.length == 2) {
-        console.log(history);
+        console.log(JSON.stringify(history, null, 2));
 
         const firstMessage = history?.[0].text;
         const secondMessage = history?.[1].text;
