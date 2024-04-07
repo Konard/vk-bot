@@ -21,6 +21,7 @@ async function reactToCancelledFriendships(context) {
       const friendId = requests.items[i];
       try {
         if (context?.states?.[friendId]?.reactedToCancelledFriendRequest) {
+          console.log('Skipping reaction to cancelled friendship for friend', friendId);
           continue;
         }
 
