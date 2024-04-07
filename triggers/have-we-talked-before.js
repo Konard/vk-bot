@@ -1,5 +1,5 @@
-const { getRandomElement } = require('../utils');
-const { greetingRegex } = require('./greeting');
+const { getRandomElement, hasSticker } = require('../utils');
+const { greetingRegex, commonGreetingStickersIds } = require('./greeting');
 const { enqueueMessage } = require('../outgoing-messages');
 const { DateTime } = require('luxon');
 
@@ -19,12 +19,17 @@ const trigger = {
       if (history && history.length == 2) {
         console.log(JSON.stringify(history, null, 2));
 
-        const firstMessage = history?.[0].text;
-        const secondMessage = history?.[1].text;
+        const firstMessage = history[0]?.text;
+        const secondMessage = history[1]?.text;
   
         console.log({ firstMessage, secondMessage });
+
+        const firstGreetingSticker = hasSticker(history[0], commonGreetingStickersIds);
+        const secondGreetingSticker = hasSticker(history[0], commonGreetingStickersIds);
+
+        console.log({ firstGreetingSticker, secondGreetingSticker });
   
-        if (greetingRegex.test(firstMessage) && greetingRegex.test(secondMessage)) {
+        if ((firstGreetingSticker || greetingRegex.test(firstMessage)) && (secondGreetingSticker || greetingRegex.test(secondMessage))) {
           trigger = true;
         }
       }
