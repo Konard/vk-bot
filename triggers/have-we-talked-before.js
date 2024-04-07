@@ -10,9 +10,9 @@ const questions = [
 const trigger = {
   name: "HaveWeTalkedBeforeTrigger",
   condition: (context) => {
-    // if (!context?.request?.isFromUser) {
-    //   return false;
-    // }
+    if (!context?.request?.isFromUser) {
+      return false;
+    }
     const trigger = false;
     if (context?.state?.history) {
       const history = context?.state?.history;
