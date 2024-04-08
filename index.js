@@ -110,7 +110,7 @@ const reactToCancelledFriendshipsInterval = setInterval(async () => {
 const { trigger: sendInvitationPostsForFriendsTrigger } = require('./triggers/send-invitation-posts-for-friends');
 const sendInvitationPostsForFriendsInterval = setInterval(async () => {
   await executeTrigger(sendInvitationPostsForFriendsTrigger, { vk });
-}, 1 * 60 * minute);
+}, 30 * minute);
 
 let lastBirthday;
 const { trigger: sendBirthDayCongratulationsTrigger } = require('./triggers/send-birthday-congratulations');
