@@ -54,10 +54,12 @@ async function reactToCancelledFriendships(context) {
         if (friendsConversations[friendId]) {
           conversation = friendsConversations[friendId];
         } else {
-          conversation = await context.vk.api.messages.getConversationsById({
+          conversation = (await context.vk.api.messages.getConversationsById({
             peer_ids: [friendId],
             count: 1
-          }).items[0];
+          })).items[0];
+          friendsConversations[friendId] = clean(eraseMetadata(conversation));
+          saveToFile();
           await sleep(20000);
         }
 
