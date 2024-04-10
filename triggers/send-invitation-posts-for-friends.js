@@ -18,11 +18,8 @@ const communitiesIds = [
 
 const postMessage = `Я программист.
 Принимаю все заявки в друзья.
-Если у меня меньше 10000 друзей, то ждать потребуется не более 10 минут.
-Если у меня больше 10000 друзей, то можно встать в очередь, как только кто-то от меня отпишется я приму заявку в друзья.
 Если тебе нужно чтобы я срочно принял твою заявку в друзья, пиши в личку.
-
-И если тебе нравится прикреплённая музыка, то рекомендую подписаться на группу https://vk.com/oleviia`;
+Взаимно подпишусь на твою группу после подписки на https://vk.com/oleviia (пиши свою группу в личку).`;
 
 const neuronalMiracleAudio = 'audio-2001064727_125064727';
 const daysOfMiraclesAudio = 'audio-2001281499_119281499';
@@ -49,9 +46,13 @@ async function sendInvitationPosts(context) {
           console.log(`Post ${post.id} is deleted.`);
           await sleep(5000);
         } catch (e) {
-          if (e.code != 100) { // Ignore error: One of the parameters specified was missing or invalid: no post with this post_id
-            throw e;
+          if (e.code === 104) { // APIError: Code №104 - Not found
+            continue;
           }
+          if (e.code === 100) { // APIError: Code №100 - One of the parameters specified was missing or invalid: no post with this post_id
+            continue;
+          }
+          throw e;
         }
       }
 
