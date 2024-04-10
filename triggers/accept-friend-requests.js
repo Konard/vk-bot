@@ -14,7 +14,11 @@ async function acceptFriendRequests({ vk }) {
       console.log('Incoming friend requests accepted:', JSON.stringify(requests, null, 2));
     }
   } catch (error) {
-    console.error('Could not accept friend requests:', error);
+    if (error.code === 242) { // APIError: Code №242 - Too many friends: friends count exceeded
+      console.log('Could not accept friend requests, because friends count exceeded.');
+    } else {
+      console.error('Could not accept friend requests:', error);
+    }
   }
 }
 
