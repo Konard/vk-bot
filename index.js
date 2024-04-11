@@ -15,6 +15,7 @@ const triggers = [
   require('./triggers/who-multiple').trigger,
   require('./triggers/who-singular').trigger,
   require('./triggers/have-we-talked-before').trigger,
+  require('./triggers/engage-with-acquaintance').trigger
 ];
 
 const token = require('fs').readFileSync('token', 'utf-8').trim();
