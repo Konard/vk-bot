@@ -24,16 +24,4 @@ describe(triggerDescription, () => {
     expect(callArg).toEqual(expect.objectContaining(context));
     expect(answers).toContain(callArg.response.message);
   });
-
-  // test.each([
-  //   ['Чем занимаешься?'], 
-  //   ['Какая цель добавления в друзья?']
-  // ])('does not match "%s" question', (incomingMessage) => {
-  //   const context = { request: { text: incomingMessage } };
-  //   expect(trigger.condition(context)).toBe(false);
-  //   if (trigger.condition(context)) {
-  //     trigger.action(context);
-  //   }
-  //   expect(enqueueMessage).not.toHaveBeenCalled();
-  // });
 });
