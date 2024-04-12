@@ -2,7 +2,9 @@ const { trigger: wellBeingTrigger, answers: wellBeingAnswers } = require('../../
 const { enqueueMessage } = require('../../outgoing-messages');
 jest.mock('../../outgoing-messages');
 
-describe('wellBeingTrigger', () => {
+const triggerDescription = 'well being trigger';
+
+describe(triggerDescription, () => {
   beforeEach(() => {
     enqueueMessage.mockClear();
   });
@@ -11,7 +13,7 @@ describe('wellBeingTrigger', () => {
     ['Как дела?'],
     ['Как жизнь?'],
     ['Как поживаешь?']
-  ])('matches "%s" well being question and gives expected response', (incomingMessage) => {
+  ])(`"%s" matches ${triggerDescription} and gives expected response`, (incomingMessage) => {
     const context = { request: { isFromUser: true, isOutbox: false, text: incomingMessage } };
     expect(wellBeingTrigger.condition(context)).toBe(true);
     if (wellBeingTrigger.condition(context)) {
@@ -26,7 +28,7 @@ describe('wellBeingTrigger', () => {
   test.each([
     ['Чем занимаешься?'],
     ['Какая цель добавления в друзья?']
-  ])('does not match "%s" question', (incomingMessage) => {
+  ])(`"%s" does not match ${triggerDescription}`, (incomingMessage) => {
     const context = { request: { isOutbox: false, text: incomingMessage } };
     expect(wellBeingTrigger.condition(context)).toBe(false);
     if (wellBeingTrigger.condition(context)) {

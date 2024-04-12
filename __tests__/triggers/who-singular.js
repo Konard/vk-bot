@@ -2,7 +2,7 @@ const { trigger, answers } = require('../../triggers/who-singular');
 const { enqueueMessage } = require('../../outgoing-messages');
 jest.mock('../../outgoing-messages');
 
-const triggerDescription = 'who-singular trigger';
+const triggerDescription = 'who singular trigger';
 
 describe(triggerDescription, () => {
   beforeEach(() => {
@@ -13,7 +13,7 @@ describe(triggerDescription, () => {
     ['Кто ты?'],
     ['Ты кто?'],
     ['А ты кто ?'],
-  ])(`matches "%s" ${triggerDescription} and gives expected response`, (incomingMessage) => {
+  ])(`"%s" matches ${triggerDescription} and gives expected response`, (incomingMessage) => {
     const context = { request: { isFromUser: true, isOutbox: false, text: incomingMessage } };
     expect(trigger.condition(context)).toBe(true);
     if (trigger.condition(context)) {

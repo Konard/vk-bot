@@ -2,7 +2,7 @@ const { trigger, answers } = require('../../triggers/who-multiple');
 const { enqueueMessage } = require('../../outgoing-messages');
 jest.mock('../../outgoing-messages');
 
-const triggerDescription = 'who-multiple trigger';
+const triggerDescription = 'who multiple trigger';
 
 describe(triggerDescription, () => {
   beforeEach(() => {
@@ -13,7 +13,7 @@ describe(triggerDescription, () => {
     ['Кто вы?'],
     ['Вы кто?'],
     ['А вы кто ?'],
-  ])(`matches "%s" ${triggerDescription} and gives expected response`, (incomingMessage) => {
+  ])(`"%s" matches ${triggerDescription} and gives expected response`, (incomingMessage) => {
     const context = { request: { isFromUser: true, isOutbox: false, text: incomingMessage } };
     expect(trigger.condition(context)).toBe(true);
     if (trigger.condition(context)) {

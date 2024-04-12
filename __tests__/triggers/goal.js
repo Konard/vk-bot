@@ -2,7 +2,9 @@ const { trigger: goalTrigger, goalAnswers } = require('../../triggers/goal');
 const { enqueueMessage } = require('../../outgoing-messages');
 jest.mock('../../outgoing-messages');
 
-describe('goalTrigger', () => {
+const triggerDescription = 'goal trigger';
+
+describe(triggerDescription, () => {
   beforeEach(() => {
     enqueueMessage.mockClear();
   });
@@ -10,7 +12,7 @@ describe('goalTrigger', () => {
   test.each([
     ['Вы что-то хотели?'],
     ['Ты что-то хотел?'],
-  ])('matches "%s" greeting trigger and gives expected response', (incomingMessage) => {
+  ])(`"%s" matches ${triggerDescription} and gives expected response`, (incomingMessage) => {
     const context = { request: { isFromUser: true, isOutbox: false, text: incomingMessage } };
     expect(goalTrigger.condition(context)).toBe(true);
     if (goalTrigger.condition(context)) {
@@ -21,16 +23,4 @@ describe('goalTrigger', () => {
     expect(callArg).toEqual(expect.objectContaining(context));
     expect(goalAnswers).toContain(callArg.response.message);
   });
-
-  // test.each([
-  //   ['Чем занимаешься?'], 
-  //   ['Какая цель добавления в друзья?']
-  // ])('does not match "%s" question', (incomingMessage) => {
-  //   const context = { request: { text: incomingMessage } };
-  //   expect(goalTrigger.condition(context)).toBe(false);
-  //   if (goalTrigger.condition(context)) {
-  //     goalTrigger.action(context);
-  //   }
-  //   expect(enqueueMessage).not.toHaveBeenCalled();
-  // });
 });

@@ -8,11 +8,11 @@ const hasSticker = (context, stickersIds) => {
   for (const attachment of context?.attachments || []) {
     if (attachment?.id) {
       const stickerId = attachment?.id;
-      console.log('stickerId', stickerId);
+      // console.log('stickerId', stickerId);
       return stickersIds.includes(stickerId);
     } else {
       const stickerId = attachment?.sticker?.sticker_id;
-      console.log('stickerId', stickerId);
+      // console.log('stickerId', stickerId);
       return stickersIds.includes(stickerId);
     }
   }

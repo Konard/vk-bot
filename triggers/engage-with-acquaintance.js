@@ -26,12 +26,12 @@ const trigger = {
     if (context?.state?.history) {
       const history = context?.state?.history;
       if (history && history.length >= 2) {
-        console.log(JSON.stringify(history, null, 2));
+        // console.log(JSON.stringify(history, null, 2));
 
         const firstMessage = history[0]?.text;
         const secondMessage = history[1]?.text;
   
-        console.log({ firstMessage, secondMessage });
+        // console.log({ firstMessage, secondMessage });
 
         // const firstGreetingSticker = hasSticker(history[0], incomingGreetingStickersIds);
         // const secondGreetingSticker = hasSticker(history[1], incomingGreetingStickersIds);
@@ -63,5 +63,6 @@ const trigger = {
 
 module.exports = {
   trigger,
-  questions
+  questions,
+  okStickerIds
 };

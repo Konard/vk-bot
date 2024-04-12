@@ -2,7 +2,9 @@ const { trigger: gratitudeTrigger, outgoingGratitudeResponseStickerId } = requir
 const { enqueueMessage } = require('../../outgoing-messages');
 jest.mock('../../outgoing-messages');
 
-describe('gratitudeTrigger', () => {
+const triggerDescription = 'gratitude trigger';
+
+describe(triggerDescription, () => {
   beforeEach(() => {
     enqueueMessage.mockClear();
   });
@@ -69,7 +71,7 @@ describe('gratitudeTrigger', () => {
     ['Благодарю тебя Константин 🫶'],
     ['Спасибо большое Костя'],
     ['Спасибо Константин! 🤝'],
-  ])('matches "%s" greeting trigger and gives expected response', (incomingMessage) => {
+  ])(`"%s" matches ${triggerDescription} and gives expected response`, (incomingMessage) => {
     // console.log('incomingMessage', incomingMessage);
     const context = { request: { isFromUser: true, isOutbox: false, text: incomingMessage } };
     expect(gratitudeTrigger.condition(context)).toBe(true);
@@ -81,16 +83,4 @@ describe('gratitudeTrigger', () => {
     expect(callArg).toEqual(expect.objectContaining(context));
     expect(callArg.response.sticker_id).toEqual(outgoingGratitudeResponseStickerId);
   });
-
-  // test.each([
-  //   ['Чем занимаешься?'], 
-  //   ['Какая цель добавления в друзья?']
-  // ])('does not match "%s" question', (incomingMessage) => {
-  //   const context = { request: { text: incomingMessage } };
-  //   expect(gratitudeTrigger.condition(context)).toBe(false);
-  //   if (gratitudeTrigger.condition(context)) {
-  //     gratitudeTrigger.action(context);
-  //   }
-  //   expect(enqueueMessage).not.toHaveBeenCalled();
-  // });
 });
