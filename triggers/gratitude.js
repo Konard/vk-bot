@@ -216,7 +216,14 @@ const gratitudeRegex = new RegExp(gratitudeRegexString, "ui");
 const incomingGratitudeStickersIds = [
   6342,
   66407, // СПАСИБО
-  stickers["oni-chan"].gratitute.id,
+  stickers.gratitude['Asteria'].id,
+  stickers.gratitude['Bengal and Somali'].id,
+  stickers.gratitude['Best friends'].id,
+  stickers.gratitude['Emily'].id,
+  stickers.gratitude['No Words Needed'].id,
+  stickers.gratitude['Vladik'].id,
+  stickers.gratitude['Your vmoji'].id,
+  stickers.gratitude['oni-chan'].id,
 ];
 
 const outgoingGratitudeResponseStickerId = 60075;
