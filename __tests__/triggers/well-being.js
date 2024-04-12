@@ -12,7 +12,9 @@ describe(triggerDescription, () => {
   test.each([
     ['Как дела?'],
     ['Как жизнь?'],
-    ['Как поживаешь?']
+    ['Как поживаешь?'],
+    ['Как дела'],
+    ['Привет как дела😏😏'],
   ])(`"%s" matches ${triggerDescription} and gives expected response`, (incomingMessage) => {
     const context = { request: { isFromUser: true, isOutbox: false, text: incomingMessage } };
     expect(wellBeingTrigger.condition(context)).toBe(true);
