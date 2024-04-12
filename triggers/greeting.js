@@ -1,6 +1,7 @@
 const { hasSticker, getRandomElement } = require('../utils');
 const { enqueueMessage } = require('../outgoing-messages');
 const { DateTime } = require('luxon');
+const { stickers } = require('../stickers');
 
 const greetingRegex = /^[^\p{L}]*(салам|з?д[ао]ров[ао]?|ку|q+|шалом|хай|йоу?|привет(ствую|ики?)?|здравствуй(те)?|дд|добр(ый[^\p{L}]*(день|вечер)|ое[^\p{L}]*утро|ой[^\p{L}]*ночи|ого[^\p{L}]*времени[^\p{L}]*суток))([^\p{L}]*(тебе|вам))?[^\p{L}]*$/ui;
 
@@ -23,7 +24,9 @@ const commonGreetingStickersIds = [
   4917,
   15346,
   79160,
-  73601,
+  stickers.greeting['Heartfelt stickers'].id,
+  stickers.greeting['Tong'].id,
+  stickers.greeting['Your vmoji'].id,
 ];
 
 const incomingGreetingStickersIds = [
@@ -39,7 +42,7 @@ const incomingGreetingStickersIds = [
   7878,
   60272,
   94193,
-  4323, // ПРИВЕТ
+  4323,  // ПРИВЕТ
   85791, // ПРИВЕТ ПРИВЕТ
   86510, // САЛЮТ
   91176, // ПРИВЕТ
@@ -49,6 +52,49 @@ const incomingGreetingStickersIds = [
   84235, // ПРИВЕТ
   84236, // ХЕЛЛОУ
   70753,
+  16029, // ПРИВЕТИКИ
+  58732, // О! ПРИВЕТ!
+  18035, // ПРИВЕТ!
+  88693, // ЗДРЫ
+  86108, // ПРИВЕТ
+  59666, // ПРИВЕТИК
+  80788, // КУ
+  72459, 
+  90653, 
+  8695,  // ЗДРАСЬТЕ
+  62694, // ПРИВЕТ!
+  17722, // БОНЖУР
+  12115, // ПРИВЕТИКИ
+  53098, // НУ ПРИВЕТ
+  81248, // ДОБРЫЙ ВЕЧЕР
+  56896, // ПРИВЕТ
+  76436, // АЛОХА!
+  73705, // ПРИВЕТ
+  74558, 
+  62800, // КУ
+  11510, 
+  66363, 
+  4501,  // ПРИВЕТ!
+  98390, // 
+  51259, // ПРИВЕТ
+  66087, // ПРИВЕТИК
+  65253, // ПРИВЕТ
+  63426, // ДАРОВА
+  61829, // ПРИВЕТИК!
+  70784, // ПРИВ
+  74108, // ЗДРАВСТВУЙТЕ
+  8481,  // 
+  89004, // 
+  57279, // ПРИВЕТ
+  17952, // СӘЛЕМ
+  50644, // ПРИВЕТ!
+  83820, // П-ПРИВЕТ!
+  9469,  // ХАЙ
+  79394, // ДАРОВА
+  54474, // БОНЖУР!
+  stickers.greeting['Elinor'].id,
+  stickers.greeting['Emily'].id,
+  stickers.greeting['Winter vmoji'].id,
 ];
 
 const outgoingGreetingStickersIds = [
