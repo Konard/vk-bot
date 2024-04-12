@@ -51,17 +51,19 @@ async function reactToCancelledFriendships(context) {
       const friendId = requests.items[i];
       try {
         let conversation;
-        if (friendsConversations[friendId]) {
-          conversation = friendsConversations[friendId];
-        } else {
-          conversation = (await context.vk.api.messages.getConversationsById({
-            peer_ids: [friendId],
-            count: 1
-          })).items[0];
-          friendsConversations[friendId] = clean(eraseMetadata(conversation));
-          saveToFile();
-          await sleep(20000);
-        }
+        // if (friendsConversations[friendId]) {
+        //   conversation = friendsConversations[friendId];
+        // } else {
+
+        conversation = (await context.vk.api.messages.getConversationsById({
+          peer_ids: [friendId],
+          count: 1
+        })).items[0];
+        friendsConversations[friendId] = clean(eraseMetadata(conversation));
+        saveToFile();
+        await sleep(20000);
+        
+        // }
 
         if (!conversation.can_write.allowed) {
           await context.vk.api.account.ban({
