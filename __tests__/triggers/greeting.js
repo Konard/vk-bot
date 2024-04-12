@@ -91,8 +91,8 @@ describe(triggerDescription, () => {
     [9469],  // ХАЙ
     [79394], // ДАРОВА
     [54474], // БОНЖУР!
-  ])(`"%s" sticker matches ${triggerDescription} and gives expected response`, (incommingStickerId) => {
-    const context = { request: { isFromUser: true, attachments: [{ id: incommingStickerId }] } };
+  ])(`"%s" sticker matches ${triggerDescription} and gives expected response`, (incomingStickerId) => {
+    const context = { request: { isFromUser: true, attachments: [{ id: incomingStickerId }] } };
     expect(greetingTrigger.condition(context)).toBe(true);
     if (greetingTrigger.condition(context)) {
       greetingTrigger.action(context);
