@@ -71,7 +71,7 @@ async function greetOnlineFriends() {
           peer_ids: [friend.id],
           count: 1
         });
-        await sleep(20000);
+        await sleep(10000);
       }
 
       const conversation = conversationsResponse.items[0];
@@ -96,6 +96,7 @@ async function greetOnlineFriends() {
           user_id: friend.id,
         }
       });
+      await sleep(1000);
 
       console.log(`Greeting for friend ${friend.id} is added to queue.`);
 
