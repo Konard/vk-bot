@@ -14,6 +14,9 @@ describe(triggerDescription, () => {
     ['??'],
     ['м?'],
     ['мм?'],
+    ['⁉️❔⁉️'],
+    ['⁉️'],
+    ['❔'],
   ])(`"%s" matches ${triggerDescription} and gives expected response`, (incomingMessage) => {
     const context = { request: { isFromUser: true, isOutbox: false, text: incomingMessage } };
     expect(undefinedQuestionTrigger.condition(context)).toBe(true);
