@@ -104,6 +104,10 @@ const outgoingGreetingStickersIds = [
 const trigger = {
   name: "GreetingTrigger",
   condition: (context) => {
+    if (context.request.peerType !== "user") {
+      return false;
+    }
+
     // console.log('context!!', context)
     // console.log('!context?.request?.isFromUser', !context?.request?.isFromUser)
     // if (!context?.request?.isFromUser) {
