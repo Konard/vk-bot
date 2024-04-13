@@ -50,25 +50,39 @@ async function reactToCancelledFriendships(context) {
     for (let i = 0; i < requests.items.length; i++) {
       const friendId = requests.items[i];
       try {
-        let conversation;
-        // if (friendsConversations[friendId]) {
-        //   conversation = friendsConversations[friendId];
-        // } else {
-
-        conversation = (await context.vk.api.messages.getConversationsById({
+        const conversation = (await context.vk.api.messages.getConversationsById({
           peer_ids: [friendId],
           count: 1
         })).items[0];
         friendsConversations[friendId] = clean(eraseMetadata(conversation));
         saveToFile();
-        await sleep(20000);
-        
-        // }
+        await sleep(15000);
+
+        if (context?.states?.[friendId]?.reactedToCancelledFriendRequest) {
+          const messages = await context.vk.api.messages.getById({ message_ids: conversation.last_message_id });
+          const message = messages.items[0];
+
+          const now = DateTime.now();
+          const messageDate = DateTime.fromSeconds(message.date);
+          const diff = now.diff(messageDate, 'days').days;
+          await sleep(3000);
+
+          const waitDaysLimit = 2;
+
+          if (message.out && diff > waitDaysLimit) {
+            await context.vk.api.account.ban({
+              owner_id: friendId
+            });
+            await sleep(3000);
+            console.log(`Friend ${friendId} is blocked because there was no answer from this friend for more than ${waitDaysLimit} days, and friendship is cancelled.`);
+          }
+        }
 
         if (!conversation.can_write.allowed) {
           await context.vk.api.account.ban({
             owner_id: friendId
           });
+          await sleep(3000);
           console.log(`Friend ${friendId} is blocked because it is not allowed to send message to this friend, and friendship is cancelled.`);
         } else {
           if (context?.states?.[friendId]?.reactedToCancelledFriendRequest) {
