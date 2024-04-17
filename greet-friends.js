@@ -11,7 +11,7 @@ const vk = new VK({ token });
 const maxFriendsToGreet = Number(process.argv[2]) || 0;
 let greetedFriends = 0;
 
-async function greetOnlineFriends() {
+async function greetFriends() {
   const limit = 10000;
   const step = 5000;
   for (let offset = 0; offset < limit; offset += step) {
@@ -31,7 +31,7 @@ async function greetOnlineFriends() {
     for (const friend of response.items) {
       let conversationsResponse;
       if (getConversation(friend.id)) {
-        console.log(`Skipping friend ${friend.id} because conversation history is not empty or is not allowed to send message to this friend (data loaded from cache).`);
+        console.log(`Skipping friend ${friend.id} because conversation history is not empty or it is not allowed to send message to this friend (data loaded from cache).`);
         continue;
       } else {
         console.log(`Loading conversations for ${friend.id} friend from server...`);
@@ -81,7 +81,7 @@ async function greetOnlineFriends() {
 
 if (maxFriendsToGreet > 0) {
   let finished = false;
-  greetOnlineFriends().then(() => { 
+  greetFriends().then(() => { 
     finished = true
   }).catch((e) => {
     finished = true;
