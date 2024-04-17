@@ -1,4 +1,5 @@
 const { DateTime } = require('luxon');
+const fs = require('fs');
 
 function getRandomElement(array) {
   return array[Math.floor(Math.random() * array.length)];
