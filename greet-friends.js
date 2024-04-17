@@ -73,7 +73,7 @@ async function greetFriends(greetingLimit) {
       console.log('greetedFriends:', greetedFriends);
       if (greetedFriends >= greetingLimit) {
         console.log(`No more friends to greet, ${greetingLimit} limit reached.`);
-        break;
+        return;
       }
     }
   }
