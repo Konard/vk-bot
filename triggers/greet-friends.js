@@ -2,7 +2,6 @@ const { sleep } = require('../utils');
 const { trigger: greetingTrigger } = require('./greeting');
 const { getConversation, setConversation } = require('../friends-conversations-cache');
 
-
 async function greetFriends(context) {
   const maxGreetings = context?.options?.maxGreetings || 0;
 
