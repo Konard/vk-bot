@@ -3,41 +3,13 @@ const { getRandomElement } = require('./utils');
 const { trigger: greetingTrigger } = require('./triggers/greeting');
 const { randomInRange, handleOutgoingMessage, enqueueMessage, queue } = require('./outgoing-messages');
 const { sleep } = require('./utils');
+const { getConversation, setConversation } = require('./friends-conversations-cache');
 const fs = require('fs');
 const token = fs.readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
 
 const maxFriendsToGreet = Number(process.argv[2]) || 0;
 let greetedFriends = 0;
-
-const targetPath = 'friends-conversations.json';
-
-let friendsConversations = {};
-if (fs.existsSync(targetPath)) {
-  friendsConversations = JSON.parse(fs.readFileSync(targetPath));
-  console.log('Object.keys(friendsConversations).length', Object.keys(friendsConversations).length)
-}
-
-function clean(obj) {
-  for (var propName in obj) { 
-    if (obj[propName] === null || obj[propName] === undefined || obj[propName]?.length === 0) {
-      delete obj[propName];
-    }
-    // if(typeof obj[propName] === 'object'){
-    //   clean(obj[propName]); //recursive for nested objects
-    // }
-  }
-  return obj;
-}
-
-function eraseMetadata(obj) {
-  return JSON.parse(JSON.stringify(obj));
-}
-
-function saveToFile() {
-  fs.writeFileSync(targetPath, JSON.stringify(friendsConversations, null, 2));
-  // console.log('conversations after save', Object.keys(friendsConversations).length);
-}
 
 async function greetOnlineFriends() {
   for (let offset = 0; offset < 10000; offset += 5000) {
@@ -53,18 +25,11 @@ async function greetOnlineFriends() {
     }
 
     for (const friend of response.items) {
-//       if (!friend.can_access_closed) {
-//         console.log(`Skipping friend ${friend.id}:
-// friend.can_access_closed == ${friend.can_access_closed};
-// friend.is_closed == ${friend.is_closed}.`)
-//         continue;
-//       }
-      console.log(friend);
-
+      // console.log(friend);
       console.log(`Loading conversations for ${friend.id} friend.`)
 
       let conversationsResponse;
-      if (friendsConversations[friend.id]) {
+      if (getConversation(friend.id)) {
         console.log(`Skipping friend ${friend.id} because conversation history is not empty or is not allowed to send message to this friend (data loaded from cache).`);
         continue;
       } else {
@@ -79,16 +44,14 @@ async function greetOnlineFriends() {
 
       if (conversation.last_message_id != 0 || conversation.last_conversation_message_id != 0)
       {
-        friendsConversations[friend.id] = clean(eraseMetadata(conversation));
-        saveToFile();
+        setConversation(friend.id, conversation);
 
         console.log(`Skipping friend ${friend.id} because conversation history is not empty (data loaded from VK server and saved to cache).`);
         continue;
       }
 
       if (!conversation.can_write.allowed) {
-        friendsConversations[friend.id] = clean(eraseMetadata(conversation));
-        saveToFile();
+        setConversation(friend.id, conversation);
         
         console.log(`Skipping friend ${friend.id} because it is not allowed to send message to this friend.`);
         continue;

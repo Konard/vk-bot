@@ -21,6 +21,30 @@ const hasSticker = (context, stickersIds) => {
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
+function eraseMetadata(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+function clean(obj) {
+  for (var propName in obj) { 
+    if (obj[propName] === null || obj[propName] === undefined || obj[propName]?.length === 0) {
+      delete obj[propName];
+    }
+    // if(typeof obj[propName] === 'object'){
+    //   clean(obj[propName]); //recursive for nested objects
+    // }
+  }
+  return obj;
+}
+
+function readJsonSync(path) {
+  return JSON.parse(fs.readFileSync(path));
+}
+
+function saveJsonSync(path, obj) {
+  return fs.writeFileSync(path, JSON.stringify(obj, null, 2));
+}
+
 async function executeTrigger(trigger, context) {
   if (!trigger) {
     return;
@@ -56,4 +80,8 @@ module.exports = {
   hasSticker,
   sleep,
   executeTrigger,
+  eraseMetadata,
+  clean,
+  readJsonSync,
+  saveJsonSync,
 };

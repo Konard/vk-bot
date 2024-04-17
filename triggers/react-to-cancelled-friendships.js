@@ -1,39 +1,12 @@
 const { getRandomElement, sleep } = require('../utils');
 const { trigger: greetingTrigger } = require('./greeting');
 const { enqueueMessage } = require('../outgoing-messages');
+const { getConversation, setConversation } = require('../friends-conversations-cache');
 const fs = require('fs');
 
 const questions = [
   'Почему не хочешь больше дружить?'
 ];
-
-const targetPath = 'friends-conversations.json';
-
-let friendsConversations = {};
-if (fs.existsSync(targetPath)) {
-  friendsConversations = JSON.parse(fs.readFileSync(targetPath));
-  console.log('Object.keys(friendsConversations).length', Object.keys(friendsConversations).length)
-}
-
-function clean(obj) {
-  for (var propName in obj) { 
-    if (obj[propName] === null || obj[propName] === undefined || obj[propName]?.length === 0) {
-      delete obj[propName];
-    }
-    // if(typeof obj[propName] === 'object'){
-    //   clean(obj[propName]); //recursive for nested objects
-    // }
-  }
-  return obj;
-}
-
-function eraseMetadata(obj) {
-  return JSON.parse(JSON.stringify(obj));
-}
-
-function saveToFile() {
-  fs.writeFileSync(targetPath, JSON.stringify(friendsConversations, null, 2));
-}
 
 async function reactToCancelledFriendships(context) {
   try {
@@ -54,8 +27,7 @@ async function reactToCancelledFriendships(context) {
           peer_ids: [friendId],
           count: 1
         })).items[0];
-        friendsConversations[friendId] = clean(eraseMetadata(conversation));
-        saveToFile();
+        setConversation(friendId, conversation);
         await sleep(15000);
 
         if (context?.states?.[friendId]?.reactedToCancelledFriendRequest) {
