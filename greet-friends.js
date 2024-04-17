@@ -36,6 +36,7 @@ function eraseMetadata(obj) {
 
 function saveToFile() {
   fs.writeFileSync(targetPath, JSON.stringify(friendsConversations, null, 2));
+  // console.log('conversations after save', Object.keys(friendsConversations).length);
 }
 
 async function greetOnlineFriends() {
@@ -64,7 +65,7 @@ async function greetOnlineFriends() {
 
       let conversationsResponse;
       if (friendsConversations[friend.id]) {
-        console.log(`Skipping friend ${friend.id} because conversation history is not empty (data loaded from cache).`);
+        console.log(`Skipping friend ${friend.id} because conversation history is not empty or is not allowed to send message to this friend (data loaded from cache).`);
         continue;
       } else {
         conversationsResponse = await vk.api.messages.getConversationsById({
@@ -86,6 +87,9 @@ async function greetOnlineFriends() {
       }
 
       if (!conversation.can_write.allowed) {
+        friendsConversations[friend.id] = clean(eraseMetadata(conversation));
+        saveToFile();
+        
         console.log(`Skipping friend ${friend.id} because it is not allowed to send message to this friend.`);
         continue;
       }
