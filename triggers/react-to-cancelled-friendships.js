@@ -2,7 +2,6 @@ const { getRandomElement, sleep } = require('../utils');
 const { trigger: greetingTrigger } = require('./greeting');
 const { enqueueMessage } = require('../outgoing-messages');
 const { getConversation, setConversation } = require('../friends-conversations-cache');
-const fs = require('fs');
 
 const questions = [
   'Почему не хочешь больше дружить?'

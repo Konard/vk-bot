@@ -1,3 +1,4 @@
+const fs = require('fs');
 const { eraseMetadata, clean, readJsonSync, saveJsonSync } = require('./utils');
 
 const targetPath = 'friends-conversations.json';
