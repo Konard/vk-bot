@@ -1,3 +1,4 @@
+const { DateTime } = require('luxon');
 const { getRandomElement, sleep } = require('../utils');
 const { trigger: greetingTrigger } = require('./greeting');
 const { enqueueMessage } = require('../outgoing-messages');
@@ -46,6 +47,7 @@ async function reactToCancelledFriendships(context) {
             });
             await sleep(3000);
             console.log(`Friend ${friendId} is blocked because there was no answer from this friend for more than ${waitDaysLimit} days, and friendship is cancelled.`);
+            continue;
           }
         }
 
