@@ -9,11 +9,11 @@ const token = fs.readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
 
 const maxFriendsToGreet = Number(process.argv[2]) || 0;
-let greetedFriends = 0;
 
-async function greetFriends() {
+async function greetFriends(greetingLimit) {
   const limit = 10000;
   const step = 5000;
+  let greetedFriends = 0;
   for (let offset = 0; offset < limit; offset += step) {
     console.log(`Loading ${offset}-${offset+step} friends...`);
     const response = await vk.api.friends.get({
@@ -71,8 +71,8 @@ async function greetFriends() {
 
       greetedFriends++;
       console.log('greetedFriends:', greetedFriends);
-      if (greetedFriends >= maxFriendsToGreet) {
-        console.log(`No more friends to greet, ${maxFriendsToGreet} limit reached.`);
+      if (greetedFriends >= greetingLimit) {
+        console.log(`No more friends to greet, ${greetingLimit} limit reached.`);
         break;
       }
     }
@@ -81,7 +81,7 @@ async function greetFriends() {
 
 if (maxFriendsToGreet > 0) {
   let finished = false;
-  greetFriends().then(() => { 
+  greetFriends(maxFriendsToGreet).then(() => { 
     finished = true
   }).catch((e) => {
     finished = true;
