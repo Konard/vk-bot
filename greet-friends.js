@@ -1,4 +1,5 @@
 const { VK } = require('vk-io');
+const { executeTrigger } = require('./utils');
 const { trigger: greetingTrigger } = require('./triggers/greeting');
 const { randomInRange, handleOutgoingMessage, enqueueMessage, queue } = require('./outgoing-messages');
 const fs = require('fs');
