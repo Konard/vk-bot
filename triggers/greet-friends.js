@@ -55,7 +55,7 @@ async function greetFriends(context) {
       }
 
       await greetingTrigger.action({
-        context.vk,
+        vk: context.vk,
         response: {
           user_id: friend.id,
         }
