@@ -30,6 +30,17 @@ async function reactToCancelledFriendships(context) {
         setConversation(friendId, conversation);
         await sleep(15000);
 
+        if (context?.state?.history) {
+          const history = context?.state?.history;
+          for (const message of history) {
+            if (questions.includes(message.text)) {
+              const states = context.states ??= {};
+              const friendState = states[friendId] ??= {};
+              friendState.reactedToCancelledFriendRequest = true;
+            }
+          }
+        }
+
         if (context?.states?.[friendId]?.reactedToCancelledFriendRequest) {
           const messages = await context.vk.api.messages.getById({ message_ids: conversation.last_message_id });
           const message = messages.items[0];
