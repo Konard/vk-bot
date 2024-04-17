@@ -12,14 +12,16 @@ const maxFriendsToGreet = Number(process.argv[2]) || 0;
 let greetedFriends = 0;
 
 async function greetOnlineFriends() {
-  for (let offset = 0; offset < 10000; offset += 5000) {
-    console.log(`Loading ${count} friends after offset of ${offset}...`);
+  const limit = 10000;
+  const step = 5000;
+  for (let offset = 0; offset < limit; offset += step) {
+    console.log(`Loading ${offset}-${offset+step} friends...`);
     const response = await vk.api.friends.get({
       fields: ['online'],
-      count: 5000,
+      count: step,
       offset,
     });
-    console.log(`Loaded ${count} friends after offset of ${offset}.`);
+    console.log(`${offset}-${offset+step} friends loaded.`);
     await sleep(30000);
 
     if (response.items.length === 0) {
