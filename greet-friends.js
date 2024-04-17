@@ -13,11 +13,13 @@ let greetedFriends = 0;
 
 async function greetOnlineFriends() {
   for (let offset = 0; offset < 10000; offset += 5000) {
+    console.log(`Loading ${count} friends after offset of ${offset}...`);
     const response = await vk.api.friends.get({
       fields: ['online'],
       count: 5000,
       offset,
     });
+    console.log(`Loaded ${count} friends after offset of ${offset}.`);
     await sleep(30000);
 
     if (response.items.length === 0) {
@@ -25,18 +27,17 @@ async function greetOnlineFriends() {
     }
 
     for (const friend of response.items) {
-      // console.log(friend);
-      console.log(`Loading conversations for ${friend.id} friend.`)
-
       let conversationsResponse;
       if (getConversation(friend.id)) {
         console.log(`Skipping friend ${friend.id} because conversation history is not empty or is not allowed to send message to this friend (data loaded from cache).`);
         continue;
       } else {
+        console.log(`Loading conversations for ${friend.id} friend from server...`);
         conversationsResponse = await vk.api.messages.getConversationsById({
           peer_ids: [friend.id],
           count: 1
         });
+        console.log(`Conversation for ${friend.id} friend loaded.`);
         await sleep(10000);
       }
 
@@ -63,9 +64,8 @@ async function greetOnlineFriends() {
           user_id: friend.id,
         }
       });
-      await sleep(1000);
-
       console.log(`Greeting for friend ${friend.id} is added to queue.`);
+      await sleep(1000);
 
       greetedFriends++;
       console.log('greetedFriends:', greetedFriends);

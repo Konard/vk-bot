@@ -20,7 +20,11 @@ const hasSticker = (context, stickersIds) => {
   return false;
 }
 
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = ms => new Promise(resolve => {
+  console.log(`Sleeping for ${ms} ms...`);
+  setTimeout(resolve, ms);
+  console.log(`Wake up after ${ms} ms.`)
+});
 
 function eraseMetadata(obj) {
   return JSON.parse(JSON.stringify(obj));
