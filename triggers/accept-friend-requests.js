@@ -4,21 +4,31 @@ async function acceptFriendRequests({ vk }) {
   try {
     const maxFriendRequestsCount = 23;
     const requests = await vk.api.friends.getRequests({ count: maxFriendRequestsCount });
+    if (requests?.items?.length <= 0) {
+      console.log('No incoming friend requests to be accepted.');
+      return;
+    }
+    await sleep(2000);
     for (let i = 0; i < requests.items.length; i++) {
-      await vk.api.friends.add({ user_id: requests.items[i], text: '' });
+      const friendId = requests.items[i];
+      try {
+        await vk.api.friends.add({ user_id: friendId, text: '' });
+        console.log(`Incoming request for friend ${friendId} is accepted.`);
+      } catch(error) {
+        if (error.code === 177) { // APIError: Code №177 - Cannot add this user to friends as user not found
+          console.log(`Could not accept ${friendId} friend request, because this friend is not found.`);
+        } else if (error.code === 242) { // APIError: Code №242 - Too many friends: friends count exceeded
+          console.log(`Could not accept ${friendId} friend request, because friends count (10000) exceeded.`);
+          return;
+        } else {
+          console.error(`Could not accept ${friendId} friend request:`, error);
+          return;
+        }
+      }
       await sleep(3000);
     }
-    if (requests?.items?.length <= 0) {
-      console.log('No incoming friend requests to be accepted');
-    } else {
-      console.log('Incoming friend requests accepted:', JSON.stringify(requests, null, 2));
-    }
   } catch (error) {
-    if (error.code === 242) { // APIError: Code №242 - Too many friends: friends count exceeded
-      console.log('Could not accept friend requests, because friends count exceeded.');
-    } else {
-      console.error('Could not accept friend requests:', error);
-    }
+    console.error('Could not accept friend requests:', error);
   }
 }
 
