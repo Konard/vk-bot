@@ -12,6 +12,8 @@ async function loadUsableStickerPacks() {
       extended: true
     });
 
+    console.log("getProducts stickers: ", response.items.length)
+
     const stickerPacks = response.items;
     const usableStickerPacks = {};
     const usableStickers = {};
