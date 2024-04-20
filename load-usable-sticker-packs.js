@@ -5,7 +5,6 @@ const token = fs.readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
 
 async function loadUsableStickerPacks() {
-  // for (let offset = 0; offset < 10000; offset += 5000) {
   const response = await vk.api.store.getProducts({
     type: "stickers",
     filters: ["purchased", "active"],
@@ -81,7 +80,6 @@ async function loadUsableStickerPacks() {
   fs.writeFileSync("usable-sticker-packs.json", usableStickerPacksJson);
   const usableStickersJson = JSON.stringify(usableStickers, null, 2);
   fs.writeFileSync("usable-stickers.json", usableStickersJson);
-  // }
 }
 
 loadUsableStickerPacks().catch(console.error);
