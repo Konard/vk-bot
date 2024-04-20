@@ -8,7 +8,7 @@ async function loadUsableStickerPacks() {
   // for (let offset = 0; offset < 10000; offset += 5000) {
   const response = await vk.api.store.getProducts({
     type: "stickers",
-    // filters: ["purchased", "active"],
+    filters: ["purchased", "active"],
     extended: true,
   });
 
