@@ -12,7 +12,7 @@ const getAllStickerKeywords = async () => {
   try {
     // while (true) {
     const response = await vk.api.store.getStickersKeywords({
-      all_products: true,
+      // all_products: true,
     });
 
     console.log(response);
