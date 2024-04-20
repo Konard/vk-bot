@@ -16,6 +16,8 @@ const getAllStickerKeywords = async () => {
         offset,
       });
 
+      console.log(response);
+
       const { count: total, items } = response;
 
       // Add the loaded keywords to the allKeywords array
@@ -39,6 +41,6 @@ const getAllStickerKeywords = async () => {
   return allKeywords;
 };
 
-getAllStickerKeywords().then(keywords=> {
+getAllStickerKeywords().then(keywords => {
   console.log('loaded keywords:', JSON.stringify(keywords, null, 2));
 }).catch(console.error);
