@@ -1,46 +1,48 @@
 const { VK } = require('vk-io');
-const { sleep } = require('./utils');
+const { sleep, saveJsonSync } = require('./utils');
 const fs = require('fs');
 const token = fs.readFileSync('token', 'utf-8').trim();
 const vk = new VK({ token });
 
 const getAllStickerKeywords = async () => {
-  let allKeywords = [];
-  let offset = 0;
-  const count = 1; // Set maximum items per request if applicable
+  let result = [];
+  // let offset = 0;
+  // const count = 1; // Set maximum items per request if applicable
 
   try {
-    while (true) {
-      const response = await vk.api.store.getStickersKeywords({
-        count,
-        offset,
-      });
+    // while (true) {
+    const response = await vk.api.store.getStickersKeywords({
+      all_products: true,
+    });
 
-      console.log(response);
+    console.log(response);
 
-      const { count: total, items } = response;
+    const { count: total, dictionary: items } = response;
 
-      // Add the loaded keywords to the allKeywords array
-      allKeywords = allKeywords.concat(items);
+    result = items;
 
-      if (allKeywords.length >= total) {
-        break; // Break the loop if all keywords have been fetched
-      }
+    // Add the loaded keywords to the result array
+    // result = result.concat(items);
 
-      // Prepare the offset for the next request
-      offset += items.length;
-      console.log(`Loaded ${offset} of ${total} sticker keywords.`);
+    // if (result.length >= total) {
+      // break; // Break the loop if all keywords have been fetched
+    // }
 
-      // Implement delay if required by rate limits
-      await new Promise(r => setTimeout(r, 200)); // 200ms delay
-    }
+    // Prepare the offset for the next request
+    // offset += items.length;
+    console.log(`Loaded ${offset} of ${total} sticker keywords.`);
+
+    // Implement delay if required by rate limits
+    // await new Promise(r => setTimeout(r, 200)); // 200ms delay
+    // }
   } catch (error) {
     console.error('An error occurred while fetching sticker keywords:', error);
   }
 
-  return allKeywords;
+  return result;
 };
 
 getAllStickerKeywords().then(keywords => {
   console.log('loaded keywords:', JSON.stringify(keywords, null, 2));
+  saveJsonSync('sticker-keywords.json', keywords);
 }).catch(console.error);
