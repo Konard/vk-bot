@@ -7,7 +7,7 @@ const vk = new VK({ token });
 const getAllStickerKeywords = async () => {
   let allKeywords = [];
   let offset = 0;
-  const count = 1000; // Set maximum items per request if applicable
+  const count = 1; // Set maximum items per request if applicable
 
   try {
     while (true) {
