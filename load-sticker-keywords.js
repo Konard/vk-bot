@@ -12,9 +12,9 @@ const getAllStickerKeywords = async () => {
   try {
     // while (true) {
     const response = await vk.api.store.getStickersKeywords({
-      // all_products: true,
-      // need_stickers: true,
-      aliases: true,
+      all_products: 1,
+      need_stickers: 0,
+      // aliases: 0,
     });
 
     // console.log(response);
@@ -24,15 +24,19 @@ const getAllStickerKeywords = async () => {
     result = items;
 
     for (const item of result) {
-      for (const sticker of item.user_stickers) {
-        delete sticker.images;
-        delete sticker.images_with_background;
-        // console.log(Object.keys(sticker));
-      }
+      const stickers = item.user_stickers || item.stickers;
 
-      if (item.words.includes('привет')) {
-        const greetingStickerIds = item.user_stickers.map(sticker => sticker.sticker_id);
-        console.log({ greetingStickerIds });
+      if (stickers) {
+        for (const sticker of stickers) {
+          delete sticker.images;
+          delete sticker.images_with_background;
+          // console.log(Object.keys(sticker));
+        }
+  
+        if (item.words.includes('привет')) {
+          const greetingStickerIds = stickers.map(sticker => sticker.sticker_id);
+          console.log({ greetingStickerIds });
+        }
       }
     }
 
