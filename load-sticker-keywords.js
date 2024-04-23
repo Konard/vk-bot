@@ -13,13 +13,28 @@ const getAllStickerKeywords = async () => {
     // while (true) {
     const response = await vk.api.store.getStickersKeywords({
       // all_products: true,
+      // need_stickers: true,
+      aliases: true,
     });
 
-    console.log(response);
+    // console.log(response);
 
     const { count: total, dictionary: items } = response;
 
     result = items;
+
+    for (const item of result) {
+      for (const sticker of item.user_stickers) {
+        delete sticker.images;
+        delete sticker.images_with_background;
+        // console.log(Object.keys(sticker));
+      }
+
+      if (item.words.includes('привет')) {
+        const greetingStickerIds = item.user_stickers.map(sticker => sticker.sticker_id);
+        console.log({ greetingStickerIds });
+      }
+    }
 
     // Add the loaded keywords to the result array
     // result = result.concat(items);
@@ -30,7 +45,7 @@ const getAllStickerKeywords = async () => {
 
     // Prepare the offset for the next request
     // offset += items.length;
-    console.log(`Loaded ${offset} of ${total} sticker keywords.`);
+    console.log(`Loaded ${total} sticker keywords.`);
 
     // Implement delay if required by rate limits
     // await new Promise(r => setTimeout(r, 200)); // 200ms delay
@@ -43,6 +58,6 @@ const getAllStickerKeywords = async () => {
 };
 
 getAllStickerKeywords().then(keywords => {
-  console.log('loaded keywords:', JSON.stringify(keywords, null, 2));
+  // console.log('loaded keywords:', JSON.stringify(keywords, null, 2));
   saveJsonSync('sticker-keywords.json', keywords);
 }).catch(console.error);
