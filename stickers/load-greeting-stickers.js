@@ -61,7 +61,7 @@ async function loadUsableStickerPacks() {
         }
       }
 
-      saveJsonSync('greeting-stickers.json', result);
+      saveJsonSync('greeting.json', result);
       console.log('found');
       return;
     }
