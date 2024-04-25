@@ -1,7 +1,6 @@
 const { VK } = require('vk-io');
-const { sleep, saveJsonSync } = require('./utils');
-const fs = require('fs');
-const token = fs.readFileSync('token', 'utf-8').trim();
+const { saveJsonSync, readTextSync } = require('../utils');
+const token = readTextSync('../token').trim();
 const vk = new VK({ token });
 
 const getAllStickerKeywords = async () => {
@@ -63,5 +62,5 @@ const getAllStickerKeywords = async () => {
 
 getAllStickerKeywords().then(keywords => {
   // console.log('loaded keywords:', JSON.stringify(keywords, null, 2));
-  saveJsonSync('sticker-keywords.json', keywords);
+  saveJsonSync('keywords.json', keywords);
 }).catch(console.error);

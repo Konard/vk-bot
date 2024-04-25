@@ -1,11 +1,10 @@
 const { VK } = require('vk-io');
-const { sleep, readJsonSync, saveJsonSync } = require('./utils');
-const fs = require('fs');
-const token = fs.readFileSync('token', 'utf-8').trim();
+const { readJsonSync, saveJsonSync, readTextSync } = require('../utils');
+const token = readTextSync('../token').trim();
 const vk = new VK({ token });
 
-const stickerKeywords = readJsonSync('sticker-keywords.json');
-const stickerType = 'gratitude'
+const stickerKeywords = readJsonSync('keywords.json');
+const stickerType = 'greeting';
 
 async function loadUsableStickerPacks() {
   const result = {

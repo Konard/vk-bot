@@ -75,59 +75,59 @@ const stickers = {
       textLanguage: "ru",
     },
   },
-  ...greeting,
-  // "greeting": {
-  //   "Elinor": {
-  //     id: 85081,
-  //     previewImageUrl: "https://vk.com/sticker/1-85081-512",
-  //     previewImageWithBackground: "https://vk.com/sticker/1-85081-512b",
-  //     pack: "Elinor",
-  //     type: "greeting",
-  //     text: "ХАЙ, БИЧ",
-  //     textLanguage: "ru",
-  //   },
-  //   "Emily": {
-  //     id: 72168,
-  //     previewImageUrl: "https://vk.com/sticker/1-72168-512",
-  //     previewImageWithBackground: "https://vk.com/sticker/1-72168-512b",
-  //     pack: "Emily",
-  //     type: "greeting",
-  //     text: "ПРИВЕТ, ЗАЙ",
-  //     textLanguage: "ru",
-  //   },
-  //   "Heartfelt stickers": {
-  //     id: 92708,
-  //     previewImageUrl: "https://vk.com/sticker/1-92708-512",
-  //     previewImageWithBackground: "https://vk.com/sticker/1-92708-512b",
-  //     pack: "Heartfelt stickers",
-  //     type: "greeting",
-  //     text: "ПРИВЕТ",
-  //     textLanguage: "ru",
-  //   },
-  //   "Tong": {
-  //     id: 84592,
-  //     previewImageUrl: "https://vk.com/sticker/1-84592-512",
-  //     previewImageWithBackground: "https://vk.com/sticker/1-84592-512b",
-  //     pack: "Tong",
-  //     type: "greeting",
-  //     text: "ПРИВЕТ, ДРУГ",
-  //     textLanguage: "ru",
-  //   },
-  //   "Your vmoji": {
-  //     id: 73601,
-  //     previewImageUrl: "https://sun1-56.userapi.com/xnz4QcDDU41fsduvDvEUCPevVMxRMZgFsOPHHg/DmWhPkn1jKw.png",
-  //     previewImageWithBackground: "https://sun1-16.userapi.com/XiZCxo2MHQCFTNXaI5cectj6WXkdN38eRAP2kw/FgfQ7bY9Vzk.png",
-  //     pack: "Your vmoji",
-  //     type: "greeting",
-  //   },
-  //   "Winter vmoji": {
-  //     id: 81987,
-  //     previewImageUrl: "https://sun1-57.userapi.com/oU3AHHeZkex95AL_36v5bGRIRZOe3JqPNFaC_g/WcHwRXqOLD0.png",
-  //     previewImageWithBackground: "https://sun1-97.userapi.com/RYZABEdEnKlCZi2Bpw6i81E_q2m9GJ5Mnq3UWw/Qu80YNCn2l4.png",
-  //     pack: "Winter vmoji",
-  //     type: "greeting",
-  //   }
-  // }
+  "greeting": {
+    ...greeting.greeting,
+    "Elinor": {
+      id: 85081,
+      previewImageUrl: "https://vk.com/sticker/1-85081-512",
+      previewImageWithBackground: "https://vk.com/sticker/1-85081-512b",
+      pack: "Elinor",
+      type: "greeting",
+      text: "ХАЙ, БИЧ",
+      textLanguage: "ru",
+    },
+    "Emily": {
+      id: 72168,
+      previewImageUrl: "https://vk.com/sticker/1-72168-512",
+      previewImageWithBackground: "https://vk.com/sticker/1-72168-512b",
+      pack: "Emily",
+      type: "greeting",
+      text: "ПРИВЕТ, ЗАЙ",
+      textLanguage: "ru",
+    },
+    "Heartfelt stickers": {
+      id: 92708,
+      previewImageUrl: "https://vk.com/sticker/1-92708-512",
+      previewImageWithBackground: "https://vk.com/sticker/1-92708-512b",
+      pack: "Heartfelt stickers",
+      type: "greeting",
+      text: "ПРИВЕТ",
+      textLanguage: "ru",
+    },
+    // "Tong": {
+    //   id: 84592,
+    //   previewImageUrl: "https://vk.com/sticker/1-84592-512",
+    //   previewImageWithBackground: "https://vk.com/sticker/1-84592-512b",
+    //   pack: "Tong",
+    //   type: "greeting",
+    //   text: "ПРИВЕТ, ДРУГ",
+    //   textLanguage: "ru",
+    // },
+    // "Your vmoji": {
+    //   id: 73601,
+    //   previewImageUrl: "https://sun1-56.userapi.com/xnz4QcDDU41fsduvDvEUCPevVMxRMZgFsOPHHg/DmWhPkn1jKw.png",
+    //   previewImageWithBackground: "https://sun1-16.userapi.com/XiZCxo2MHQCFTNXaI5cectj6WXkdN38eRAP2kw/FgfQ7bY9Vzk.png",
+    //   pack: "Your vmoji",
+    //   type: "greeting",
+    // },
+    // "Winter vmoji": {
+    //   id: 81987,
+    //   previewImageUrl: "https://sun1-57.userapi.com/oU3AHHeZkex95AL_36v5bGRIRZOe3JqPNFaC_g/WcHwRXqOLD0.png",
+    //   previewImageWithBackground: "https://sun1-97.userapi.com/RYZABEdEnKlCZi2Bpw6i81E_q2m9GJ5Mnq3UWw/Qu80YNCn2l4.png",
+    //   pack: "Winter vmoji",
+    //   type: "greeting",
+    // }
+  }
 };
 
 module.exports = {

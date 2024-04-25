@@ -1,12 +1,12 @@
 {
-  "gratitude": {
+  "greeting": {
     "Winter vmoji": {
       "id": 81995,
       "previewImageUrl": "https://sun1-15.userapi.com/pG2bC8rvvJmv5p6LD6hxK-I5QbMOOWn98ERJTg/drJqimyyAFY.png",
       "previewImageWithBackground": "https://sun1-57.userapi.com/hlVmPLHC2qc-3c2lxCT-w79q6QbqimPXbhFdCA/wzCa7o-mcuE.png",
       "packId": 1754,
       "packTitle": "Winter vmoji",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Your vmoji": {
       "id": 73601,
@@ -14,7 +14,7 @@
       "previewImageWithBackground": "https://sun1-16.userapi.com/XiZCxo2MHQCFTNXaI5cectj6WXkdN38eRAP2kw/FgfQ7bY9Vzk.png",
       "packId": 1554,
       "packTitle": "Your vmoji",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Vezunchik": {
       "id": 15346,
@@ -22,7 +22,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-15346-512",
       "packId": 442,
       "packTitle": "Vezunchik",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "VK Fest": {
       "id": 4917,
@@ -30,7 +30,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-4917-512b",
       "packId": 62,
       "packTitle": "VK Fest",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Bloop": {
       "id": 73071,
@@ -38,7 +38,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-73071-512b",
       "packId": 1542,
       "packTitle": "Bloop",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Geckosha": {
       "id": 60062,
@@ -46,7 +46,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-60062-512b",
       "packId": 1240,
       "packTitle": "Geckosha",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Fruitables": {
       "id": 134,
@@ -54,7 +54,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-134-512b",
       "packId": 4,
       "packTitle": "Fruitables",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Ice and Cream": {
       "id": 75306,
@@ -62,7 +62,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-75306-512b",
       "packId": 1593,
       "packTitle": "Ice and Cream",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Ron and Ray": {
       "id": 73151,
@@ -70,7 +70,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-73151-512b",
       "packId": 1544,
       "packTitle": "Ron and Ray",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Let's Go!": {
       "id": 3003,
@@ -78,7 +78,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-3003-512b",
       "packId": 94,
       "packTitle": "Let's Go!",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Kermit": {
       "id": 51417,
@@ -86,7 +86,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-51417-512b",
       "packId": 1037,
       "packTitle": "Kermit",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Toshi": {
       "id": 72437,
@@ -94,7 +94,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-72437-512b",
       "packId": 1528,
       "packTitle": "Toshi",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Minty": {
       "id": 72789,
@@ -102,7 +102,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-72789-512b",
       "packId": 1536,
       "packTitle": "Minty",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Liza and Matvei": {
       "id": 77664,
@@ -110,7 +110,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-77664-512b",
       "packId": 1645,
       "packTitle": "Liza and Matvei",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Umschool Level Up": {
       "id": 69175,
@@ -118,7 +118,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-69175-512b",
       "packId": 1456,
       "packTitle": "Umschool Level Up",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Veggies": {
       "id": 76459,
@@ -126,7 +126,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-76459-512b",
       "packId": 1618,
       "packTitle": "Veggies",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Spotty": {
       "id": 21,
@@ -134,7 +134,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-21-512b",
       "packId": 1,
       "packTitle": "Spotty",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Pushkin Is Our Everything ": {
       "id": 4639,
@@ -142,7 +142,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-4639-512b",
       "packId": 148,
       "packTitle": "Pushkin Is Our Everything ",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Froggy and Croaky": {
       "id": 14409,
@@ -150,7 +150,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-14409-512b",
       "packId": 418,
       "packTitle": "Froggy and Croaky",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Tong": {
       "id": 84592,
@@ -158,7 +158,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-84592-512b",
       "packId": 1797,
       "packTitle": "Tong",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Heartfelt stickers": {
       "id": 92708,
@@ -166,7 +166,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-92708-512b",
       "packId": 1981,
       "packTitle": "Heartfelt stickers",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "F": {
       "id": 93953,
@@ -174,7 +174,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-93953-512b",
       "packId": 2007,
       "packTitle": "F",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Dino": {
       "id": 59397,
@@ -182,7 +182,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-59397-512b",
       "packId": 1224,
       "packTitle": "Dino",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Vladik": {
       "id": 86510,
@@ -190,7 +190,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-86510-512b",
       "packId": 1843,
       "packTitle": "Vladik",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Bengal and Somali": {
       "id": 91881,
@@ -198,7 +198,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-91881-512b",
       "packId": 1961,
       "packTitle": "Bengal and Somali",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Mark": {
       "id": 83320,
@@ -206,7 +206,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-83320-512b",
       "packId": 1769,
       "packTitle": "Mark",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Froggy mix": {
       "id": 90965,
@@ -214,7 +214,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-90965-512b",
       "packId": 1942,
       "packTitle": "Froggy mix",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Yami": {
       "id": 56500,
@@ -222,7 +222,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-56500-512b",
       "packId": 1152,
       "packTitle": "Yami",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Gingerbread": {
       "id": 16821,
@@ -230,7 +230,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-16821-512b",
       "packId": 479,
       "packTitle": "Gingerbread",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Michael": {
       "id": 91176,
@@ -238,7 +238,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-91176-512b",
       "packId": 1946,
       "packTitle": "Michael",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Mary and Hide": {
       "id": 84235,
@@ -246,7 +246,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-84235-512b",
       "packId": 1788,
       "packTitle": "Mary and Hide",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Muff": {
       "id": 85791,
@@ -254,7 +254,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-85791-512b",
       "packId": 1825,
       "packTitle": "Muff",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Poppy": {
       "id": 4275,
@@ -262,7 +262,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-4275-512b",
       "packId": 138,
       "packTitle": "Poppy",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Chris": {
       "id": 79394,
@@ -270,7 +270,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-79394-512b",
       "packId": 1684,
       "packTitle": "Chris",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Ginger": {
       "id": 16263,
@@ -278,7 +278,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-16263-512b",
       "packId": 464,
       "packTitle": "Ginger",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Advocado": {
       "id": 12467,
@@ -286,7 +286,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-12467-512b",
       "packId": 367,
       "packTitle": "Advocado",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Little Evil": {
       "id": 5785,
@@ -294,7 +294,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-5785-512b",
       "packId": 181,
       "packTitle": "Little Evil",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Ramesses": {
       "id": 51117,
@@ -302,7 +302,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-51117-512b",
       "packId": 1030,
       "packTitle": "Ramesses",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Animated Senya": {
       "id": 8481,
@@ -310,7 +310,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-8481-512",
       "packId": 263,
       "packTitle": "Animated Senya",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Senya": {
       "id": 2418,
@@ -318,7 +318,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-2418-512b",
       "packId": 74,
       "packTitle": "Senya",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Papa Gnome": {
       "id": 60566,
@@ -326,7 +326,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-60566-512b",
       "packId": 1252,
       "packTitle": "Papa Gnome",
-      "type": "gratitude"
+      "type": "greeting"
     },
     "Slavik": {
       "id": 7210,
@@ -334,7 +334,7 @@
       "previewImageWithBackground": "https://vk.com/sticker/1-7210-512b",
       "packId": 221,
       "packTitle": "Slavik",
-      "type": "gratitude"
+      "type": "greeting"
     }
   }
 }
