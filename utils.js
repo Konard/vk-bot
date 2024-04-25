@@ -44,12 +44,22 @@ function clean(obj) {
   return obj;
 }
 
+const defaultEncoding = 'utf-8';
+
+function readTextSync(path) {
+  return fs.readFileSync(path, { encoding: defaultEncoding });
+}
+
 function readJsonSync(path) {
-  return JSON.parse(fs.readFileSync(path));
+  return JSON.parse(readTextSync(path));
+}
+
+function saveTextSync(path, text) {
+  return fs.writeFileSync(path, text, { encoding: defaultEncoding })
 }
 
 function saveJsonSync(path, obj) {
-  return fs.writeFileSync(path, JSON.stringify(obj, null, 2));
+  return saveTextSync(path, JSON.stringify(obj, null, 2));
 }
 
 async function executeTrigger(trigger, context) {
@@ -89,6 +99,8 @@ module.exports = {
   executeTrigger,
   eraseMetadata,
   clean,
+  readTextSync,
   readJsonSync,
+  saveTextSync,
   saveJsonSync,
 };
