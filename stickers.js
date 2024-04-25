@@ -2,8 +2,8 @@ const stickers = {
   "gratitude": {
     "oni-chan": {
       id: 65091,
-      pack: "oni-chan",
       pack_id: 1361,
+      pack: "oni-chan",
       type: "gratitude",
       text: "АРИГАТО!",
       textLanguage: "ru",
@@ -12,8 +12,8 @@ const stickers = {
       id: 86140,
       previewImageUrl: "https://vk.com/sticker/1-86140-512",
       previewImageWithBackground: "https://vk.com/sticker/1-86140-512b",
-      pack: "Asteria",
       pack_id: 1835,
+      pack: "Asteria",
       type: "gratitude",
       text: "БЛАГОДАРЮ",
       textLanguage: "ru",
