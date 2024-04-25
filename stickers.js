@@ -3,6 +3,7 @@ const stickers = {
     "oni-chan": {
       id: 65091,
       pack: "oni-chan",
+      pack_id: 1361,
       type: "gratitude",
       text: "АРИГАТО!",
       textLanguage: "ru",
@@ -12,6 +13,7 @@ const stickers = {
       previewImageUrl: "https://vk.com/sticker/1-86140-512",
       previewImageWithBackground: "https://vk.com/sticker/1-86140-512b",
       pack: "Asteria",
+      pack_id: 1835,
       type: "gratitude",
       text: "БЛАГОДАРЮ",
       textLanguage: "ru",
