@@ -14,14 +14,14 @@ const rejectDeactivatedFriendRequests = async () => {
           user_ids: [userId],
           fields: ['deactivated']
         });
-        await sleep(3000);
+        await sleep(5000);
 
         const deactivationStatus = response?.[0]?.deactivated;
 
         if (deactivationStatus === 'banned' || deactivationStatus === 'deleted') {
           await vk.api.friends.delete({ user_id: userId });
           console.log(`Rejected friend request from banned user: ${userId}`);
-          await sleep(3000);
+          await sleep(10000);
         } else if(deactivationStatus) {
           console.log(`User ${userId} deactivation status: ${deactivationStatus}`);
         }
