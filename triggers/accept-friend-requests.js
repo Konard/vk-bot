@@ -1,9 +1,11 @@
 const { sleep } = require('../utils');
 
+const sortByMutuals = { sort: 1 };
+
 async function acceptFriendRequests({ vk }) {
   try {
     const maxFriendRequestsCount = 23;
-    const requests = await vk.api.friends.getRequests({ count: maxFriendRequestsCount });
+    const requests = await vk.api.friends.getRequests({ count: maxFriendRequestsCount, ...sortByMutuals });
     if (requests?.items?.length <= 0) {
       console.log('No incoming friend requests to be accepted.');
       return;
