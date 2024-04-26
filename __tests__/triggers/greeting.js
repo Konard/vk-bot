@@ -33,7 +33,7 @@ describe(triggerDescription, () => {
     ['хай!'],
     ['Хэллоу'],
   ])(`"%s" message matches ${triggerDescription} and gives expected response`, (incomingMessage) => {
-    const context = { request: { isFromUser: true, text: incomingMessage } };
+    const context = { request: { peerType: 'user', isFromUser: true, text: incomingMessage } };
     expect(greetingTrigger.condition(context)).toBe(true);
     if (greetingTrigger.condition(context)) {
       greetingTrigger.action(context);
@@ -92,7 +92,7 @@ describe(triggerDescription, () => {
     [79394], // ДАРОВА
     [54474], // БОНЖУР!
   ])(`"%s" sticker matches ${triggerDescription} and gives expected response`, (incomingStickerId) => {
-    const context = { request: { isFromUser: true, attachments: [{ id: incomingStickerId }] } };
+    const context = { request: { peerType: 'user', isFromUser: true, attachments: [{ id: incomingStickerId }] } };
     expect(greetingTrigger.condition(context)).toBe(true);
     if (greetingTrigger.condition(context)) {
       greetingTrigger.action(context);
