@@ -4,7 +4,7 @@ const { getConversation, setConversation } = require('../friends-conversations-c
 
 const message = "Какой первый символ или слово тебе не понятны в теории связей?";
 
-async function greetFriends(context) {
+async function askAboutLinksTheory(context) {
   const maxGreetings = context?.options?.maxGreetings || 0;
 
   const limit = 10000;
@@ -40,7 +40,7 @@ async function greetFriends(context) {
           count: 1
       });
       const conversation = conversationsResponse.items[0];
-      setConversation(friend.id, conversation);
+      // setConversation(friend.id, conversation);
       console.log(`Conversation for ${friend.id} friend loaded.`);
       await sleep(10000);
       //   }      
@@ -89,7 +89,7 @@ async function greetFriends(context) {
 const trigger = {
   name: "AskAboutLinksTheory",
   action: async (context) => {
-    return await greetFriends(context);
+    return await askAboutLinksTheory(context);
   }
 };
 
