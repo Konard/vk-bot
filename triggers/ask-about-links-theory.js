@@ -1,5 +1,6 @@
 const { sleep } = require('../utils');
 const { trigger: greetingTrigger } = require('./greeting');
+const { randomInRange, handleOutgoingMessage, enqueueMessage, queue } = require('../outgoing-messages');
 const { getConversation, setConversation } = require('../friends-conversations-cache');
 
 const message = "Какой первый символ или слово тебе не понятны в теории связей?";
@@ -25,10 +26,10 @@ async function askAboutLinksTheory(context) {
     }
 
     for (const friend of response.items) {
-      console.log(JSON.stringify(friend))
       if (!friend.online) {
         continue;
       }
+      console.log(JSON.stringify(friend, null, 2));
       let conversationsResponse;
       //   if (getConversation(friend.id)) {
       //     console.log(`Skipping friend ${friend.id} because conversation history is not empty or it is not allowed to send message to this friend (data loaded from cache).`);
