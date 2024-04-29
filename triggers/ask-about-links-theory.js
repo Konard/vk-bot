@@ -43,7 +43,7 @@ async function askAboutLinksTheory(context) {
       const conversation = conversationsResponse.items[0];
       // setConversation(friend.id, conversation);
       console.log(`Conversation for ${friend.id} friend loaded.`);
-      await sleep(10000);
+      await sleep(20000);
       //   }      
 
       //   if (conversation.last_message_id != 0 || conversation.last_conversation_message_id != 0)
@@ -75,7 +75,7 @@ async function askAboutLinksTheory(context) {
         }
       });
       console.log(`Greeting for friend ${friend.id} is added to queue.`);
-      await sleep(1000);
+      await sleep(10000);
 
       greetedFriends++;
       console.log('greetedFriends:', greetedFriends);
