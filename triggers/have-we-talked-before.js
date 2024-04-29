@@ -10,7 +10,7 @@ const questions = [
 const trigger = {
   name: "HaveWeTalkedBeforeTrigger",
   condition: (context) => {
-    if (!context?.request?.isFromUser) {
+    if (!context?.request?.isFromUser) { // It does not work? Should we check `out`?
       return false;
     }
     let trigger = false;
