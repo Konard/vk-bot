@@ -48,10 +48,10 @@ async function askAboutLinksTheory(context) {
 
 
       const messages = await context.vk.api.messages.getById({ message_ids: conversation.last_message_id });
-      const message = messages.items[0];
+      const lastMessage = messages.items[0];
 
       const now = DateTime.now();
-      const messageDate = DateTime.fromSeconds(message.date);
+      const messageDate = DateTime.fromSeconds(lastMessage.date);
       const diff = now.diff(messageDate, 'days').days;
       const minimumInterval = 7;
       await sleep(5000);
