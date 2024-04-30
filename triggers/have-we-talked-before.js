@@ -10,7 +10,7 @@ const questions = [
 const trigger = {
   name: "HaveWeTalkedBeforeTrigger",
   condition: (context) => {
-    if (!context?.request?.isFromUser) { // It does not work? Should we check `out`?
+    if (!context?.request?.isFromUser) { // not community
       return false;
     }
     let trigger = false;
@@ -20,7 +20,7 @@ const trigger = {
         console.log(JSON.stringify(history, null, 2));
 
         const isFirstMessageOutgoing = history[0]?.out;
-        const isSecondMessageOutgoing = history[1]?.text;
+        const isSecondMessageOutgoing = history[1]?.out;
 
         console.log({ isFirstMessageOutgoing, isSecondMessageOutgoing });
 
@@ -34,7 +34,7 @@ const trigger = {
 
         console.log({ firstGreetingSticker, secondGreetingSticker });
   
-        if ((isFirstMessageOutgoing && (firstGreetingSticker || greetingRegex.test(firstMessage))) && (!isSecondMessageOutgoing && (secondGreetingSticker || greetingRegex.test(secondMessage)))) {
+        if ((isFirstMessageOutgoing === 0 && (firstGreetingSticker || greetingRegex.test(firstMessage))) && (secondGreetingSticker || greetingRegex.test(secondMessage))) {
           trigger = true;
         }
       }
