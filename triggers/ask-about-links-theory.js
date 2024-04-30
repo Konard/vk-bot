@@ -43,7 +43,22 @@ async function askAboutLinksTheory(context) {
       const conversation = conversationsResponse.items[0];
       // setConversation(friend.id, conversation);
       console.log(`Conversation for ${friend.id} friend loaded.`);
-      await sleep(20000);
+      await sleep(15000);
+
+
+      const messages = await context.vk.api.messages.getById({ message_ids: conversation.last_message_id });
+      const message = messages.items[0];
+
+      const now = DateTime.now();
+      const messageDate = DateTime.fromSeconds(message.date);
+      const diff = now.diff(messageDate, 'days').days;
+      const minimumInterval = 7;
+      await sleep(5000);
+
+      if (diff < minimumInterval) {
+        console.log(`Skipping friend ${friend.id} because last message with this friend was less than ${minimumInterval} days ago.`);
+        continue;
+      }
       //   }      
 
       //   if (conversation.last_message_id != 0 || conversation.last_conversation_message_id != 0)
