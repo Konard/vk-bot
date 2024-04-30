@@ -19,6 +19,11 @@ const trigger = {
       if (history && history.length == 2) {
         console.log(JSON.stringify(history, null, 2));
 
+        const isFirstMessageOutgoing = history[0]?.out;
+        const isSecondMessageOutgoing = history[1]?.text;
+
+        console.log({ isFirstMessageOutgoing, isSecondMessageOutgoing });
+
         const firstMessage = history[0]?.text;
         const secondMessage = history[1]?.text;
   
@@ -29,7 +34,7 @@ const trigger = {
 
         console.log({ firstGreetingSticker, secondGreetingSticker });
   
-        if ((firstGreetingSticker || greetingRegex.test(firstMessage)) && (secondGreetingSticker || greetingRegex.test(secondMessage))) {
+        if ((isFirstMessageOutgoing && (firstGreetingSticker || greetingRegex.test(firstMessage))) && (!isSecondMessageOutgoing && (secondGreetingSticker || greetingRegex.test(secondMessage)))) {
           trigger = true;
         }
       }
