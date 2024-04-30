@@ -30,7 +30,7 @@ async function askAboutLinksTheory(context) {
       offset,
     });
     console.log(`${offset}-${offset+step} friends loaded.`);
-    await sleep(30000);
+    await sleep(40000);
 
     if (response.items.length === 0) {
       break;
@@ -54,7 +54,7 @@ async function askAboutLinksTheory(context) {
       const conversation = conversationsResponse.items[0];
       // setConversation(friend.id, conversation);
       console.log(`Conversation for ${friend.id} friend loaded.`);
-      await sleep(30000);
+      await sleep(40000);
 
 
       const conversationMessages = await context.vk.api.messages.getById({ message_ids: conversation.last_message_id });
@@ -64,7 +64,7 @@ async function askAboutLinksTheory(context) {
       const lastMessageDate = DateTime.fromSeconds(lastMessage.date);
       const diff = now.diff(lastMessageDate, 'days').days;
       const minimumInterval = 7;
-      await sleep(10000);
+      await sleep(20000);
 
       if (diff < minimumInterval) {
         console.log(`Skipping friend ${friend.id} because last message with this friend was less than ${minimumInterval} days ago.`);
@@ -101,7 +101,7 @@ async function askAboutLinksTheory(context) {
         }
       });
       console.log(`Greeting for friend ${friend.id} is added to queue.`);
-      await sleep(20000);
+      await sleep(30000);
 
       greetedFriends++;
       console.log('greetedFriends:', greetedFriends);
