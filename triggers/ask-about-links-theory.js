@@ -1,10 +1,20 @@
-const { sleep } = require('../utils');
+const { sleep, getRandomElement } = require('../utils');
 const { trigger: greetingTrigger } = require('./greeting');
 const { DateTime } = require('luxon');
 const { randomInRange, handleOutgoingMessage, enqueueMessage, queue } = require('../outgoing-messages');
 const { getConversation, setConversation } = require('../friends-conversations-cache');
 
-const message = "Какой первый символ или слово тебе не понятны в теории связей?";
+const messages = [
+  "Какой первый символ или слово тебе не понятны в теории связей?",
+  "Видишь теорию связей?",
+  "Что думаешь о теории связей?",
+  "Удалось ознакомиться с теорией связей?",
+  "Могу я предложить посмотреть на теорию связей?",
+  "Могу я попросить дать обратную связь о теории связей?",
+  "Тебе удалось понять теорию связей?",
+  "Что конкретно тебе не понятно в теории связей?",
+  "Тебе может быть интересна теория связей?"
+];
 
 async function askAboutLinksTheory(context) {
   const maxGreetings = context?.options?.maxGreetings || 0;
@@ -44,17 +54,17 @@ async function askAboutLinksTheory(context) {
       const conversation = conversationsResponse.items[0];
       // setConversation(friend.id, conversation);
       console.log(`Conversation for ${friend.id} friend loaded.`);
-      await sleep(15000);
+      await sleep(30000);
 
 
-      const messages = await context.vk.api.messages.getById({ message_ids: conversation.last_message_id });
-      const lastMessage = messages.items[0];
+      const conversationMessages = await context.vk.api.messages.getById({ message_ids: conversation.last_message_id });
+      const lastMessage = conversationMessages.items[0];
 
       const now = DateTime.now();
-      const messageDate = DateTime.fromSeconds(lastMessage.date);
-      const diff = now.diff(messageDate, 'days').days;
+      const lastMessageDate = DateTime.fromSeconds(lastMessage.date);
+      const diff = now.diff(lastMessageDate, 'days').days;
       const minimumInterval = 7;
-      await sleep(5000);
+      await sleep(10000);
 
       if (diff < minimumInterval) {
         console.log(`Skipping friend ${friend.id} because last message with this friend was less than ${minimumInterval} days ago.`);
@@ -87,11 +97,11 @@ async function askAboutLinksTheory(context) {
         vk: context.vk,
         response: {
           user_id: friend.id,
-          message
+          message: getRandomElement(messages),
         }
       });
       console.log(`Greeting for friend ${friend.id} is added to queue.`);
-      await sleep(10000);
+      await sleep(20000);
 
       greetedFriends++;
       console.log('greetedFriends:', greetedFriends);
