@@ -5,18 +5,19 @@ const { randomInRange, handleOutgoingMessage, enqueueMessage, queue } = require(
 const { getConversation, setConversation } = require('../friends-conversations-cache');
 
 const messages = [
-  "Какой первый символ или слово тебе не понятны в теории связей?",
-  "Видишь теорию связей?",
-  "Что думаешь о теории связей?",
-  "Удалось ознакомиться с теорией связей?",
-  "Могу я предложить посмотреть на теорию связей?",
-  "Могу я попросить дать обратную связь о теории связей?",
-  "Тебе удалось понять теорию связей?",
-  "Что конкретно тебе не понятно в теории связей?",
-  "Тебе может быть интересна теория связей?"
+  "Как я могу помочь?",
+  "Я могу чем-то помочь?",
+  "Чем я могу быть полезен?",
+  "Я могу быть чем-то полезен?",
+  "Есть идеи чем я могу быть тебе полезен?",
+  "Есть идеи как я могу тебе помочь?",
+  "Я могу помочь осуществить тебе мечту?",
+  "Я могу быть полезен в осуществлении твоей мечты?",
+  "Я могу помочь тебе в достижении твоих целей?",
+  "Я могу быть полезен в достижении твоих целей?",
 ];
 
-async function askAboutLinksTheory(context) {
+async function howCanIHelpYou(context) {
   const maxGreetings = context?.options?.maxGreetings || 0;
 
   const limit = 10000;
@@ -114,9 +115,9 @@ async function askAboutLinksTheory(context) {
 }
 
 const trigger = {
-  name: "AskAboutLinksTheory",
+  name: "HowCanIHelpYou",
   action: async (context) => {
-    return await askAboutLinksTheory(context);
+    return await howCanIHelpYou(context);
   }
 };
 
