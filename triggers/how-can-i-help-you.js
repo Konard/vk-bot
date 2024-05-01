@@ -64,7 +64,7 @@ async function howCanIHelpYou(context) {
       const now = DateTime.now();
       const lastMessageDate = DateTime.fromSeconds(lastMessage.date);
       const diff = now.diff(lastMessageDate, 'days').days;
-      const minimumInterval = 7;
+      const minimumInterval = 31;
       await sleep(20000);
 
       if (diff < minimumInterval) {
