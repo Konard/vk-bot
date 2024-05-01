@@ -19,22 +19,22 @@ const trigger = {
       if (history && history.length == 2) {
         console.log(JSON.stringify(history, null, 2));
 
-        const isFirstMessageOutgoing = history[0]?.out;
-        const isSecondMessageOutgoing = history[1]?.out;
+        const isLastMessageOutgoing = history[0]?.out;
+        const isPreviousMessageOutgoing = history[1]?.out;
 
-        console.log({ isFirstMessageOutgoing, isSecondMessageOutgoing });
+        console.log({ isLastMessageOutgoing, isPreviousMessageOutgoing });
 
-        const firstMessage = history[0]?.text;
-        const secondMessage = history[1]?.text;
+        const lastMessage = history[0]?.text;
+        const previousMessage = history[1]?.text;
   
-        console.log({ firstMessage, secondMessage });
+        console.log({ lastMessage, previousMessage });
 
-        const firstGreetingSticker = hasSticker(history[0], incomingGreetingStickersIds);
-        const secondGreetingSticker = hasSticker(history[1], incomingGreetingStickersIds);
+        const lastGreetingSticker = hasSticker(history[0], incomingGreetingStickersIds);
+        const previousGreetingSticker = hasSticker(history[1], incomingGreetingStickersIds);
 
-        console.log({ firstGreetingSticker, secondGreetingSticker });
+        console.log({ lastGreetingSticker, previousGreetingSticker });
   
-        if ((isFirstMessageOutgoing === 0 && (firstGreetingSticker || greetingRegex.test(firstMessage))) && (secondGreetingSticker || greetingRegex.test(secondMessage))) {
+        if ((isLastMessageOutgoing === 0 && (lastGreetingSticker || greetingRegex.test(lastMessage))) && (isPreviousMessageOutgoing === 1 && (previousGreetingSticker || greetingRegex.test(previousMessage)))) {
           trigger = true;
         }
       }
