@@ -14,6 +14,7 @@ const communitiesIds = [
   180442247,
   61413825,
   47350356,
+  214787806,
 ];
 
 const postMessage = `Я программист.
