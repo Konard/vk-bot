@@ -1,4 +1,4 @@
-const { sleep } = require('../utils');
+const { sleep, getRandomElement } = require('../utils');
 
 const communitiesIds = [
   195285978,
@@ -19,11 +19,14 @@ const communitiesIds = [
 
 const postMessage = `Я программист.
 Принимаю все заявки в друзья.
-Если тебе нужно чтобы я срочно принял твою заявку в друзья, пиши в личку.
-Взаимно подпишусь на твою группу после подписки на https://vk.com/oleviia (пиши свою группу в личку).`;
+Пиши в личку, если нужно принять твою заявку в друзья без очереди.
+Предлагай взаимное действие (например лайк, подписку и т.п.) в личку.
+Сделаю предложенное тобой взаимное действие после твоей подписки на https://vk.com/oleviia.`;
 
-const neuronalMiracleAudio = 'audio-2001064727_125064727';
-const daysOfMiraclesAudio = 'audio-2001281499_119281499';
+const audioAttachements = [
+  'audio-2001064727_125064727', // НейроЧудо
+  'audio-2001281499_119281499', // Дни чудес
+];
 
 const postsSearchRequest = `Я программист.`;
 
@@ -57,7 +60,7 @@ async function sendInvitationPosts(context) {
         }
       }
 
-      const response = await context.vk.api.wall.post({ owner_id: ownerId, message: postMessage, attachments: `${neuronalMiracleAudio},${daysOfMiraclesAudio}` })
+      const response = await context.vk.api.wall.post({ owner_id: ownerId, message: postMessage, attachments: getRandomElement(audioAttachements) })
       console.log('Post is sent to', communityId, 'community.');
       await sleep(5000);
     }
