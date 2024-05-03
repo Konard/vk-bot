@@ -1,4 +1,4 @@
-const stickers = require('greeting.json');
+const stickers = require('./greeting.json');
 const { saveJsonSync } = require('../utils');
 
 const greetingStickers = stickers['greeting'];
