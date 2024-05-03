@@ -5,8 +5,8 @@ const greetingStickers = stickers['greeting'];
 
 const greetingIds = [];
 for (const title in greetingStickers) {
-    if (Object.hasOwnProperty.call(object, title)) {
-        const sticker = object[title];
+    if (Object.hasOwnProperty.call(greetingStickers, title)) {
+        const sticker = greetingStickers[title];
         greetingIds.push(sticker.id);
     }
 }
