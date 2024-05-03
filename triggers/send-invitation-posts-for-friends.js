@@ -23,9 +23,12 @@ const postMessage = `Я программист.
 Предлагай взаимное действие (например лайк, подписку и т.п.) в личку.
 Сделаю предложенное тобой взаимное действие после твоей подписки на https://vk.com/oleviia.`;
 
-const audioAttachements = [
-  'audio-2001064727_125064727', // НейроЧудо
-  'audio-2001281499_119281499', // Дни чудес
+const neuronalMiracleAudio = 'audio-2001064727_125064727';
+const daysOfMiraclesAudio = 'audio-2001281499_119281499';
+
+const audioAttachments = [
+  neuronalMiracleAudio,
+  daysOfMiraclesAudio
 ];
 
 const postsSearchRequest = `Я программист.`;
@@ -60,7 +63,7 @@ async function sendInvitationPosts(context) {
         }
       }
 
-      const response = await context.vk.api.wall.post({ owner_id: ownerId, message: postMessage, attachments: getRandomElement(audioAttachements) })
+      const response = await context.vk.api.wall.post({ owner_id: ownerId, message: postMessage, attachments: getRandomElement(audioAttachments) })
       console.log('Post is sent to', communityId, 'community.');
       await sleep(5000);
     }
