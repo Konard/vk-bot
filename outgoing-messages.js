@@ -135,16 +135,20 @@ const handleOutgoingMessage = async () => {
       });
     }
   } catch (e) {
-    if (e.code === 902) { // Can't send messages to this user due to their privacy settings
+    if (e.code === 900) { // Can't send messages for users from blacklist
+      const peerId = context?.request?.peerId;
+      console.log(`${peerId} peer is blocked from sending messages to him.`);
       return; // This error requires to do nothing.
+    } else if (e.code === 902) { // Can't send messages to this user due to their privacy settings
       const peerId = context?.request?.peerId;
       console.log(`${peerId} peer does not allow to send messages to him.`);
+      return; // This error requires to do nothing.
       // TODO: unfriend or block user
       // TODO: or make a script that check all such users, and unfriends them or blocks them
-    } if (e.code === 7) { // Permission to perform this action is denied
-      return; // This error requires to do nothing.
+    } else if (e.code === 7) { // Permission to perform this action is denied
       const peerId = context?.request?.peerId;
       console.log(`${peerId} peer is deactivated (blocked or deleted).`);
+      return; // This error requires to do nothing.
       // TODO: unfriend
     } else {
       throw e;
