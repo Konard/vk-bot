@@ -56,6 +56,11 @@ async function askAboutLinksTheory(context) {
       console.log(`Conversation for ${friend.id} friend loaded.`);
       await sleep(40000);
 
+      if (conversation.last_message_id == 0 || conversation.last_conversation_message_id == 0)
+      {
+        console.log(`Skipping friend ${friend.id} because conversation history is empty.`);
+        continue;
+      }
 
       const conversationMessages = await context.vk.api.messages.getById({ message_ids: conversation.last_message_id });
       const lastMessage = conversationMessages.items[0];
@@ -70,19 +75,8 @@ async function askAboutLinksTheory(context) {
         console.log(`Skipping friend ${friend.id} because last message with this friend was less than ${minimumInterval} days ago.`);
         continue;
       }
-      //   }      
-
-      //   if (conversation.last_message_id != 0 || conversation.last_conversation_message_id != 0)
-      //   {
-      //     // setConversation(friend.id, conversation);
-
-      //     console.log(`Skipping friend ${friend.id} because conversation history is not empty (data loaded from VK server and saved to cache).`);
-      //     continue;
-      //   }
 
       if (!conversation.can_write.allowed) {
-        // setConversation(friend.id, conversation);
-        
         console.log(`Skipping friend ${friend.id} because it is not allowed to send message to this friend.`);
         continue;
       }
