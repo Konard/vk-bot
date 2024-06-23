@@ -28,4 +28,16 @@ describe(triggerDescription, () => {
     expect(callArg).toEqual(expect.objectContaining(context));
     expect(questionClarifications).toContain(callArg.response.message);
   });
+
+  test.each([
+    ['м'],
+    ['']
+  ])(`"%s" does not match ${triggerDescription}`, (incomingMessage) => {
+    const context = { request: { isFromUser: true, isOutbox: false, text: incomingMessage } };
+    expect(undefinedQuestionTrigger.condition(context)).toBe(false);
+    if (undefinedQuestionTrigger.condition(context)) {
+      undefinedQuestionTrigger.action(context);
+    }
+    expect(enqueueMessage).not.toHaveBeenCalled();
+  });
 });

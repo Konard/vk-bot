@@ -22,6 +22,26 @@ const trigger = {
     if (!context?.request?.isFromUser) {
       return false;
     }
+
+    if (context?.state?.history) {
+      const history = context?.state?.history;
+      if (history) {
+        console.log(JSON.stringify(history, null, 2));
+
+        const isLastMessageOutgoing = history[0]?.out;
+        const isPreviousMessageOutgoing = history[1]?.out;
+
+        console.log({ isLastMessageOutgoing, isPreviousMessageOutgoing });
+
+        if (isLastMessageOutgoing) {
+          return false;
+        }
+        if (!isPreviousMessageOutgoing) {
+          return false;
+        }
+      }
+    }
+
     return !context?.request?.isOutbox
         && questionRegex.test(context.request.text);
   },
