@@ -2,12 +2,13 @@ const { hasSticker, getRandomElement } = require('../utils');
 const { enqueueMessage } = require('../outgoing-messages');
 const { stickers } = require('../stickers');
 
-const hello = /(привет(ик)?|здравствуй|добр(ый|ого)[^\p{L}]+(дня|день|вечер))/;
-const mention = /(константин|костя|кость)/;
+const hello = /(привет(ик)?|здравствуй(те)?|добр(ый|ого)[^\p{L}]+(дня|день|вечер))/;
+const mention = /(константин|костя|кость|костян)/;
 const qualification = /(огромнейшее|огромное|большое|bol'shoye)/;
 const whitespace = /[^\p{L}]*/;
-const pronoun = /(вам|вас|те|тебе|тебя|дорог(ой|ая)|бро|брат)/;
-const gratitude = /(с?п[ао]сиб([оа](чки)?|ки)|спс|сяб|благодар(ю|им)|благого|spasibo|thanks?([^\p{L}]+you)?)/;
+const pronoun = /(вам|вас|те|тебе|тебя|дорог(ой|ая)|бро|брат|сударь|мужик|друг|мо[й|я][^\p{L}]+хорош(ий|ая))/;
+const gratitude = /(с?п[аов]сиб([оа]+(чки)?|ки)?|спс|сяб|бла[гн]одар(ю|им|очка)|благого|spasibo|thanks?([^\p{L}]+you)?)/;
+const adverbium = /(сердечно)/;
 
 // TODO: СПАСИБО КОНСТАНТИН!!!!
 // const gratitudeRegex = /^[^\p{L}]*((константин|костя|кость)[^\p{L}]*)?(благодарю|(огромное|большое[^\p{L}]*)?((вам|тебе)[^\p{L}]*)?спасибо([^\p{L}]*(огромное|большое))?)([^\p{L}]*((тебя)[^\p{L}]*)?(константин|костя|кость))?[^\p{L}]*$/ui;
@@ -70,74 +71,73 @@ const gratitudeRegexString = transform([
   '?',
   '(',
   [
+    qualification,
+    whitespace,
+  ],
+  ')',
+  '?',
+  '(',
+  [
+    'и',
+    whitespace,
+  ],
+  ')',
+  '?',
+  '(',
+  [
+    pronoun,
+    whitespace,
+  ],
+  ')',
+  '?',
+  '(',
+  [
     gratitude,
     '|',
+    '(',
     [
+      'от',
       '(',
       [
-        qualification,
         whitespace,
+        'всей',
+      ],
+      ')',
+      '?',
+      whitespace,
+      'души',
+      '(',
+      [
+        whitespace,
+        'брат',
       ],
       ')',
       '?',
       '(',
       [
-        'и',
         whitespace,
-      ],
-      ')',
-      '?',
-      '(',
-      [
-        pronoun,
-        whitespace,
-      ],
-      ')',
-      '?',
-      '(',
-      [
         gratitude,
-        '|',
-        '(',
-        [
-          'от',
-          '(',
-          [
-            whitespace,
-            'всей',
-          ],
-          ')',
-          '?',
-          whitespace,
-          'души',
-          '(',
-          [
-            whitespace,
-            'брат',
-          ],
-          ')',
-          '?',
-          '(',
-          [
-            whitespace,
-            gratitude,
-          ],
-          ')',
-          '?',
-        ],
-        ')',
-      ],
-      ')',
-      '(',
-      [
-        whitespace,
-        qualification,
       ],
       ')',
       '?',
     ],
+    ')',
   ],
   ')',
+  '(',
+  [
+    whitespace,
+    pronoun,
+  ],
+  ')',
+  '?',
+  '(',
+  [
+    whitespace,
+    qualification,
+  ],
+  ')',
+  '?',
   '(',
   [
     whitespace,
@@ -150,7 +150,7 @@ const gratitudeRegexString = transform([
     ')',
     '?',
     whitespace,
-    '(поздравлени[ея]|слова)',
+    '(поздравлени[ея]|слова|внимание)',
     '(',
     [
       whitespace,
@@ -198,6 +198,54 @@ const gratitudeRegexString = transform([
   ],
   ')',
   '?',
+  '(',
+  [
+    whitespace,
+    'обнял',
+    whitespace,
+    '(поднял)?',
+  ],
+  ')',
+  '?',
+  '(',
+  [
+    whitespace,
+    'добра',
+    '(',
+    [
+      whitespace,
+      'и',
+      whitespace,
+      'любви',
+    ],
+    ')',
+    '?',
+    '(',
+    [
+      whitespace,
+      'твоему',
+      whitespace,
+      'дому',
+    ],
+    ')',
+    '?',
+  ],
+  ')',
+  '?',
+  '(',
+  [
+    whitespace,
+    adverbium,
+  ],
+  ')',
+  '?',
+  '(',
+  [
+    whitespace,
+    gratitude,
+  ],
+  ')',
+  '?',
   whitespace,
   '$',
 ]);
@@ -206,7 +254,7 @@ const gratitudeRegexString = transform([
 
 const gratitudeRegex = new RegExp(gratitudeRegexString, "ui");
 
-// console.log(gratitudeRegexString);
+console.log(gratitudeRegexString);
 // console.log(gratitudeRegexString == gratitudeRegex.source);
 
 // var lower = new RegExp(/--RegexCode--/);
