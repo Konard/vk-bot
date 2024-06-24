@@ -254,7 +254,7 @@ const gratitudeRegexString = transform([
 
 const gratitudeRegex = new RegExp(gratitudeRegexString, "ui");
 
-console.log(gratitudeRegexString);
+// console.log(gratitudeRegexString);
 // console.log(gratitudeRegexString == gratitudeRegex.source);
 
 // var lower = new RegExp(/--RegexCode--/);
@@ -309,7 +309,11 @@ const incomingGratitudeStickersIds = [
   stickers.gratitude['oni-chan'].id,
 ];
 
-const outgoingGratitudeResponseStickerId = 60075;
+const outgoingGratitudeResponseStickerIds = 
+[
+  60075,
+  89452
+];
 
 const trigger = {
   name: "GratitudeTrigger",
@@ -327,7 +331,7 @@ const trigger = {
     enqueueMessage({
       ...context,
       response: {
-        sticker_id: outgoingGratitudeResponseStickerId,
+        sticker_id: getRandomElement(outgoingGratitudeResponseStickerIds) ,
       }
     });
   }
@@ -335,5 +339,5 @@ const trigger = {
 
 module.exports = {
   trigger,
-  outgoingGratitudeResponseStickerId
+  outgoingGratitudeResponseStickerIds
 };

@@ -1,4 +1,4 @@
-const { trigger: gratitudeTrigger, outgoingGratitudeResponseStickerId } = require('../../triggers/gratitude');
+const { trigger: gratitudeTrigger, outgoingGratitudeResponseStickerIds } = require('../../triggers/gratitude');
 const { enqueueMessage } = require('../../outgoing-messages');
 jest.mock('../../outgoing-messages');
 
@@ -117,7 +117,7 @@ describe(triggerDescription, () => {
     expect(enqueueMessage).toHaveBeenCalled();
     const callArg = enqueueMessage.mock.calls[0][0];
     expect(callArg).toEqual(expect.objectContaining(context));
-    expect(callArg.response.sticker_id).toEqual(outgoingGratitudeResponseStickerId);
+    expect(outgoingGratitudeResponseStickerIds).toContain(callArg.response.sticker_id);
   });
 
   test.each([
@@ -166,6 +166,6 @@ describe(triggerDescription, () => {
     expect(enqueueMessage).toHaveBeenCalled();
     const callArg = enqueueMessage.mock.calls[0][0];
     expect(callArg).toEqual(expect.objectContaining(context));
-    expect(callArg.response.sticker_id).toEqual(outgoingGratitudeResponseStickerId);
+    expect(outgoingGratitudeResponseStickerIds).toContain(callArg.response.sticker_id);
   });
 });
