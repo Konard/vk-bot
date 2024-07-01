@@ -16,5 +16,5 @@ And put the token into `token` file near `index.js` file.
 ## Run
 
 ```
-node index.js
+node index.js 2>&1 | tee log.txt
 ```
