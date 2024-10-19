@@ -5,6 +5,12 @@ vk-bot
 
 PLEASE DO NOT TRUST THIS SOFTWARE: READ THE CODE
 
+## Install dependencies
+
+```bash
+npm ci
+```
+
 ## Token
 
 To make bot work you should get Kate Mobile token like this:
@@ -15,6 +21,6 @@ And put the token into `token` file near `index.js` file.
 
 ## Run
 
-```
+```bash
 node index.js 2>&1 | tee log.txt
 ```
