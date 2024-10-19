@@ -1,6 +1,71 @@
 const { DateTime } = require('luxon');
 const fs = require('fs');
 
+function getToken(filePath = 'token') {
+  let content;
+
+  // Try to read the file
+  try {
+    content = fs.readFileSync(filePath, 'utf-8').trim();
+  } catch (error) {
+    throw new Error(`Error: Unable to read file "${filePath}". Please make sure the file exists and is accessible.`, { cause: error });
+  }
+
+  // Try to parse the content as a URL but handle URL parsing errors as warnings
+  let token = null;
+  try {
+    token = getTokenFromUrl(content);
+  } catch (error) {
+    console.warn('Warning: Failed to parse URL. Treating the file content as a possible token instead.');
+  }
+
+  // If a token was extracted from the URL, validate it
+  if (token) {
+    if (isValidTokenSyntax(token)) {
+      return token; // Successfully retrieved a valid token from the URL
+    } else {
+      throw new Error('Error: The token extracted from the URL has an invalid format.');
+    }
+  }
+
+  // If URL parsing failed or there was no token in the URL, treat the content as a raw token
+  if (isValidTokenSyntax(content)) {
+    return content; // The file content itself is a valid token
+  } else {
+    throw new Error('Error: The file content is not a valid token or URL.');
+  }
+}
+
+function getTokenFromUrl(url) {
+  // Try to create a new URL object and check if the hash part exists
+  try {
+    const urlObj = new URL(url);
+
+    // Check if the hash part is empty
+    if (!urlObj.hash) {
+      return null;
+    }
+
+    // Get the hash part of the URL (everything after the #)
+    const hash = urlObj.hash.substring(1); // Remove the leading '#'
+
+    // Use URLSearchParams to parse the hash
+    const params = new URLSearchParams(hash);
+
+    // Get the access_token
+    return params.get('access_token');
+  } catch (error) {
+    // If URL parsing fails, return null and allow the process to continue
+    throw new Error('Invalid URL format provided.', { cause: error });
+  }
+}
+
+function isValidTokenSyntax(token) {
+  // Define a regex pattern for validating the token
+  const tokenPattern = /^[a-zA-Z0-9_\-\.]+$/;
+  return tokenPattern.test(token);
+}
+
 function getRandomElement(array) {
   return array[Math.floor(Math.random() * array.length)];
 }
@@ -33,7 +98,7 @@ function eraseMetadata(obj) {
 }
 
 function clean(obj) {
-  for (var propName in obj) { 
+  for (var propName in obj) {
     if (obj[propName] === null || obj[propName] === undefined || obj[propName]?.length === 0) {
       delete obj[propName];
     }
@@ -93,6 +158,7 @@ async function executeTrigger(trigger, context) {
 }
 
 module.exports = {
+  getToken,
   getRandomElement,
   hasSticker,
   sleep,

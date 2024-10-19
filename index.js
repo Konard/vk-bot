@@ -1,24 +1,24 @@
 
-const { executeTrigger } = require('./utils');
+const { executeTrigger, getToken } = require('./utils');
 const { handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages');
 
 const peers = {}; // TODO: keep state about what triggers then last triggered for each peer
 
 const triggers = [
-  require('./triggers/acquaintance').trigger,
-  require('./triggers/attachments').trigger,
-  require('./triggers/goal').trigger,
-  require('./triggers/gratitude').trigger,
-  require('./triggers/greeting').trigger,
-  require('./triggers/undefined-question').trigger,
-  require('./triggers/well-being').trigger,
-  require('./triggers/who-multiple').trigger,
-  require('./triggers/who-singular').trigger,
-  require('./triggers/have-we-talked-before').trigger,
-  require('./triggers/engage-with-acquaintance').trigger
+  // require('./triggers/acquaintance').trigger,
+  // require('./triggers/attachments').trigger,
+  // require('./triggers/goal').trigger,
+  // require('./triggers/gratitude').trigger,
+  // require('./triggers/greeting').trigger,
+  // require('./triggers/undefined-question').trigger,
+  // require('./triggers/well-being').trigger,
+  // require('./triggers/who-multiple').trigger,
+  // require('./triggers/who-singular').trigger,
+  // require('./triggers/have-we-talked-before').trigger,
+  // require('./triggers/engage-with-acquaintance').trigger
 ];
 
-const token = require('fs').readFileSync('token', 'utf-8').trim();
+const token = getToken();
 const { VK } = require('vk-io');
 const vk = new VK({ token });
 
