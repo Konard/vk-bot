@@ -13,8 +13,14 @@ https://oauth.vk.com/authorize?client_id=2685278&scope=1073737727&redirect_uri=h
 
 And put the token into `token` file near `index.js` file.
 
+## Install dependencies
+
+```bash
+npm ci
+```
+
 ## Run
 
-```
+```bash
 node index.js 2>&1 | tee log.txt
 ```
