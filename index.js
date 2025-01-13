@@ -45,7 +45,7 @@ vk.updates.on(['message_new'], async (request) => {
     }
   } else if (peerState) {
 
-    console.log('request', JSON.stringify(request, null, 2));
+    console.log('Received new message:', JSON.stringify(request, null, 2));
 
     // Add the incoming message to the history
     // You may need to adjust the message structure below based on the actual VK API response structure
@@ -98,25 +98,27 @@ const deleteDeactivatedFriendsInterval = setInterval(async () => {
   await executeTrigger(deleteDeactivatedFriendsTrigger, { vk });
 }, 30 * minute);
 
-const { trigger: greetFriends } = require('./triggers/greet-friends');
-const greetFriendsInterval = setInterval(async () => {
-  await executeTrigger(greetFriends, { vk, options: { maxGreetings: 20 } });
-}, 40 * minute);
+// const { trigger: greetFriends } = require('./triggers/greet-friends');
+// const greetFriendsInterval = setInterval(async () => {
+//   await executeTrigger(greetFriends, { vk, options: { maxGreetings: 20 } });
+// }, 40 * minute);
 
-const { trigger: reactToCancelledFriendships } = require('./triggers/react-to-cancelled-friendships');
-const reactToCancelledFriendshipsInterval = setInterval(async () => {
-  await executeTrigger(reactToCancelledFriendships, { vk, options: { maxRequests: 20 }, states: peers });
-}, 20 * minute);
+// const { trigger: reactToCancelledFriendships } = require('./triggers/react-to-cancelled-friendships');
+// const reactToCancelledFriendshipsInterval = setInterval(async () => {
+//   await executeTrigger(reactToCancelledFriendships, { vk, options: { maxRequests: 20 }, states: peers });
+// }, 20 * minute);
 
-// const { trigger: deleteOutgoingFriendRequestsTrigger } = require('./triggers/delete-outgoing-requests');
-// const deleteOutgoingFriendRequestsInterval = setInterval(async () => {
-//   await executeTrigger(deleteOutgoingFriendRequestsTrigger, { vk, options: { maxRequests: 20 } });
-// }, 8 * minute);
+const { trigger: deleteOutgoingFriendRequestsTrigger } = require('./triggers/delete-outgoing-requests');
+const deleteOutgoingFriendRequestsInterval = setInterval(async () => {
+  await executeTrigger(deleteOutgoingFriendRequestsTrigger, { vk, options: { maxRequests: 20 } });
+}, 8 * minute);
 
 const { trigger: sendInvitationPostsForFriendsTrigger } = require('./triggers/send-invitation-posts-for-friends');
-const sendInvitationPostsForFriendsInterval = setInterval(async () => {
+const sendInvitationPostsForFriendsIntervalAction = async () => {
   await executeTrigger(sendInvitationPostsForFriendsTrigger, { vk });
-}, 30 * minute);
+};
+const sendInvitationPostsForFriendsInterval = setInterval(sendInvitationPostsForFriendsIntervalAction, 10 * minute);
+sendInvitationPostsForFriendsIntervalAction();
 
 let lastBirthday;
 const { trigger: sendBirthDayCongratulationsTrigger } = require('./triggers/send-birthday-congratulations');

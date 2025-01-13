@@ -58,8 +58,6 @@ async function sendBirthdayCongratulations() {
       offset,
     });
 
-    console.log('response.items.length', response.items.length);
-
     if (response.items.length === 0) {
       break;
     }
