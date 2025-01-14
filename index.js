@@ -39,13 +39,13 @@ vk.updates.on(['message_new'], async (request) => {
       // Store the loaded history in the peers object
       peerState.history = response.items;
 
-      console.log(`History for peer ${peerId} (loaded from server): `, JSON.stringify(peerState.history, null, 2));
+      // console.log(`History for peer ${peerId} (loaded from server): `, JSON.stringify(peerState.history, null, 2));
     } catch (error) {
       console.error(`An error occurred while loading message history for peer ${peerId}:`, error);
     }
   } else if (peerState) {
 
-    console.log('Received new message:', JSON.stringify(request, null, 2));
+    // console.log('Received new message:', JSON.stringify(request, null, 2));
 
     // Add the incoming message to the history
     // You may need to adjust the message structure below based on the actual VK API response structure
@@ -67,7 +67,7 @@ vk.updates.on(['message_new'], async (request) => {
     // Ensure we only keep the last 100 messages
     peerState.history = peerState.history.slice(0, 100);
 
-    console.log(`History for peer ${peerId}: (updated by message event)`, JSON.stringify(peerState.history, null, 2));
+    // console.log(`History for peer ${peerId}: (updated by message event)`, JSON.stringify(peerState.history, null, 2));
   }
 
   for (const trigger of triggers) {
