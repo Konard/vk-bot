@@ -4,25 +4,25 @@ const { sleep, getRandomElement } = require('../utils');
 // interval in cycles
 
 const communitiesIntervals = [
-  [64758790, 2],   // https://vk.com/club64758790
-  [34985835, 3],   // https://vk.com/club34985835
-  [24261502, 3],   // https://vk.com/club24261502
-  [53294903, 4],   // https://vk.com/club53294903
-  [33764742, 4],   // https://vk.com/club33764742
-  [8337923, 5],    // https://vk.com/club8337923
-  [94946045, 5],   // https://vk.com/club94946045
-  [194360448, 5],  // https://vk.com/club194360448
-  [39130136, 5],   // https://vk.com/club39130136
-  [198580397, 10], // https://vk.com/club198580397
-  [195285978, 10], // https://vk.com/club195285978
-  [47350356, 10],  // https://vk.com/club47350356
-  [61413825, 10],  // https://vk.com/club61413825
-  [180442247, 20], // https://vk.com/club180442247
-  [214787806, 20], // https://vk.com/club214787806
+  [64758790, 3],   // https://vk.com/club64758790
+  [34985835, 5],   // https://vk.com/club34985835
+  [24261502, 5],   // https://vk.com/club24261502
+  [53294903, 7],   // https://vk.com/club53294903
+  [33764742, 7],   // https://vk.com/club33764742
+  [8337923, 11],    // https://vk.com/club8337923
+  [94946045, 11],   // https://vk.com/club94946045
+  [194360448, 11],  // https://vk.com/club194360448
+  [39130136, 11],   // https://vk.com/club39130136
+  [198580397, 17], // https://vk.com/club198580397
+  [195285978, 17], // https://vk.com/club195285978
+  [47350356, 17],  // https://vk.com/club47350356
+  [61413825, 17],  // https://vk.com/club61413825
+  [180442247, 23], // https://vk.com/club180442247
+  [214787806, 23], // https://vk.com/club214787806
 ];
 
 let currentCycle = 0;
-const maxCycles = Math.max(...communitiesIntervals.map(([, interval]) => interval));
+const maxCycles = 3 * 5 * 7 * 11 * 17 * 23;
 
 const postMessage = `Я программист, принимаю все заявки в друзья.
 Срочно? Нужно взаимоное действие (например лайк, подписку и т.п.)? 
