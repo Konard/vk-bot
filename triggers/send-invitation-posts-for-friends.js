@@ -52,7 +52,8 @@ async function sendInvitationPosts(context) {
       const ownerId = '-' + communityId.toString();
 
       const previousPosts = await context.vk.api.wall.search({ owner_id: ownerId, query: postsSearchRequest, count: 15 });
-      console.log(trigger.name, `Found ${previousPosts.count} previous posts.`);
+      const filteredPosts = previousPosts.items.filter(post => post.text.includes(postsSearchRequest) && post.can_delete);
+      console.log(trigger.name, `Found ${filteredPosts.length} previous posts.`);
       // console.log(previousPosts);
       await sleep(5000);
 
@@ -60,11 +61,7 @@ async function sendInvitationPosts(context) {
       console.log(trigger.name, 'Post is sent to', communityId, 'community.');
       await sleep(5000);
 
-      for (const post of previousPosts.items) {
-        // console.log(post.text.includes(postsSearchRequest))
-        if (!post.can_delete || !post.text.includes(postsSearchRequest)) {
-          continue;
-        }
+      for (const post of filteredPosts) {
         try {
           await context.vk.api.wall.delete({ owner_id: ownerId, post_id: post.id });
           console.log(trigger.name, `Post ${post.id} is deleted.`);
