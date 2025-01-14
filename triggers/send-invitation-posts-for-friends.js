@@ -7,17 +7,17 @@ const communitiesIntervals = [
   [64758790, 3],   // https://vk.com/club64758790
   [34985835, 5],   // https://vk.com/club34985835
   [24261502, 5],   // https://vk.com/club24261502
-  [53294903, 7],   // https://vk.com/club53294903
-  [33764742, 7],   // https://vk.com/club33764742
-  [8337923, 11],   // https://vk.com/club8337923
-  [94946045, 11],  // https://vk.com/club94946045
-  [194360448, 11], // https://vk.com/club194360448
-  [39130136, 11],  // https://vk.com/club39130136
-  [198580397, 13], // https://vk.com/club198580397
+  [53294903, 5],   // https://vk.com/club53294903
+  [33764742, 5],   // https://vk.com/club33764742
+  [8337923, 7],   // https://vk.com/club8337923
+  [94946045, 7],  // https://vk.com/club94946045
+  [194360448, 7], // https://vk.com/club194360448
+  [39130136, 7],  // https://vk.com/club39130136
+  [198580397, 11], // https://vk.com/club198580397
   [195285978, 13], // https://vk.com/club195285978
-  [47350356, 13],  // https://vk.com/club47350356
-  [61413825, 13],  // https://vk.com/club61413825
-  [30345825, 13],  // https://vk.com/club30345825
+  [47350356, 7],  // https://vk.com/club47350356
+  [61413825, 7],  // https://vk.com/club61413825
+  [30345825, 17],  // https://vk.com/club30345825
   [180442247, 17], // https://vk.com/club180442247
   [214787806, 17], // https://vk.com/club214787806
 ];
