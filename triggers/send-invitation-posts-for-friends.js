@@ -48,7 +48,7 @@ async function sendInvitationPosts(context) {
       if ((currentCycle % communityCycles) !== 0) {
         continue;
       }
-      const communityId = community[0];
+      const communityId = communityInterval[0];
       const ownerId = '-' + communityId.toString();
 
       const previousPosts = await context.vk.api.wall.search({ owner_id: ownerId, query: postsSearchRequest, count: 15 });
