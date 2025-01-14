@@ -48,6 +48,8 @@ async function sendInvitationPosts(context) {
       if ((currentCycle % communityCycles) !== 0) {
         continue;
       }
+
+      console.log(trigger.name, 'Sending post to', communityInterval[0], 'community (cycles frequency:', communityCycles, ')');
       const communityId = communityInterval[0];
       const ownerId = '-' + communityId.toString();
 
