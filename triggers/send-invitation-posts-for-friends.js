@@ -22,7 +22,7 @@ const communitiesIntervals = [
 ];
 
 const currentCycle = 0;
-const maxCycles = communitiesIntervals.max(([, interval]) => interval);
+const maxCycles = Math.max(...communitiesIntervals.map(([, interval]) => interval));
 
 const postMessage = `Я программист, принимаю все заявки в друзья.
 Срочно? Нужно взаимоное действие (например лайк, подписку и т.п.)? 
