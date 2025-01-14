@@ -21,7 +21,7 @@ const communitiesIntervals = [
   [214787806, 20], // https://vk.com/club214787806
 ];
 
-const currentCycle = 0;
+let currentCycle = 0;
 const maxCycles = Math.max(...communitiesIntervals.map(([, interval]) => interval));
 
 const postMessage = `Я программист, принимаю все заявки в друзья.
