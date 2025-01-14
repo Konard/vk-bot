@@ -13,16 +13,16 @@ const communitiesIntervals = [
   [94946045, 11],   // https://vk.com/club94946045
   [194360448, 11],  // https://vk.com/club194360448
   [39130136, 11],   // https://vk.com/club39130136
-  [198580397, 17], // https://vk.com/club198580397
-  [195285978, 17], // https://vk.com/club195285978
-  [47350356, 17],  // https://vk.com/club47350356
-  [61413825, 17],  // https://vk.com/club61413825
-  [180442247, 23], // https://vk.com/club180442247
-  [214787806, 23], // https://vk.com/club214787806
+  [198580397, 13], // https://vk.com/club198580397
+  [195285978, 13], // https://vk.com/club195285978
+  [47350356, 13],  // https://vk.com/club47350356
+  [61413825, 13],  // https://vk.com/club61413825
+  [180442247, 17], // https://vk.com/club180442247
+  [214787806, 17], // https://vk.com/club214787806
 ];
 
 let currentCycle = 0;
-const maxCycles = 3 * 5 * 7 * 11 * 17 * 23;
+const maxCycles = 3 * 5 * 7 * 11 * 13 * 17;
 
 const postMessage = `Я программист, принимаю все заявки в друзья.
 Срочно? Нужно взаимоное действие (например лайк, подписку и т.п.)? 
