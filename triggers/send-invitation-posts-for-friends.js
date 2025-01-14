@@ -93,6 +93,8 @@ const trigger = {
   action: sendInvitationPosts
 };
 
+console.log(trigger.name, 'Max cycles:', maxCycles);
+
 module.exports = {
   trigger
 };
