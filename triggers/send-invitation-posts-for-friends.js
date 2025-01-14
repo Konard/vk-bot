@@ -45,7 +45,7 @@ async function sendInvitationPosts(context) {
     console.log(trigger.name, 'Current cycle:', currentCycle);
     for (const communityInterval of communitiesIntervals) {
       const communityCycles = communityInterval[1];
-      if (currentCycle !== communityCycles) {
+      if (currentCycle <= communityCycles || currentCycle % communityCycles !== 0) {
         continue;
       }
       console.log(trigger.name, 'Sending post to', communityInterval[0], 'community (cycles frequency:', communityCycles, ')');
