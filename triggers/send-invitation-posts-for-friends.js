@@ -56,12 +56,19 @@ async function sendInvitationPosts(context) {
       const previousPosts = await context.vk.api.wall.search({ owner_id: ownerId, query: postsSearchRequest, count: 15 });
       const filteredPosts = previousPosts.items.filter(post => post.text.includes(postsSearchRequest) && post.can_delete);
       console.log(trigger.name, `Found ${filteredPosts.length} previous posts.`);
-      // console.log(previousPosts);
       await sleep(5000);
 
-      await context.vk.api.wall.post({ owner_id: ownerId, message: postMessage, attachments: getRandomElement(audioAttachments) })
-      console.log(trigger.name, 'Post is sent to', communityId, 'community.');
-      await sleep(5000);
+      try {
+        await context.vk.api.wall.post({ owner_id: ownerId, message: postMessage, attachments: getRandomElement(audioAttachments) });
+        console.log(trigger.name, 'Post is sent to', communityId, 'community.');
+        await sleep(5000);
+      } catch (e) {
+        if (e.code === 210) { // APIError: Code №210 - Access to wall's post denied
+          console.warn(trigger.name, `Access to wall's post denied for community ${communityId}.`);
+        } else {
+          throw e;
+        }
+      }
 
       for (const post of filteredPosts) {
         try {
