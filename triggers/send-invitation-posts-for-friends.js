@@ -64,7 +64,9 @@ async function sendInvitationPosts(context) {
         await sleep(5000);
       } catch (e) {
         if (e.code === 210) { // APIError: Code №210 - Access to wall's post denied
-          console.warn(trigger.name, `Access to wall's post denied for community ${communityId}.`);
+          console.warn(trigger.name, `Access to wall's post denied for community ${communityId}.
+As this error usually corresponds to the rate limit, the request should be repeated after a increased delay.`);
+          continue;
         } else {
           throw e;
         }
@@ -77,10 +79,17 @@ async function sendInvitationPosts(context) {
           await sleep(5000);
         } catch (e) {
           if (e.code === 104) { // APIError: Code №104 - Not found
+            console.warn(trigger.name, `Post ${post.id} is not found. It may be already deleted.`);
             continue;
           }
           if (e.code === 100) { // APIError: Code №100 - One of the parameters specified was missing or invalid: no post with this post_id
+            console.warn(trigger.name, `Post ${post.id} is not found. It may be already deleted.`);
             continue;
+          }
+          if (e.code === 210) {
+            console.warn(trigger.name, `Access to wall's post denied for community ${communityId}.
+As this error usually corresponds to the rate limit, the request should be repeated after a increased delay.`);
+            break;
           }
           throw e;
         }
