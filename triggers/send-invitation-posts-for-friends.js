@@ -65,7 +65,7 @@ async function sendInvitationPosts(context) {
       } catch (e) {
         if (e.code === 210) { // APIError: Code №210 - Access to wall's post denied
           console.warn(trigger.name, `Access to wall's post denied for community ${communityId}.
-As this error usually corresponds to the rate limit, the request should be repeated after a increased delay.`);
+As this usually corresponds to the rate limit, the request should be repeated after a increased delay.`);
           continue;
         } else {
           throw e;
@@ -88,7 +88,7 @@ As this error usually corresponds to the rate limit, the request should be repea
           }
           if (e.code === 210) {
             console.warn(trigger.name, `Access to wall's post denied for community ${communityId}.
-As this error usually corresponds to the rate limit, the request should be repeated after a increased delay.`);
+As this usually corresponds to the rate limit, the request should be repeated after a increased delay.`);
             break;
           }
           throw e;
