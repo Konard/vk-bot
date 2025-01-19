@@ -1,7 +1,7 @@
 const { VK } = require('vk-io');
-const { getRandomElement, sleep } = require('../utils');
+const { getRandomElement, sleep, getToken } = require('../utils');
 const { randomInRange, handleOutgoingMessage, enqueueMessage, queue } = require('../outgoing-messages');
-const token = require('fs').readFileSync('token', 'utf-8').trim();
+const token = getToken();
 const vk = new VK({ token });
 
 const birthdayStickerIds = [

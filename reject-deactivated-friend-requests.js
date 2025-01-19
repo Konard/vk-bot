@@ -1,6 +1,6 @@
 const { VK } = require('vk-io');
-const { readTextSync, sleep } = require('./utils');
-const token = readTextSync('token').trim();
+const { readTextSync, sleep, getToken } = require('./utils');
+const token = getToken();
 const vk = new VK({ token });
 
 const rejectDeactivatedFriendRequests = async () => {

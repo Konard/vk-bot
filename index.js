@@ -122,11 +122,13 @@ sendInvitationPostsForFriendsIntervalAction();
 
 let lastBirthday;
 const { trigger: sendBirthDayCongratulationsTrigger } = require('./triggers/send-birthday-congratulations');
-const sendBirthDayCongratulationsInterval = setInterval(async () => {
+const sendBirthDayCongratulationsIntervalAction = async () => {
   const now = new Date();
   const currentDay = now.getDate();
   if (currentDay != lastBirthday) {
     lastBirthday = currentDay;
     await executeTrigger(sendBirthDayCongratulationsTrigger, { vk });
   }
-}, 23 * 60 * minute);
+}
+const sendBirthDayCongratulationsInterval = setInterval(sendBirthDayCongratulationsIntervalAction, 23 * 60 * minute);
+sendBirthDayCongratulationsIntervalAction();

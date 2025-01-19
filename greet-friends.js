@@ -1,9 +1,9 @@
 const { VK } = require('vk-io');
-const { executeTrigger } = require('./utils');
+const { executeTrigger, getToken } = require('./utils');
 const { trigger: greetingTrigger } = require('./triggers/greeting');
 const { randomInRange, handleOutgoingMessage, enqueueMessage, queue } = require('./outgoing-messages');
 const fs = require('fs');
-const token = fs.readFileSync('token', 'utf-8').trim();
+const token = getToken();
 const vk = new VK({ token });
 const { trigger } = require('./triggers/greet-friends');
 

@@ -1,7 +1,7 @@
 const { VK } = require('vk-io');
-const { sleep } = require('./utils');
+const { sleep, getToken } = require('./utils');
 const fs = require('fs');
-const token = fs.readFileSync('token', 'utf-8').trim();
+const token = getToken();
 const vk = new VK({ token });
 
 async function loadUsableStickerPacks() {

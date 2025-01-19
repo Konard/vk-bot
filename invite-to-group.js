@@ -1,7 +1,7 @@
 const { trigger } = require('./triggers/invite-to-group');
-const { executeTrigger } = require('./utils');
+const { executeTrigger, getToken } = require('./utils');
 const { VK } = require('vk-io');
-const token = require('fs').readFileSync('token', 'utf-8').trim();
+const token = getToken();
 const vk = new VK({ token });
 
 executeTrigger(trigger, { vk });
