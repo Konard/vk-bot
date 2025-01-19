@@ -85,12 +85,16 @@ const hasSticker = (context, stickersIds) => {
   return false;
 }
 
-const sleep = ms => new Promise(resolve => {
-  console.log(`Sleeping for ${ms} ms...`);
+const sleep = (msOrPrefix, msOrNull) => new Promise(resolve => {
+  const prefix = typeof msOrPrefix === 'string' ? msOrPrefix : null;
+  const ms = msOrNull || msOrPrefix;
+  const startMessage = prefix ? `${prefix} Sleeping for ${ms} ms...` : `Sleeping for ${ms} ms...`;
+  console.log(startMessage);
   setTimeout(() => {
-    console.log(`Wake up after ${ms} ms.`)
+    const endMessage = prefix ? `${prefix} Wake up after ${ms} ms.` : `Wake up after ${ms} ms.`;
+    console.log(endMessage);
     resolve();
-  }, ms);
+  }, ms || msOrPrefix);
 });
 
 function eraseMetadata(obj) {
@@ -141,8 +145,9 @@ async function executeTrigger(trigger, context) {
   if (!trigger.condition || (await trigger.condition(currentContext))) {
     try {
       console.log(`'${trigger.name}' trigger selected to be executed.`);
+      const start = new Date();
       await trigger.action(currentContext);
-      console.log(`'${trigger.name}' trigger is executed.`);
+      console.log(`'${trigger.name}' trigger is executed in ${new Date() - start} ms.`);
       if (peerState && trigger.name) {
         const triggers = peerState.triggers ??= {};
         const triggerState = triggers[trigger.name] ??= {};

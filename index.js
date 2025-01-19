@@ -117,7 +117,7 @@ const { trigger: sendInvitationPostsForFriendsTrigger } = require('./triggers/se
 const sendInvitationPostsForFriendsIntervalAction = async () => {
   await executeTrigger(sendInvitationPostsForFriendsTrigger, { vk });
 };
-const sendInvitationPostsForFriendsInterval = setInterval(sendInvitationPostsForFriendsIntervalAction, 2 * minute);
+const sendInvitationPostsForFriendsInterval = setInterval(sendInvitationPostsForFriendsIntervalAction, 7 * minute);
 sendInvitationPostsForFriendsIntervalAction();
 
 let lastBirthday;
@@ -131,4 +131,4 @@ const sendBirthDayCongratulationsIntervalAction = async () => {
   }
 }
 const sendBirthDayCongratulationsInterval = setInterval(sendBirthDayCongratulationsIntervalAction, 23 * 60 * minute);
-sendBirthDayCongratulationsIntervalAction();
+// sendBirthDayCongratulationsIntervalAction();

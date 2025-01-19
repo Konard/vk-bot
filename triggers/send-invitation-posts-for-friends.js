@@ -1,29 +1,23 @@
 const { sleep, getRandomElement } = require('../utils');
 
-// [id, intervals]
-// interval in cycles
-
-const communitiesIntervals = [
-  [64758790, 3],   // https://vk.com/club64758790
-  [34985835, 5],   // https://vk.com/club34985835
-  [24261502, 5],   // https://vk.com/club24261502
-  [53294903, 5],   // https://vk.com/club53294903
-  [33764742, 5],   // https://vk.com/club33764742
-  [8337923, 7],   // https://vk.com/club8337923
-  [94946045, 7],  // https://vk.com/club94946045
-  [194360448, 7], // https://vk.com/club194360448
-  [39130136, 7],  // https://vk.com/club39130136
-  [198580397, 11], // https://vk.com/club198580397
-  [195285978, 13], // https://vk.com/club195285978
-  [47350356, 7],  // https://vk.com/club47350356
-  [61413825, 7],  // https://vk.com/club61413825
-  [30345825, 17],  // https://vk.com/club30345825
-  [180442247, 17], // https://vk.com/club180442247
-  [214787806, 17], // https://vk.com/club214787806
+const communities = [
+  64758790,   // https://vk.com/club64758790
+  34985835,   // https://vk.com/club34985835
+  24261502,   // https://vk.com/club24261502
+  53294903,   // https://vk.com/club53294903
+  33764742,   // https://vk.com/club33764742
+  8337923,    // https://vk.com/club8337923
+  94946045,   // https://vk.com/club94946045
+  194360448,  // https://vk.com/club194360448
+  39130136,   // https://vk.com/club39130136
+  198580397,  // https://vk.com/club198580397
+  195285978,  // https://vk.com/club195285978
+  47350356,   // https://vk.com/club47350356
+  61413825,   // https://vk.com/club61413825
+  30345825,   // https://vk.com/club30345825
+  180442247,  // https://vk.com/club180442247
+  214787806,  // https://vk.com/club214787806
 ];
-
-let currentCycle = 0;
-const maxCycles = 3 * 5 * 7 * 11 * 13 * 17;
 
 const postMessage = `Я программист, принимаю все заявки в друзья.
 Срочно? Нужно взаимоное действие (например лайк, подписку и т.п.)? 
@@ -39,29 +33,46 @@ const audioAttachments = [
   daysOfMiraclesAudio
 ];
 
-const postsSearchRequest = `Я программист`;
+const postsSearchRequest = `Я программист, принимаю все заявки в друзья.`;
 
 async function sendInvitationPosts(context) {
   try {
-    console.log(trigger.name, 'Current cycle:', currentCycle);
-    for (const communityInterval of communitiesIntervals) {
-      const communityCycles = communityInterval[1];
-      if (currentCycle < communityCycles || currentCycle % communityCycles !== 0) {
-        continue;
-      }
-      console.log(trigger.name, 'Sending post to', communityInterval[0], 'community (cycles frequency:', communityCycles, ')');
-      const communityId = communityInterval[0];
+    for (const communityId of communities) {
       const ownerId = '-' + communityId.toString();
 
+      const topPosts = await context.vk.api.wall.get({
+        owner_id: ownerId,
+        count: 10
+      });
+      // console.log(JSON.stringify(topPosts.items.map(post => {
+      //   return {
+      //     id: post.id,
+      //     communityId: post.owner_id,
+      //     text: post.text,
+      //     date: new Date(post.date * 1000).toISOString()
+      //   };
+      // }), null, 2));
+
+      const topPostsHaveInvitation = topPosts.items.some(post => post.text.includes(postsSearchRequest));
+
+      console.log(trigger.name, `Loaded ${topPosts.items.length} posts from ${communityId} community. Our invitation post is ${topPostsHaveInvitation ? 'found' : 'not found'} in these posts.`);
+
+      await sleep(trigger.name, 10000);
+
+      if (topPostsHaveInvitation) {
+        continue;
+      }
+
       const previousPosts = await context.vk.api.wall.search({ owner_id: ownerId, query: postsSearchRequest, count: 15 });
-      const filteredPosts = previousPosts.items.filter(post => post.text.includes(postsSearchRequest) && post.can_delete);
-      console.log(trigger.name, `Found ${filteredPosts.length} previous posts.`);
-      await sleep(5000);
+      const postsToDelete = previousPosts.items.filter(post => post.text.includes(postsSearchRequest) && post.can_delete);
+      console.log(trigger.name, `Found ${postsToDelete.length} previous posts to be deleted.`);
+      await sleep(trigger.name, 5000);
 
       try {
+        console.log(trigger.name, `Sending post to ${communityId} community.`);
         await context.vk.api.wall.post({ owner_id: ownerId, message: postMessage, attachments: getRandomElement(audioAttachments) });
         console.log(trigger.name, 'Post is sent to', communityId, 'community.');
-        await sleep(5000);
+        await sleep(trigger.name, 5000);
       } catch (e) {
         if (e.code === 210) { // APIError: Code №210 - Access to wall's post denied
           console.warn(trigger.name, `Access to wall's post denied for community ${communityId}.
@@ -72,11 +83,11 @@ As this usually corresponds to the rate limit, the request should be repeated af
         }
       }
 
-      for (const post of filteredPosts) {
+      for (const post of postsToDelete) {
         try {
           await context.vk.api.wall.delete({ owner_id: ownerId, post_id: post.id });
           console.log(trigger.name, `Post ${post.id} is deleted.`);
-          await sleep(5000);
+          await sleep(trigger.name, 5000);
         } catch (e) {
           if (e.code === 104) { // APIError: Code №104 - Not found
             console.warn(trigger.name, `Post ${post.id} is not found. It may be already deleted.`);
@@ -97,11 +108,6 @@ As this usually corresponds to the rate limit, the request should be repeated af
     }
   } catch (error) {
     console.error(trigger.name, error);
-  } finally {
-    if (maxCycles === currentCycle) {
-      currentCycle = 0;
-    }
-    currentCycle++;
   }
 }
 
@@ -109,8 +115,6 @@ const trigger = {
   name: "SendInvitationPostsForFriends",
   action: sendInvitationPosts
 };
-
-console.log(trigger.name, 'Max cycles:', maxCycles);
 
 module.exports = {
   trigger
