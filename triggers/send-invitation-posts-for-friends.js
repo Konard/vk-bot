@@ -6,7 +6,7 @@ const communities = [
   24261502,   // https://vk.com/club24261502
   53294903,   // https://vk.com/club53294903
   33764742,   // https://vk.com/club33764742
-  8337923,    // https://vk.com/club8337923
+  // 8337923,    // https://vk.com/club8337923 (restore after 3rd of february 2025)
   94946045,   // https://vk.com/club94946045
   194360448,  // https://vk.com/club194360448
   39130136,   // https://vk.com/club39130136
@@ -19,11 +19,18 @@ const communities = [
   214787806,  // https://vk.com/club214787806
 ];
 
+const restrictedCommunities = [
+  8337923,    // https://vk.com/club8337923
+];
+
 const postMessage = `Я программист, принимаю все заявки в друзья.
-Срочно? Нужно взаимоное действие (например лайк, подписку и т.п.)? 
+Срочно? Нужно взаимное действие (например лайк, подписку и т.п.)? 
 Пиши в личку.
 Я в Telegram: https://t.me/link_konard - канал, https://t.me/drakonard - личка.
 Если нужен доступ к GPT, попробуй нашего бота в Telegram: https://t.me/DeepGPTBot?start=1339837872.`;
+
+const restrictedPostMessage = `Я программист, принимаю все заявки в друзья.
+Пиши в личку, буду рад обсудить любые предложения.`;
 
 const neuronalMiracleAudio = 'audio-2001064727_125064727';
 const daysOfMiraclesAudio = 'audio-2001281499_119281499';
@@ -70,7 +77,10 @@ async function sendInvitationPosts(context) {
 
       try {
         console.log(trigger.name, `Sending post to ${communityId} community.`);
-        await context.vk.api.wall.post({ owner_id: ownerId, message: postMessage, attachments: getRandomElement(audioAttachments) });
+
+        const message = restrictedCommunities.includes(communityId) ? restrictedPostMessage : postMessage;
+
+        await context.vk.api.wall.post({ owner_id: ownerId, message, attachments: getRandomElement(audioAttachments) });
         console.log(trigger.name, 'Post is sent to', communityId, 'community.');
         await sleep(trigger.name, 5000);
       } catch (e) {
