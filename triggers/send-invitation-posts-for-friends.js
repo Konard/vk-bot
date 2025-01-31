@@ -20,6 +20,7 @@ const communities = [
 ];
 
 const restrictedCommunities = [
+  64758790,   // https://vk.com/club64758790
   8337923,    // https://vk.com/club8337923
 ];
 
