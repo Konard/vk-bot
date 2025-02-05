@@ -44,9 +44,6 @@ const audioAttachments = [
 
 const postsSearchRequest = `Я программист, принимаю все заявки в друзья.`;
 
-// Update this with the correct path to your avatar image file.
-// For example, if your avatar.jpg is in the same directory as this file:
-// const avatarImagePath = path.join(__dirname, 'avatar.jpeg');
 const avatarImagePath = 'avatar.jpeg';
 
 /**
@@ -56,18 +53,10 @@ const avatarImagePath = 'avatar.jpeg';
  */
 async function uploadAvatarPicture(context, communityId, imagePath) {
   // Check if the file exists
-  if (!fs.existsSync(imagePath)) {
-    throw new Error(`Avatar file not found at path: ${imagePath}`);
-  }
+  // if (!fs.existsSync(imagePath)) {
+  //   throw new Error(`Avatar file not found at path: ${imagePath}`);
+  // }
 
-  // Option 1: Pass the file path directly as the source.
-  // vk-io supports a string path as a valid source.
-  // const photo = await context.vk.upload.wallPhoto({
-  //   source: imagePath,
-  //   groupId: communityId  // Pass the positive community id
-  // });
-  
-  // Option 2: Alternatively, you can pass a stream with options:
   // const photo = await context.vk.upload.wallPhoto({
   //   source: {
   //     value: fs.createReadStream(imagePath),
@@ -81,10 +70,9 @@ async function uploadAvatarPicture(context, communityId, imagePath) {
 
   // console.log('photo', photo);
 
-  // return `photo${photo.owner_id}_${photo.id}`;
+  // return `photo${photo.ownerId}_${photo.id}_${photo.accessKey}`;
 
-  // return 'photo-3972090_457245285';
-  return 'photo3972090_457245822_5f56ac9e1f0de697db';
+  return 'photo3972090_457245822_5f56ac9e1f0de697db'; // do not upload again
 }
 
 async function sendInvitationPosts(context) {
