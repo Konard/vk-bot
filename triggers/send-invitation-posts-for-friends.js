@@ -1,4 +1,5 @@
 const { sleep, getRandomElement } = require('../utils');
+// const fs = require('fs');
 
 const communities = [
   64758790,   // https://vk.com/club64758790
@@ -43,9 +44,53 @@ const audioAttachments = [
 
 const postsSearchRequest = `Я программист, принимаю все заявки в друзья.`;
 
+// Update this with the correct path to your avatar image file.
+// For example, if your avatar.jpg is in the same directory as this file:
+// const avatarImagePath = path.join(__dirname, 'avatar.jpeg');
+const avatarImagePath = 'avatar.jpeg';
+
+/**
+ * Uploads an avatar image using vk-io uploader.
+ * For community wall photos, pass the community id (a positive number) as groupId.
+ * Returns the attachment string (e.g. "photo-123_456789").
+ */
+async function uploadAvatarPicture(context, communityId, imagePath) {
+  // Check if the file exists
+  if (!fs.existsSync(imagePath)) {
+    throw new Error(`Avatar file not found at path: ${imagePath}`);
+  }
+
+  // Option 1: Pass the file path directly as the source.
+  // vk-io supports a string path as a valid source.
+  // const photo = await context.vk.upload.wallPhoto({
+  //   source: imagePath,
+  //   groupId: communityId  // Pass the positive community id
+  // });
+  
+  // Option 2: Alternatively, you can pass a stream with options:
+  // const photo = await context.vk.upload.wallPhoto({
+  //   source: {
+  //     value: fs.createReadStream(imagePath),
+  //     options: {
+  //       filename: 'avatar.jpeg',
+  //       contentType: 'image/jpeg'
+  //     }
+  //   },
+  //   groupId: communityId
+  // });
+
+  // console.log('photo', photo);
+
+  // return `photo${photo.owner_id}_${photo.id}`;
+
+  // return 'photo-3972090_457245285';
+  return 'photo3972090_457245822_5f56ac9e1f0de697db';
+}
+
 async function sendInvitationPosts(context) {
   try {
     for (const communityId of communities) {
+      // For wall posts, VK expects a negative owner_id for communities.
       const ownerId = '-' + communityId.toString();
 
       const topPosts = await context.vk.api.wall.get({
@@ -80,15 +125,21 @@ async function sendInvitationPosts(context) {
         console.log(trigger.name, `Sending post to ${communityId} community.`);
 
         const message = restrictedCommunities.includes(communityId) ? restrictedPostMessage : postMessage;
-        const attachments = restrictedCommunities.includes(communityId) ? [] : [getRandomElement(audioAttachments)];
+        
+        const avatarAttachment = await uploadAvatarPicture(context, communityId, avatarImagePath);
+        let attachments = [avatarAttachment];
+        if (!restrictedCommunities.includes(communityId)) {
+          attachments.push(getRandomElement(audioAttachments));
+        }
 
+        // await context.vk.api.wall.post({ owner_id: ownerId, message, attachments: attachments.join(',') });
         await context.vk.api.wall.post({ owner_id: ownerId, message, attachments });
         console.log(trigger.name, 'Post is sent to', communityId, 'community.');
         await sleep(trigger.name, 5000);
       } catch (e) {
         if (e.code === 210) { // APIError: Code №210 - Access to wall's post denied
           console.warn(trigger.name, `Access to wall's post denied for community ${communityId}.
-As this usually corresponds to the rate limit, the request should be repeated after a increased delay.`);
+As this usually corresponds to the rate limit, the request should be repeated after a delay.`);
           continue;
         } else {
           throw e;
@@ -102,16 +153,16 @@ As this usually corresponds to the rate limit, the request should be repeated af
           await sleep(trigger.name, 5000);
         } catch (e) {
           if (e.code === 104) { // APIError: Code №104 - Not found
-            console.warn(trigger.name, `Post ${post.id} is not found. It may be already deleted.`);
+            console.warn(trigger.name, `Post ${post.id} is not found. It may already be deleted.`);
             continue;
           }
           if (e.code === 100) { // APIError: Code №100 - One of the parameters specified was missing or invalid: no post with this post_id
-            console.warn(trigger.name, `Post ${post.id} is not found. It may be already deleted.`);
+            console.warn(trigger.name, `Post ${post.id} is not found. It may already be deleted.`);
             continue;
           }
           if (e.code === 210) {
             console.warn(trigger.name, `Access to wall's post denied for community ${communityId}.
-As this usually corresponds to the rate limit, the request should be repeated after a increased delay.`);
+As this usually corresponds to the rate limit, the request should be repeated after a delay.`);
             break;
           }
           throw e;
