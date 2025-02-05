@@ -6,7 +6,7 @@ const communities = [
   24261502,   // https://vk.com/club24261502
   53294903,   // https://vk.com/club53294903
   33764742,   // https://vk.com/club33764742
-  8337923,    // https://vk.com/club8337923 (restore after 3rd of february 2025)
+  8337923,    // https://vk.com/club8337923
   94946045,   // https://vk.com/club94946045
   194360448,  // https://vk.com/club194360448
   39130136,   // https://vk.com/club39130136
