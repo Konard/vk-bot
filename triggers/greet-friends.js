@@ -2,6 +2,17 @@ const { sleep } = require('../utils');
 const { trigger: greetingTrigger } = require('./greeting');
 const { getConversation, setConversation } = require('../friends-conversations-cache');
 
+const loadConversation = async function(context, friendId) {
+  console.log(`Loading conversations for ${friendId} friend from server...`);
+  const conversationsResponse = await context.vk.api.messages.getConversationsById({
+    peer_ids: [friendId],
+    count: 1
+  });
+  console.log(`Conversation for ${friendId} friend loaded from VK.`);
+  await sleep(10000);
+  return conversationsResponse.items[0];
+}
+
 async function greetFriends(context) {
   const maxGreetings = context?.options?.maxGreetings || 0;
 
@@ -23,33 +34,27 @@ async function greetFriends(context) {
     }
 
     for (const friend of response.items) {
-      let conversationsResponse;
+      let conversation;
       if (getConversation(friend.id)) {
         console.log(`Skipping friend ${friend.id} because conversation history is not empty or it is not allowed to send message to this friend (data loaded from cache).`);
         continue;
       } else {
-        console.log(`Loading conversations for ${friend.id} friend from server...`);
-        conversationsResponse = await context.vk.api.messages.getConversationsById({
-          peer_ids: [friend.id],
-          count: 1
-        });
-        console.log(`Conversation for ${friend.id} friend loaded.`);
-        await sleep(10000);
+        conversation = await loadConversation(context, friend.id);
+        setConversation(friend.id, conversation);
       }
-
-      const conversation = conversationsResponse.items[0];
 
       if (conversation.last_message_id != 0 || conversation.last_conversation_message_id != 0)
       {
-        setConversation(friend.id, conversation);
+        console.log(`Skipping friend ${friend.id} because conversation history is not empty.`);
+        continue;
+      }
 
-        console.log(`Skipping friend ${friend.id} because conversation history is not empty (data loaded from VK server and saved to cache).`);
+      if (conversation.is_marked_unread) {
+        console.log(`Skipping friend ${friend.id} because conversation is marked as unread.`);
         continue;
       }
 
       if (!conversation.can_write.allowed) {
-        setConversation(friend.id, conversation);
-        
         console.log(`Skipping friend ${friend.id} because it is not allowed to send message to this friend.`);
         continue;
       }
