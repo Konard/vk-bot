@@ -13,11 +13,11 @@ const loadConversation = async function (context, friendId) {
   return conversationsResponse.items[0];
 }
 
-const loadAllFriends = async function ({ 
-  context, 
+const loadAllFriends = async function ({
+  context,
   fields = ['online'],
   limit = 10000,
-  step = 5000, 
+  step = 5000,
 }) {
   let friends = [];
   for (let offset = 0; offset < limit; offset += step) {
@@ -42,113 +42,61 @@ async function greetFriends(context) {
   let greetedFriends = 0;
   const maxGreetings = context?.options?.maxGreetings || 0;
 
-  const friends = await loadAllFriends({ context });
+  const allFriends = await loadAllFriends({ context });
 
-  for (const friend of friends) {
-    if (!friend.online) {
-      console.log(`Skipping friend ${friend.id} because it is offline.`);
-      continue;
-    }
+  const friendsCollections = [
+    allFriends.filter(friend => friend.online),
+    allFriends.filter(friend => !friend.online)
+  ];
 
-    if (friend.is_closed && !friend.can_access_closed) {
-      console.log(`Skipping friend ${friend.id} because it is closed and access is not allowed.`);
-      continue;
-    }
-
-    let conversation;
-    if (getConversation(friend.id)) {
-      console.log(`Skipping friend ${friend.id} because conversation history is not empty or it is not allowed to send message to this friend (data loaded from cache).`);
-      continue;
-    } else {
-      conversation = await loadConversation(context, friend.id);
-    }
-
-    if (conversation.last_message_id != 0 || conversation.last_conversation_message_id != 0) {
-      console.log(`Skipping friend ${friend.id} because conversation history is not empty.`);
-      setConversation(friend.id, conversation);
-      continue;
-    }
-
-    if (conversation.is_marked_unread) {
-      console.log(`Skipping friend ${friend.id} because conversation is marked as unread.`);
-      setConversation(friend.id, conversation);
-      continue;
-    }
-
-    if (!conversation.can_write.allowed) {
-      console.log(`Skipping friend ${friend.id} because it is not allowed to send message to this friend.`);
-      setConversation(friend.id, conversation);
-      continue;
-    }
-
-    await greetingTrigger.action({
-      vk: context.vk,
-      response: {
-        user_id: friend.id,
+  for (const friends of friendsCollections) {
+    for (const friend of friends) {
+      if (friend.is_closed && !friend.can_access_closed) {
+        console.log(`Skipping friend ${friend.id} because it is closed and access is not allowed.`);
+        continue;
       }
-    });
-    console.log(`Greeting for friend ${friend.id} is added to queue.`);
-    await sleep(1000);
 
-    greetedFriends++;
-    console.log('greetedFriends:', greetedFriends);
-    if (greetedFriends >= maxGreetings) {
-      console.log(`No more friends to greet, ${maxGreetings} limit reached.`);
-      return;
-    }
-  }
-
-  for (const friend of friends) {
-    if (friend.online) {
-      console.log(`Skipping friend ${friend.id} because it is online.`);
-      continue;
-    }
-
-    if (friend.is_closed && !friend.can_access_closed) {
-      console.log(`Skipping friend ${friend.id} because it is closed and access is not allowed.`);
-      continue;
-    }
-
-    let conversation;
-    if (getConversation(friend.id)) {
-      console.log(`Skipping friend ${friend.id} because conversation history is not empty or it is not allowed to send message to this friend (data loaded from cache).`);
-      continue;
-    } else {
-      conversation = await loadConversation(context, friend.id);
-    }
-
-    if (conversation.last_message_id != 0 || conversation.last_conversation_message_id != 0) {
-      console.log(`Skipping friend ${friend.id} because conversation history is not empty.`);
-      setConversation(friend.id, conversation);
-      continue;
-    }
-
-    if (conversation.is_marked_unread) {
-      console.log(`Skipping friend ${friend.id} because conversation is marked as unread.`);
-      setConversation(friend.id, conversation);
-      continue;
-    }
-
-    if (!conversation.can_write.allowed) {
-      console.log(`Skipping friend ${friend.id} because it is not allowed to send message to this friend.`);
-      setConversation(friend.id, conversation);
-      continue;
-    }
-
-    await greetingTrigger.action({
-      vk: context.vk,
-      response: {
-        user_id: friend.id,
+      let conversation;
+      if (getConversation(friend.id)) {
+        console.log(`Skipping friend ${friend.id} because conversation history is not empty or it is not allowed to send message to this friend (data loaded from cache).`);
+        continue;
+      } else {
+        conversation = await loadConversation(context, friend.id);
       }
-    });
-    console.log(`Greeting for friend ${friend.id} is added to queue.`);
-    await sleep(1000);
 
-    greetedFriends++;
-    console.log('greetedFriends:', greetedFriends);
-    if (greetedFriends >= maxGreetings) {
-      console.log(`No more friends to greet, ${maxGreetings} limit reached.`);
-      return;
+      if (conversation.last_message_id != 0 || conversation.last_conversation_message_id != 0) {
+        console.log(`Skipping friend ${friend.id} because conversation history is not empty.`);
+        setConversation(friend.id, conversation);
+        continue;
+      }
+
+      if (conversation.is_marked_unread) {
+        console.log(`Skipping friend ${friend.id} because conversation is marked as unread.`);
+        setConversation(friend.id, conversation);
+        continue;
+      }
+
+      if (!conversation.can_write.allowed) {
+        console.log(`Skipping friend ${friend.id} because it is not allowed to send message to this friend.`);
+        setConversation(friend.id, conversation);
+        continue;
+      }
+
+      await greetingTrigger.action({
+        vk: context.vk,
+        response: {
+          user_id: friend.id,
+        }
+      });
+      console.log(`Greeting for friend ${friend.id} is added to queue.`);
+      await sleep(1000);
+
+      greetedFriends++;
+      console.log('greetedFriends:', greetedFriends);
+      if (greetedFriends >= maxGreetings) {
+        console.log(`No more friends to greet, ${maxGreetings} limit reached.`);
+        return;
+      }
     }
   }
 }
