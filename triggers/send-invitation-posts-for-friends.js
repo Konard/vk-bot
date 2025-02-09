@@ -128,6 +128,12 @@ async function sendInvitationPosts(context) {
         if (e.code === 210) { // APIError: Code №210 - Access to wall's post denied
           console.warn(trigger.name, `Access to wall's post denied for community ${communityId}.
 As this usually corresponds to the rate limit, the request should be repeated after a delay.`);
+          await sleep(trigger.name, 60000);
+          continue;
+        } else if (e.code === 14) { // APIError: Code №14 - Captcha needed
+          console.warn(trigger.name, `Captcha needed to post to community ${communityId}.
+As this usually corresponds to the rate limit, the request should be repeated after a delay.`);
+          await sleep(trigger.name, 60000);
           continue;
         } else {
           throw e;
