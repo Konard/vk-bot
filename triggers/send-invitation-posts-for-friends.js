@@ -1,4 +1,4 @@
-const { sleep, getRandomElement } = require('../utils');
+const { sleep, getRandomElement, second, minute } = require('../utils');
 // const fs = require('fs');
 
 const communities = [
@@ -98,7 +98,7 @@ async function sendInvitationPosts(context) {
 
       console.log(trigger.name, `Loaded ${topPosts.items.length} posts from ${communityId} community. Our invitation post is ${topPostsHaveInvitation ? 'found' : 'not found'} in these posts.`);
 
-      await sleep(trigger.name, 10000);
+      await sleep(trigger.name, 10 * second);
 
       if (topPostsHaveInvitation) {
         continue;
@@ -107,7 +107,7 @@ async function sendInvitationPosts(context) {
       const previousPosts = await context.vk.api.wall.search({ owner_id: ownerId, query: postsSearchRequest, count: 15 });
       const postsToDelete = previousPosts.items.filter(post => post.text.includes(postsSearchRequest) && post.can_delete);
       console.log(trigger.name, `Found ${postsToDelete.length} previous posts to be deleted.`);
-      await sleep(trigger.name, 5000);
+      await sleep(trigger.name, 5 * second);
 
       try {
         console.log(trigger.name, `Sending post to ${communityId} community.`);
@@ -123,22 +123,22 @@ async function sendInvitationPosts(context) {
         // await context.vk.api.wall.post({ owner_id: ownerId, message, attachments: attachments.join(',') });
         await context.vk.api.wall.post({ owner_id: ownerId, message, attachments });
         console.log(trigger.name, 'Post is sent to', communityId, 'community.');
-        await sleep(trigger.name, 5000);
+        await sleep(trigger.name, 5 * second);
       } catch (e) {
         if (e.code === 210) { // APIError: Code №210 - Access to wall's post denied
           console.warn(trigger.name, `Access to wall's post denied for community ${communityId}.
 As this usually corresponds to the rate limit, the request should be repeated after a delay.`);
-          await sleep(trigger.name, 60000);
+          await sleep(trigger.name, 1 * minute);
           continue;
         } else if (e.code === 14) { // APIError: Code №14 - Captcha needed
           console.warn(trigger.name, `Captcha needed to post to community ${communityId}.
 As this usually corresponds to the rate limit, the request should be repeated after a delay.`);
-          await sleep(trigger.name, 60000);
+          await sleep(trigger.name, 1 * minute);
           continue;
         } else if (e.code === 219) { // APIError: Code №219 - Advertisement post was recently added
           console.warn(trigger.name, `Advertisement post was recently added to community ${communityId}.
 As this usually corresponds to the rate limit, the request should be repeated after a delay.`);
-          await sleep(trigger.name, 60000);
+          await sleep(trigger.name, 1 * minute);
           continue;
         } else {
           throw e;
@@ -149,7 +149,7 @@ As this usually corresponds to the rate limit, the request should be repeated af
         try {
           await context.vk.api.wall.delete({ owner_id: ownerId, post_id: post.id });
           console.log(trigger.name, `Post ${post.id} is deleted.`);
-          await sleep(trigger.name, 5000);
+          await sleep(trigger.name, 5 * second);
         } catch (e) {
           if (e.code === 104) { // APIError: Code №104 - Not found
             console.warn(trigger.name, `Post ${post.id} is not found. It may already be deleted.`);

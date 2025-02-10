@@ -1,6 +1,10 @@
 const { DateTime } = require('luxon');
 const fs = require('fs');
 
+const ms = 1;
+const second = 1000 * ms;
+const minute = 60 * second;
+
 function getToken(filePath = 'token') {
   let content;
 
@@ -174,4 +178,7 @@ module.exports = {
   readJsonSync,
   saveTextSync,
   saveJsonSync,
+  ms,
+  second,
+  minute,
 };
