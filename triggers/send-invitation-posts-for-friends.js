@@ -113,7 +113,7 @@ async function sendInvitationPosts(context) {
         console.log(trigger.name, `Sending post to ${communityId} community.`);
 
         const message = restrictedCommunities.includes(communityId) ? restrictedPostMessage : postMessage;
-        
+
         const avatarAttachment = await uploadAvatarPicture(context, communityId, avatarImagePath);
         let attachments = [avatarAttachment];
         if (!restrictedCommunities.includes(communityId)) {
@@ -132,6 +132,11 @@ As this usually corresponds to the rate limit, the request should be repeated af
           continue;
         } else if (e.code === 14) { // APIError: Code №14 - Captcha needed
           console.warn(trigger.name, `Captcha needed to post to community ${communityId}.
+As this usually corresponds to the rate limit, the request should be repeated after a delay.`);
+          await sleep(trigger.name, 60000);
+          continue;
+        } else if (e.code === 219) { // APIError: Code №219 - Advertisement post was recently added
+          console.warn(trigger.name, `Advertisement post was recently added to community ${communityId}.
 As this usually corresponds to the rate limit, the request should be repeated after a delay.`);
           await sleep(trigger.name, 60000);
           continue;
