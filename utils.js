@@ -1,6 +1,10 @@
 const { DateTime } = require('luxon');
 const fs = require('fs');
 
+const priorityFriendIds = [
+  243646872
+];
+
 const ms = 1;
 const second = 1000 * ms;
 const minute = 60 * second;
@@ -181,4 +185,5 @@ module.exports = {
   ms,
   second,
   minute,
+  priorityFriendIds,
 };

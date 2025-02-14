@@ -1,4 +1,4 @@
-const { sleep } = require('../utils');
+const { sleep, priorityFriendIds } = require('../utils');
 
 async function deleteOutgoingFriendRequests(context) {
   try {
@@ -14,6 +14,9 @@ async function deleteOutgoingFriendRequests(context) {
     for (let i = 0; i < requests.items.length; i++) {
       try {
         const friendId = requests.items[i];
+        if (priorityFriendIds.includes(friendId)) {
+          continue;
+        }
         await context.vk.api.friends.delete({ user_id: friendId });
         console.log('Deleted outgoing friend request:', friendId)
       } catch (error) {
