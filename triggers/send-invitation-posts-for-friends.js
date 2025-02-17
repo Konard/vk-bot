@@ -73,7 +73,8 @@ async function uploadAvatarPicture(context, communityId, imagePath) {
 
   // return `photo${photo.ownerId}_${photo.id}_${photo.accessKey}`;
 
-  return 'photo3972090_457245822_5f56ac9e1f0de697db'; // do not upload again
+  // return 'photo3972090_457245822_5f56ac9e1f0de697db'; // do not upload again
+  return 'photo3972090_457245285_5f56ac9e1f0de697db'; // attempt to use avatar
 }
 
 async function sendInvitationPosts(context) {
