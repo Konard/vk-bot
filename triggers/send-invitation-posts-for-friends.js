@@ -26,12 +26,13 @@ const restrictedCommunities = [
 ];
 
 const postMessage = `Я программист, принимаю все заявки в друзья.
-Срочно? Нужно взаимное действие (например лайк, подписку и т.п.)? 
-Пиши в личку.
+А ещё у меня много друзей, которые тоже будут рады принять тебя в друзья.
+Пиши в личку, буду рад обсудить любые предложения.
 Я в Telegram: https://t.me/link_konard - канал, https://t.me/drakonard - личка.
-Если нужен доступ к GPT, попробуй нашего бота в Telegram: https://t.me/DeepGPTBot?start=1339837872.`;
+Если нужен доступ к GPT: https://t.me/DeepGPTBot?start=1339837872 (наша разработка).`;
 
 const restrictedPostMessage = `Я программист, принимаю все заявки в друзья.
+А ещё у меня много друзей, которые тоже будут рады принять тебя в друзья.
 Пиши в личку, буду рад обсудить любые предложения.`;
 
 const neuronalMiracleAudio = 'audio-2001064727_125064727';
@@ -126,20 +127,24 @@ async function sendInvitationPosts(context) {
         await sleep(trigger.name, 5 * second);
       } catch (e) {
         if (e.code === 210) { // APIError: Code №210 - Access to wall's post denied
-          console.warn(trigger.name, `Access to wall's post denied for community ${communityId}.
-As this usually corresponds to the rate limit, the request should be repeated after a delay.`);
+          console.warn(trigger.name, `Warning: Access to wall's post denied for community ${communityId}.
+As this usually corresponds to the rate limit of VK API, the request should be repeated after a delay.`);
           await sleep(trigger.name, 1 * minute);
           continue;
         } else if (e.code === 14) { // APIError: Code №14 - Captcha needed
-          console.warn(trigger.name, `Captcha needed to post to community ${communityId}.
-As this usually corresponds to the rate limit, the request should be repeated after a delay.`);
+          console.warn(trigger.name, `Warning: Captcha needed to post to community ${communityId}.
+As this usually corresponds to the rate limit of VK API, the request should be repeated after a delay.`);
           await sleep(trigger.name, 1 * minute);
           continue;
         } else if (e.code === 219) { // APIError: Code №219 - Advertisement post was recently added
-          console.warn(trigger.name, `Advertisement post was recently added to community ${communityId}.
-As this usually corresponds to the rate limit, the request should be repeated after a delay.`);
+          console.warn(trigger.name, `Warning: Advertisement post was recently added to community ${communityId}.
+As this usually corresponds to the rate limit of VK API, the request should be repeated after a delay.`);
           await sleep(trigger.name, 1 * minute);
           continue;
+        } else if (e.code === 10) { // APIError: Code №10 - Internal server error: Unknown error, try later
+          console.warn(trigger.name, `Warning: Unknown error occurred while posting to community ${communityId}.
+As we explicitly asked to try later by VK API, the request should be repeated after a delay.`);
+          await sleep(trigger.name, 1 * minute);
         } else {
           throw e;
         }
