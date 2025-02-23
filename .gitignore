@@ -133,6 +133,8 @@ dist
 token
 log.txt
 friends-conversations.json
+friends.json
+orderedFriends.json
 
 # vscode
 .vscode/settings.json
