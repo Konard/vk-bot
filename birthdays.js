@@ -1,9 +1,9 @@
 const { VK } = require('vk-io');
 const { getToken, executeTrigger, sleep } = require('./utils');
 const { handleOutgoingMessage, queue } = require('./outgoing-messages');
+const { trigger: sendBirthDayCongratulationsTrigger } = require('./triggers/send-birthday-congratulations');
 const token = getToken();
 const vk = new VK({ token });
-const { trigger: sendBirthDayCongratulationsTrigger } = require('./triggers/send-birthday-congratulations');
 
 let finished = false;
 executeTrigger(sendBirthDayCongratulationsTrigger, { vk }).then(() => { 

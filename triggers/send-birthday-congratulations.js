@@ -1,7 +1,6 @@
 const { VK } = require('vk-io');
 const { getRandomElement, sleep, getToken } = require('../utils');
 const { randomInRange, handleOutgoingMessage, enqueueMessage, queue } = require('../outgoing-messages');
-const { trigger: sendBirthDayCongratulationsTrigger } = require('./triggers/send-birthday-congratulations');
 const { at } = require('lodash');
 const token = getToken();
 const vk = new VK({ token });
