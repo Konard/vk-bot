@@ -113,7 +113,7 @@ async function sendBirthdayCongratulations() {
               user_id: friend.id,
               message: finalMessage,
               // attachment: getRandomElement(audioAttachments)
-              attachment: 'video-3972090_456239795'
+              attachment: 'video3972090_456239795'
             }
           });
         }
