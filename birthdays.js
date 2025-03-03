@@ -15,15 +15,14 @@ executeTrigger(sendBirthDayCongratulationsTrigger, { vk }).then(() => {
 
 const messagesHandlerInterval = setInterval(handleOutgoingMessage, 1000);
 const finalizerInterval = setInterval(async () => {
-  if (finished) {
-    while (queue.length > 0) {
-      await sleep(1000);
-    }
-    if (messagesHandlerInterval) {
-      clearInterval(messagesHandlerInterval);
-    }
+  if (finished && queue.length === 0) {
     if (finalizerInterval) {
       clearInterval(finalizerInterval);
     }
+    setTimeout(() => {
+      if (messagesHandlerInterval) {
+        clearInterval(messagesHandlerInterval);
+      }
+    }, 5000);
   }
 }, 2000);
