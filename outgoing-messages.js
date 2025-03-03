@@ -2,7 +2,7 @@ const queue = [];
 
 const tickSize = 1000; // ms
 
-const typingSpeedInCharactersPerMinute = 400;
+const typingSpeedInCharactersPerMinute = 450;
 const typingSpeedInCharactersPerSecond = typingSpeedInCharactersPerMinute / 60;
 
 const typingInterval = 5;
