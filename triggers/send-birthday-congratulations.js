@@ -116,6 +116,19 @@ async function sendBirthdayCongratulations() {
               attachment: 'video3972090_456239795'
             }
           });
+
+          // const audioAttachment = getRandomElement(audioAttachments);
+          // const videoAttachment = 'video3972090_456239795';
+          // const attachments = [audioAttachment, videoAttachment].join(',');
+
+          // enqueueMessage({
+          //   vk,
+          //   response: {
+          //     user_id: friend.id,
+          //     message: finalMessage,
+          //     attachment: attachments
+          //   }
+          // });
         }
       }
     }
