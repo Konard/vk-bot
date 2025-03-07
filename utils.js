@@ -2,6 +2,7 @@ const { DateTime } = require('luxon');
 const fs = require('fs');
 
 const priorityFriendIds = [
+  450527,
   138919441,
   243646872,
   557672854,
