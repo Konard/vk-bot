@@ -135,6 +135,7 @@ log.txt
 friends-conversations.json
 friends.json
 orderedFriends.json
+data
 
 # vscode
 .vscode/settings.json
