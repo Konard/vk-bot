@@ -91,7 +91,7 @@ const setOnlineStatusInterval = setInterval(async () => {
 const { trigger: acceptFriendRequestsTrigger } = require('./triggers/accept-friend-requests');
 const acceptFriendRequestsInterval = setInterval(async () => {
   await executeTrigger(acceptFriendRequestsTrigger, { vk });
-}, 5 * minute);
+}, 20 * minute);
 
 const { trigger: deleteDeactivatedFriendsTrigger } = require('./triggers/delete-deactivated-friends');
 const deleteDeactivatedFriendsInterval = setInterval(async () => {
