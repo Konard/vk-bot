@@ -1,4 +1,4 @@
-const { sleep, priorityFriendIds, second } = require('../utils');
+const { sleep, priorityFriendIds, second, minute } = require('../utils');
 
 const sortByMutuals = { sort: 1 };
 
@@ -15,6 +15,10 @@ async function acceptFriendRequests({ vk }) {
           console.log(`Could not send friend request to priority friend with id ${friendId}, because this friend is not found.`);
         } else if (error.code === 242) { // APIError: Code №242 - Too many friends: friends count exceeded
           console.log(`Could not send friend request to priority friend with id ${friendId}, because friends count (10000) exceeded.`);
+          return;
+        } else if (error.code === 29) { // APIError: Code №29 - Rate limit reached
+          console.log(`Could not send friend request to priority friend with id ${friendId}, because rate limit reached.`);
+          await sleep(1 * minute);
           return;
         } else {
           console.error(`Could not send priority friend request to ${friendId}:`, error);
