@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/Konard/vk-bot#readme",
   "dependencies": {
+    "cache-manager": "^6.4.1",
     "lodash": "^4.17.21",
     "luxon": "^3.5.0",
     "vk-io": "^4.9.1"

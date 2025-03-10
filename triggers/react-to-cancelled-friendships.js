@@ -27,7 +27,7 @@ async function reactToCancelledFriendships(context) {
           peer_ids: [friendId],
           count: 1
         })).items[0];
-        setConversation(friendId, conversation);
+        await setConversation(friendId, conversation);
         await sleep(15000);
 
         if (context?.state?.history) {

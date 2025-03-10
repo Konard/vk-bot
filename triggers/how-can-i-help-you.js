@@ -43,7 +43,7 @@ async function howCanIHelpYou(context) {
       }
       console.log(JSON.stringify(friend, null, 2));
       let conversationsResponse;
-      //   if (getConversation(friend.id)) {
+      //   if (await getConversation(friend.id)) {
       //     console.log(`Skipping friend ${friend.id} because conversation history is not empty or it is not allowed to send message to this friend (data loaded from cache).`);
       //     continue;
       //   } else {
@@ -53,7 +53,7 @@ async function howCanIHelpYou(context) {
           count: 1
       });
       const conversation = conversationsResponse.items[0];
-      // setConversation(friend.id, conversation);
+      // await setConversation(friend.id, conversation);
       console.log(`Conversation for ${friend.id} friend loaded.`);
       await sleep(40000);
 
