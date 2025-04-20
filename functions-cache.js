@@ -15,7 +15,6 @@ async function getCache() {
   }
   console.log('Initializing cache with jsonStore');
   const store = await jsonStore({ filePath: targetPath });
-  console.log('jsonStore initialized:', store);
 
   cache = createCache({
     stores: [store],
