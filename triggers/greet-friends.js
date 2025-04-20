@@ -5,7 +5,7 @@ const { getConversation, setConversation } = require('../friends-conversations-c
 const { setFriend } = require('../friends-cache');
 const { makeCachedFunction } = require('../functions-cache');
 
-const ttl = 2 * hour;
+const ttl = 12 * hour;
 const ttlSeconds = ttl / second;
 
 const loadConversation = async function (context, friendId) {
