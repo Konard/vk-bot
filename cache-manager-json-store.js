@@ -1,6 +1,10 @@
 const fs = require('fs').promises;
 const path = require('path');
 
+const { second } = require('./utils');
+
+const saveDelay = 5 * second; // Delay before saving to file
+
 async function jsonStore({ filePath }) {
   let persistentCache = {}; // Use only persistentCache for all operations
   let pendingSaveTimeout = null; // Track pending save timeout
@@ -34,10 +38,10 @@ async function jsonStore({ filePath }) {
     }
 
     pendingSaveTimeout = setTimeout(async () => {
-      console.log('Executing savePersistentCache after delay');
+      console.log('Executing pending save after delay');
       await fs.writeFile(filePath, JSON.stringify(persistentCache, null, 2));
       pendingSaveTimeout = null; // Clear the timeout
-    }, 60000); // Schedule save for 1 minute later
+    }, saveDelay);
   }
 
   return {
