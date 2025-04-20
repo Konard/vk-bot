@@ -8,7 +8,6 @@ let cache = null;
 
 async function getCache() {
   if (cache) {
-    console.log('Cache already initialized:', cache);
     return cache;
   }
   console.log('Initializing cache with jsonStore');
