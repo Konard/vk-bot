@@ -2,20 +2,32 @@ const { createCache } = require('cache-manager');
 const jsonStore = require('./cache-manager-json-store');
 const { eraseMetadata, clean } = require('./utils');
 
-const targetPath = 'friends-conversations.json';
+const TTL_SECONDS = 3600; // Time-to-live in seconds
+const targetPath = './data/friends/friends-conversations.json';
+
 let cache = null;
 async function getCache() {
   if (cache) {
+    console.log('Cache already initialized:', cache);
     return cache;
   }
-  cache = await createCache({ store: (await jsonStore({ filePath: targetPath })), ttl: 3600 /* seconds */ })
+  console.log('Initializing cache with jsonStore');
+  const store = await jsonStore({ filePath: targetPath });
+  console.log('jsonStore initialized:', store);
+
+  // Pass jsonStore directly as the store
+  cache = createCache({
+    stores: [store], // Wrap jsonStore in an array under the stores property
+  });
+
+  console.log('Cache initialized with jsonStore:', cache);
   return cache;
-};
+}
 
 async function setConversation(friendId, conversation) {
   const cleanedConversation = clean(eraseMetadata(conversation));
   console.log(`Setting conversation for friendId ${friendId}:`, cleanedConversation);
-  await (await getCache()).set(friendId, cleanedConversation);
+  await (await getCache()).set(friendId, cleanedConversation, { ttl: TTL_SECONDS }); // Use the constant for TTL
   return cleanedConversation;
 }
 

@@ -2,6 +2,7 @@ const _ = require('lodash');
 const { sleep, saveJsonSync } = require('../utils');
 const { trigger: greetingTrigger } = require('./greeting');
 const { getConversation, setConversation } = require('../friends-conversations-cache');
+const { setFriend } = require('../friends-cache');
 
 const loadConversation = async function (context, friendId) {
   console.log(`Loading conversations for ${friendId} friend from server...`);
@@ -16,7 +17,7 @@ const loadConversation = async function (context, friendId) {
 
 const loadAllFriends = async function ({
   context,
-  fields = ['online', 'last_seen', 'can_write_private_message'],
+  fields = ['online', 'last_seen', 'can_write_private_message', 'sex', 'bdate', 'banned', 'deleted'],
   limit = 10000,
   step = 5000,
 }) {
@@ -38,6 +39,10 @@ const loadAllFriends = async function ({
   console.log(`All ${friends.length} friends loaded.`);
 
   // saveJsonSync('friends.json', friends);
+
+  for (const friend of friends) {
+    await setFriend(friend.id, friend);
+  }
 
   return friends;
 }
