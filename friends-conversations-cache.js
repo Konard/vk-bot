@@ -18,8 +18,6 @@ async function getCache() {
   cache = createCache({
     stores: [store], // Wrap jsonStore in an array under the stores property
   });
-
-  console.log('Cache initialized with jsonStore:', cache);
   return cache;
 }
 
