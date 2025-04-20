@@ -26,7 +26,8 @@ async function getCache() {
 async function setConversation(friendId, conversation) {
   const cleanedConversation = clean(eraseMetadata(conversation));
   console.log(`Setting conversation for friendId ${friendId}:`, cleanedConversation);
-  await (await getCache()).set(friendId, cleanedConversation, { ttl: TTL_SECONDS }); // Use the constant for TTL
+  // await (await getCache()).set(friendId, cleanedConversation, { ttl: TTL_SECONDS }); // Use the constant for TTL
+  await (await getCache()).set(friendId, cleanedConversation); // Temporary disabling TTL
   return cleanedConversation;
 }
 
