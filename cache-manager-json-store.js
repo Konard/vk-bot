@@ -47,7 +47,9 @@ async function jsonStore({ filePath }) {
   return {
     get: async (key, callback) => {
       console.log(`Getting value for key: ${key}`);
+      console.log(`callback:`, callback);
       const entry = persistentCache[key];
+      // console.log(`Cache entry found:`, entry);
       if (entry && entry.expiresAt && Date.now() > entry.expiresAt) {
         console.log(`Key ${key} has expired`);
         delete persistentCache[key];
@@ -56,6 +58,7 @@ async function jsonStore({ filePath }) {
         return;
       }
       if (callback) callback(null, entry ? entry.value : undefined);
+      return entry ? entry.value : undefined;
     },
     set: async (key, value, options, callback) => {
       console.log(`Setting value for key: ${key}, value:`, value);

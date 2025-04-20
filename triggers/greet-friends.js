@@ -1,8 +1,12 @@
 const _ = require('lodash');
-const { sleep, saveJsonSync } = require('../utils');
+const { sleep, saveJsonSync, hour, second } = require('../utils');
 const { trigger: greetingTrigger } = require('./greeting');
 const { getConversation, setConversation } = require('../friends-conversations-cache');
 const { setFriend } = require('../friends-cache');
+const { makeCachedFunction } = require('../functions-cache');
+
+const ttl = 2 * hour;
+const ttlSeconds = ttl / second;
 
 const loadConversation = async function (context, friendId) {
   console.log(`Loading conversations for ${friendId} friend from server...`);
@@ -47,11 +51,13 @@ const loadAllFriends = async function ({
   return friends;
 }
 
+const getAllFriends = makeCachedFunction(loadAllFriends, { ttl: ttlSeconds }, ['context']);
+
 async function greetFriends(context) {
   let greetedFriends = 0;
   const maxGreetings = context?.options?.maxGreetings || 0;
 
-  const allFriends = await loadAllFriends({ context });
+  const allFriends = await getAllFriends({ context });
 
   const friendsOpenToMessages = allFriends.filter(friend => friend.can_write_private_message);
 
