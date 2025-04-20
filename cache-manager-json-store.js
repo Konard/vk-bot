@@ -3,6 +3,7 @@ const path = require('path');
 
 async function jsonStore({ filePath }) {
   let persistentCache = {}; // Use only persistentCache for all operations
+  let pendingSaveTimeout = null; // Track pending save timeout
 
   const dir = path.dirname(filePath);
   console.log(`Creating directory: ${dir}`);
@@ -27,8 +28,16 @@ async function jsonStore({ filePath }) {
   }
 
   async function savePersistentCache() {
-    console.log(`Saving persistent cache to file: ${filePath}`);
-    await fs.writeFile(filePath, JSON.stringify(persistentCache, null, 2));
+    if (pendingSaveTimeout) {
+      clearTimeout(pendingSaveTimeout); // Restart the pending save
+      console.log('Pending save restarted');
+    }
+
+    pendingSaveTimeout = setTimeout(async () => {
+      console.log('Executing savePersistentCache after delay');
+      await fs.writeFile(filePath, JSON.stringify(persistentCache, null, 2));
+      pendingSaveTimeout = null; // Clear the timeout
+    }, 60000); // Schedule save for 1 minute later
   }
 
   return {
