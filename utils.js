@@ -6,6 +6,7 @@ const priorityFriendIds = [
   138919441,
   243646872,
   557672854,
+  1025353969,
 ];
 
 const ms = 1;
