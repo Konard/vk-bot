@@ -24,3 +24,9 @@ And put the token or link (after redirect) into `token` file near `index.js` fil
 ```bash
 node index.js 2>&1 | tee log.txt
 ```
+
+## Check logs for errors
+
+```bash
+grep -Ei 'error|fail' log.txt
+```
