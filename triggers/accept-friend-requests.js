@@ -6,7 +6,7 @@ const maxFriends = 10000;
 
 async function acceptFriendRequests({ vk }) {
   try {
-    let allFriends = getAllFriends({ context: { vk } });
+    let allFriends = await getAllFriends({ context: { vk } });
 
     const existingFriends = allFriends.length;
     let addedFriends = 0;
