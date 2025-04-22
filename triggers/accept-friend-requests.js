@@ -80,12 +80,12 @@ async function acceptFriendRequests({ vk }) {
       }
       await sleep(10 * second);
     }
+
+    if (addedFriends > 0) {
+      await loadAllFriends({ context: { vk } }); // needed to reload friends cache
+    }
   } catch (error) {
     console.error('Could not accept friend requests:', error);
-  }
-
-  if (addedFriends > 0) {
-    await loadAllFriends({ context: { vk } }); // needed to reload friends cache
   }
 }
 
