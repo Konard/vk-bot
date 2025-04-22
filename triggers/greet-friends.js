@@ -1,7 +1,8 @@
 const _ = require('lodash');
-const { sleep, saveJsonSync } = require('../utils');
+const { sleep, saveJsonSync, hour, second } = require('../utils');
 const { trigger: greetingTrigger } = require('./greeting');
 const { getConversation, setConversation } = require('../friends-conversations-cache');
+const { getAllFriends } = require('../friends-cache');
 
 const loadConversation = async function (context, friendId) {
   console.log(`Loading conversations for ${friendId} friend from server...`);
@@ -14,39 +15,11 @@ const loadConversation = async function (context, friendId) {
   return conversationsResponse.items[0];
 }
 
-const loadAllFriends = async function ({
-  context,
-  fields = ['online', 'last_seen', 'can_write_private_message'],
-  limit = 10000,
-  step = 5000,
-}) {
-  let friends = [];
-  for (let offset = 0; offset < limit; offset += step) {
-    console.log(`Loading ${offset}-${offset + step} friends...`);
-    const response = await context.vk.api.friends.get({
-      fields,
-      count: step,
-      offset,
-    });
-    console.log(`${offset}-${offset + step} friends loaded.`);
-    await sleep(30000);
-    if (response.items.length === 0) {
-      break;
-    }
-    friends = friends.concat(response.items);
-  }
-  console.log(`All ${friends.length} friends loaded.`);
-
-  // saveJsonSync('friends.json', friends);
-
-  return friends;
-}
-
 async function greetFriends(context) {
   let greetedFriends = 0;
   const maxGreetings = context?.options?.maxGreetings || 0;
 
-  const allFriends = await loadAllFriends({ context });
+  const allFriends = await getAllFriends({ context });
 
   const friendsOpenToMessages = allFriends.filter(friend => friend.can_write_private_message);
 
