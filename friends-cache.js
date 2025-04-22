@@ -1,7 +1,10 @@
 const { createCache } = require('cache-manager');
 const jsonStore = require('./cache-manager-json-store');
-const { eraseMetadata, clean } = require('./utils');
+const { eraseMetadata, sleep, clean, hour, second } = require('./utils');
+const { makeCachedFunction } = require('./functions-cache');
 
+const allFriendsTtl = 12 * hour;
+const allFriendsTtlSeconds = allFriendsTtl / second;
 const TTL_SECONDS = 3600; // Time-to-live in seconds
 const targetPath = './data/friends/friends.json';
 let cache = null;
@@ -55,8 +58,42 @@ async function getFriend(friendId, defaultValueFactory) {
   return cachedFriendData;
 }
 
+const loadAllFriends = async function ({
+  context,
+  fields = ['online', 'last_seen', 'can_write_private_message', 'sex', 'bdate', 'deactivated'],
+  limit = 10000,
+  step = 5000,
+}) {
+  let friends = [];
+  for (let offset = 0; offset < limit; offset += step) {
+    console.log(`Loading ${offset}-${offset + step} friends...`);
+    const response = await context.vk.api.friends.get({
+      fields,
+      count: step,
+      offset,
+    });
+    console.log(`${offset}-${offset + step} friends loaded.`);
+    await sleep(30000);
+    if (response.items.length === 0) {
+      break;
+    }
+    friends = friends.concat(response.items);
+  }
+  console.log(`All ${friends.length} friends loaded.`);
+
+  for (const friend of friends) {
+    await setFriend(friend.id, friend);
+  }
+
+  return friends;
+}
+
+const getAllFriends = makeCachedFunction(loadAllFriends, { ttl: allFriendsTtlSeconds }, ['context']);
+
 module.exports = {
   getOrSetFriend,
   getFriend,
   setFriend,
+  loadAllFriends,
+  getAllFriends,
 };

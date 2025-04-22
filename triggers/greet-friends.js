@@ -2,11 +2,7 @@ const _ = require('lodash');
 const { sleep, saveJsonSync, hour, second } = require('../utils');
 const { trigger: greetingTrigger } = require('./greeting');
 const { getConversation, setConversation } = require('../friends-conversations-cache');
-const { setFriend } = require('../friends-cache');
-const { makeCachedFunction } = require('../functions-cache');
-
-const ttl = 12 * hour;
-const ttlSeconds = ttl / second;
+const { getAllFriends } = require('../friends-cache');
 
 const loadConversation = async function (context, friendId) {
   console.log(`Loading conversations for ${friendId} friend from server...`);
@@ -18,40 +14,6 @@ const loadConversation = async function (context, friendId) {
   await sleep(10000);
   return conversationsResponse.items[0];
 }
-
-const loadAllFriends = async function ({
-  context,
-  fields = ['online', 'last_seen', 'can_write_private_message', 'sex', 'bdate', 'banned', 'deleted'],
-  limit = 10000,
-  step = 5000,
-}) {
-  let friends = [];
-  for (let offset = 0; offset < limit; offset += step) {
-    console.log(`Loading ${offset}-${offset + step} friends...`);
-    const response = await context.vk.api.friends.get({
-      fields,
-      count: step,
-      offset,
-    });
-    console.log(`${offset}-${offset + step} friends loaded.`);
-    await sleep(30000);
-    if (response.items.length === 0) {
-      break;
-    }
-    friends = friends.concat(response.items);
-  }
-  console.log(`All ${friends.length} friends loaded.`);
-
-  // saveJsonSync('friends.json', friends);
-
-  for (const friend of friends) {
-    await setFriend(friend.id, friend);
-  }
-
-  return friends;
-}
-
-const getAllFriends = makeCachedFunction(loadAllFriends, { ttl: ttlSeconds }, ['context']);
 
 async function greetFriends(context) {
   let greetedFriends = 0;
