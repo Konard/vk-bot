@@ -39,9 +39,9 @@ async function getOrSetConversation(friendId, conversation) {
 }
 
 async function getConversation(friendId, defaultValueFactory) {
-  // console.log(`Getting conversation for friendId ${friendId}`);
+  console.log(`Getting conversation for friendId ${friendId}`);
   let cachedConversation = await (await getCache()).get(friendId);
-  // console.log(`Cached conversation for friendId ${friendId}:`, cachedConversation);
+  console.log(`Cached conversation for friendId ${friendId}:`, cachedConversation);
   if (!cachedConversation && defaultValueFactory) {
     console.log(`No cached conversation found for friendId ${friendId}, using defaultValueFactory`);
     const conversation = await defaultValueFactory(friendId);
