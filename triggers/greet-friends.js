@@ -38,7 +38,14 @@ async function greetFriends(context) {
 
   // saveJsonSync('orderedFriends.json', orderedFriends);
 
+  const skipFriends = [631154494];
+
   for (const friend of orderedFriends) {
+    if (skipFriends.includes(friend.id)) {
+      console.log(`Skipping friend ${friend.id} because it is in skip list.`);
+      continue;
+    }
+
     let conversation = friend.conversation;
 
     // Temporary fix for conversation cache (reload conversation from server to check actual state)
