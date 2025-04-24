@@ -61,20 +61,15 @@ function flattenValues(input, visited = new Set()) {
 }
 
 function generateCacheKey(funcName, args, options, ignoreFields = []) {
-  console.log('generateCacheKey called with:', { funcName, args, options, ignoreFields });
+  // console.log('generateCacheKey called with:', { funcName, args, options, ignoreFields });
 
   const filteredArgs = [];
-  // ignoreFields.forEach(field => {
-  //   if (filteredArgs && typeof filteredArgs === 'object') {
-  //     delete filteredArgs[field];
-  //   }
-  // });
 
   for (const arg of args) {
     if (arg && typeof arg === 'object') {
       for (const field of ignoreFields) {
         if (arg.hasOwnProperty(field)) {
-          console.log(`Ignoring field ${field} in argument:`, arg);
+          // console.log(`Ignoring field ${field} in argument:`, arg);
           const copy = { ...arg };
           delete copy[field];
           filteredArgs.push(copy);
@@ -83,23 +78,23 @@ function generateCacheKey(funcName, args, options, ignoreFields = []) {
     }
   }
 
-  console.log('Filtered arguments:', filteredArgs);
+  // console.log('Filtered arguments:', filteredArgs);
 
   const flatArgs = flattenValues(filteredArgs);
 
-  console.log('Flattened arguments:', flatArgs);
+  // console.log('Flattened arguments:', flatArgs);
 
   const keyArray = [funcName, ...flatArgs];
   const keyString = keyArray.join('-');
-  console.log('Generated key array:', keyArray);
+  // console.log('Generated key array:', keyArray);
 
   if (keyString.length > 4096) {
     const hashedKey = crypto.createHash('sha512').update(keyString).digest('hex');
-    console.log('Key length exceeded 4096 characters, returning hashed key:', hashedKey);
+    // console.log('Key length exceeded 4096 characters, returning hashed key:', hashedKey);
     return hashedKey;
   }
 
-  console.log('Returning generated key:', keyString);
+  // console.log('Returning generated key:', keyString);
   return keyString;
 }
 
