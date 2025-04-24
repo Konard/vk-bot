@@ -2,7 +2,6 @@ const { createCache } = require('cache-manager');
 const jsonStore = require('./cache-manager-json-store');
 const { eraseMetadata, clean } = require('./utils');
 
-const TTL_SECONDS = 3600; // Time-to-live in seconds
 const targetPath = './data/friends/friends-conversations.json';
 
 let cache = null;

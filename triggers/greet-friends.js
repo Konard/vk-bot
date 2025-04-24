@@ -19,25 +19,27 @@ async function greetFriends(context) {
   let greetedFriends = 0;
   const maxGreetings = context?.options?.maxGreetings || 0;
 
-  const allFriends = await getAllFriends({ context });
+  const allFriends = (await getAllFriends({ context }));
 
-  const friendsOpenToMessages = allFriends.filter(friend => friend.can_write_private_message);
-
-  const orderedFriends = _.orderBy(friendsOpenToMessages, ['online', 'last_seen', 'last_seen.time'], ['desc', 'asc', 'desc']);
-
-  // saveJsonSync('orderedFriends.json', orderedFriends);
-
-  for (const friend of orderedFriends) {
+  for (let i = 0; i < allFriends.length; i++) {
+    const friend = allFriends[i];
     let conversation = await getConversation(friend.id);
     if (!conversation) {
       conversation = await loadConversation(context, friend.id);
       await setConversation(friend.id, conversation);
     }
+    const conversationHistoryIsEmpty = conversation.last_message_id === 0 && conversation.last_conversation_message_id === 0;
+    allFriends[i] = { ...friend, conversation, conversationHistoryIsEmpty };
+  }
 
-    if (conversation.last_message_id != 0 || conversation.last_conversation_message_id != 0) {
-      console.log(`Skipping friend ${friend.id} because conversation history is not empty.`);
-      continue;
-    }
+  const friendsOpenToMessages = allFriends.filter(friend => friend.can_write_private_message);
+
+  const orderedFriends = _.orderBy(friendsOpenToMessages, ['conversationHistoryIsEmpty', 'online', 'last_seen', 'last_seen.time'], ['desc', 'desc', 'asc', 'desc']);
+
+  // saveJsonSync('orderedFriends.json', orderedFriends);
+
+  for (const friend of orderedFriends) {
+    let conversation = friend.conversation;
 
     if (conversation.is_marked_unread) {
       console.log(`Skipping friend ${friend.id} because conversation is marked as unread.`);
