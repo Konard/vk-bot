@@ -38,7 +38,7 @@ async function greetFriends(context) {
 
   // saveJsonSync('orderedFriends.json', orderedFriends);
 
-  const skipFriends = [631154494];
+  const skipFriends = [631154494, 592773712];
 
   for (const friend of orderedFriends) {
     if (skipFriends.includes(friend.id)) {
