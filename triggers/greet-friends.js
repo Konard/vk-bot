@@ -41,13 +41,13 @@ async function greetFriends(context) {
   for (const friend of orderedFriends) {
     let conversation = friend.conversation;
 
-    // Temporary fix for conversation cache (reload conversation from server to check actual state)
-    conversation = await loadConversation(context, friend.id);
+    // // Temporary fix for conversation cache (reload conversation from server to check actual state)
+    // conversation = await loadConversation(context, friend.id);
 
-    if (conversation.last_message_id > 0 && conversation.last_conversation_message_id > 0) {
-      console.log(`Skipping friend ${friend.id} because conversation is not empty.`);
-      continue;
-    }
+    // if (conversation.last_message_id > 0 && conversation.last_conversation_message_id > 0) {
+    //   console.log(`Skipping friend ${friend.id} because conversation is not empty.`);
+    //   continue;
+    // }
 
     if (conversation.is_marked_unread) {
       console.log(`Skipping friend ${friend.id} because conversation is marked as unread.`);
