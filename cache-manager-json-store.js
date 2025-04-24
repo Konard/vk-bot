@@ -46,25 +46,25 @@ async function jsonStore({ filePath }) {
 
   return {
     get: async (key) => {
-      console.log(`Getting value for key: ${key}`);
+      // console.log(`Getting value for key: ${key}`);
       const entry = persistentCache[key];
       // console.log(`Cache entry found:`, entry);
       if (entry && entry.expiresAt && Date.now() > entry.expiresAt) {
         console.log(`Key ${key} has expired`);
         delete persistentCache[key];
         await savePersistentCache();
-        return;
+        return null;
       }
-      return entry ? entry.value : undefined;
+      return entry ? entry.value : null;
     },
     set: async (key, value, options) => {
-      console.log(`Setting value for key: ${key}, value:`, value);
+      // console.log(`Setting value for key: ${key}, value:`, value);
       persistentCache[key] = {
         value,
         expiresAt: options && options.ttl ? Date.now() + options.ttl * 1000 : null, // Store expiration timestamp
       };
       await savePersistentCache();
-      console.log(`Persistent cache updated for key: ${key}`);
+      // console.log(`Persistent cache updated for key: ${key}`);
     },
     del: async (key) => {
       console.log(`Deleting value for key: ${key}`);
