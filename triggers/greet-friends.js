@@ -28,29 +28,24 @@ async function greetFriends(context) {
   // saveJsonSync('orderedFriends.json', orderedFriends);
 
   for (const friend of orderedFriends) {
-    let conversation;
-    if (await getConversation(friend.id)) {
-      console.log(`Skipping friend ${friend.id} because conversation history is not empty or it is not allowed to send message to this friend (data loaded from cache).`);
-      continue;
-    } else {
+    let conversation = await getConversation(friend.id);
+    if (!conversation) {
       conversation = await loadConversation(context, friend.id);
+      await setConversation(friend.id, conversation);
     }
 
     if (conversation.last_message_id != 0 || conversation.last_conversation_message_id != 0) {
       console.log(`Skipping friend ${friend.id} because conversation history is not empty.`);
-      await setConversation(friend.id, conversation);
       continue;
     }
 
     if (conversation.is_marked_unread) {
       console.log(`Skipping friend ${friend.id} because conversation is marked as unread.`);
-      await setConversation(friend.id, conversation);
       continue;
     }
 
     if (!conversation.can_write.allowed) {
       console.log(`Skipping friend ${friend.id} because it is not allowed to send message to this friend.`);
-      await setConversation(friend.id, conversation);
       continue;
     }
 
