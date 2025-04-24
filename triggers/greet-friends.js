@@ -51,14 +51,14 @@ async function greetFriends(context) {
       continue;
     }
 
-    await greetingTrigger.action({
+    const response = await greetingTrigger.action({
       vk: context.vk,
       response: {
         user_id: friend.id,
       }
     });
-    console.log(`Greeting for friend ${friend.id} is added to queue.`);
-    await sleep(1000);
+    console.log(`Greeting for friend ${friend.id} is sent:`, JSON.stringify(response, null, 2));
+    await sleep(30 * second);
 
     greetedFriends++;
     console.log('greetedFriends:', greetedFriends);

@@ -1,4 +1,5 @@
-const queue = [];
+const pendingSendQueue = [];
+const completeSendQueue = [];
 
 const tickSize = 1000; // ms
 
@@ -99,12 +100,33 @@ function enqueueMessage(options) {
   if (!combinedOptions.waitTicksLeft) {
     combinedOptions.waitTicksLeft = combinedOptions.waitTicks;
   }
-  queue.push(combinedOptions);
+  pendingSendQueue.push(combinedOptions);
   markMessagesAsRead(options);
 }
 
+async function sendMessage(context) {
+  const awaitTimeoutMs = context?.options?.awaitTimeoutMs || (120 * 1000);
+  enqueueMessage({ 
+    ...context,
+    awaited: true,
+  });
+  return new Promise((resolve, reject) => {
+    const interval = setInterval(() => {
+      if (completeSendQueue.length > 0) {
+        const completedMessageSend = completeSendQueue.shift();
+        clearInterval(interval);
+        resolve(completedMessageSend);
+      }
+    }, tickSize);
+    setTimeout(() => {
+      clearInterval(interval);
+      reject(new Error('Timeout waiting for message send'));
+    }, awaitTimeoutMs);
+  });
+}
+
 const handleOutgoingMessage = async () => {
-  const context = queue[0];
+  const context = pendingSendQueue[0];
   if (!context) { // no messages to send - to nothing
     return;
   }
@@ -122,14 +144,17 @@ const handleOutgoingMessage = async () => {
     context.waitTicksLeft--;
     return;
   }
-  queue.shift(); // dequeue message
+  pendingSendQueue.shift(); // dequeue message
   console.log('context.request', context.response);
   console.log('context.response', context.response);
+
+  let sendResponse = null;
+
   try {
     if (context.request) {
-      await context.request.send(context.response);
+      sendResponse = await context.request.send(context.response);
     } else if (context.vk) {
-      await context.vk.api.messages.send({
+      sendResponse = await context.vk.api.messages.send({
         random_id: Math.random(),
         ...context.response
       });
@@ -154,15 +179,23 @@ const handleOutgoingMessage = async () => {
       throw e;
     }
   }
+  if (context.awaited) {
+    const completedMessageSend = {
+      request: context,
+      response: sendResponse
+    };
+    completeSendQueue.push(completedMessageSend);
+  }
 };
 
 module.exports = {
-  queue,
+  queue: pendingSendQueue,
   tickSize,
   typingSpeedInCharactersPerMinute,
   typingSpeedInCharactersPerSecond,
   calculateMinimumSecondsToType,
   randomInRange,
   handleOutgoingMessage,
-  enqueueMessage
+  enqueueMessage,
+  sendMessage,
 };

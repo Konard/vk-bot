@@ -1,5 +1,5 @@
 const { hasSticker, getRandomElement } = require('../utils');
-const { enqueueMessage } = require('../outgoing-messages');
+const { sendMessage } = require('../outgoing-messages');
 const { DateTime } = require('luxon');
 const { stickers } = require('../stickers');
 
@@ -201,11 +201,11 @@ const trigger = {
         ||  hasSticker(context.request, incomingGreetingStickersIds)
         );
   },
-  action: (context) => {
+  action: async (context) => {
     if (context?.request?.isOutbox) {
       return;
     }
-    enqueueMessage({
+    return await sendMessage({
       ...context,
       response: {
         ...context.response,
