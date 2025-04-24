@@ -45,22 +45,19 @@ async function jsonStore({ filePath }) {
   }
 
   return {
-    get: async (key, callback) => {
+    get: async (key) => {
       console.log(`Getting value for key: ${key}`);
-      console.log(`callback:`, callback);
       const entry = persistentCache[key];
       // console.log(`Cache entry found:`, entry);
       if (entry && entry.expiresAt && Date.now() > entry.expiresAt) {
         console.log(`Key ${key} has expired`);
         delete persistentCache[key];
         await savePersistentCache();
-        if (callback) callback(null, undefined);
         return;
       }
-      if (callback) callback(null, entry ? entry.value : undefined);
       return entry ? entry.value : undefined;
     },
-    set: async (key, value, options, callback) => {
+    set: async (key, value, options) => {
       console.log(`Setting value for key: ${key}, value:`, value);
       persistentCache[key] = {
         value,
@@ -68,27 +65,24 @@ async function jsonStore({ filePath }) {
       };
       await savePersistentCache();
       console.log(`Persistent cache updated for key: ${key}`);
-      if (callback) callback(null, true);
     },
-    del: async (key, callback) => {
+    del: async (key) => {
       console.log(`Deleting value for key: ${key}`);
       delete persistentCache[key];
       await savePersistentCache();
-      if (callback) callback(null, true);
     },
-    reset: async (callback) => {
+    reset: async () => {
       console.log(`Resetting persistent cache`);
       persistentCache = {};
       await savePersistentCache();
-      if (callback) callback(null, true);
     },
-    keys: async (callback) => {
+    keys: async () => {
       console.log(`Getting all keys`);
       const validKeys = Object.keys(persistentCache).filter(key => {
         const entry = persistentCache[key];
         return !(entry.expiresAt && Date.now() > entry.expiresAt);
       });
-      if (callback) callback(null, validKeys);
+      return validKeys;
     }
   };
 }
