@@ -3,6 +3,7 @@ const { sleep, saveJsonSync, hour, second } = require('../utils');
 const { trigger: greetingTrigger } = require('./greeting');
 const { getConversation, setConversation } = require('../friends-conversations-cache');
 const { getAllFriends } = require('../friends-cache');
+const { getOrLoadMessages } = require('../messages-cache');
 
 const loadConversation = async function (context, friendId) {
   console.log(`Loading conversations for ${friendId} friend from server...`);
@@ -29,12 +30,17 @@ async function greetFriends(context) {
       await setConversation(friend.id, conversation);
     }
     const conversationHistoryIsEmpty = conversation.last_message_id === 0 && conversation.last_conversation_message_id === 0;
-    allFriends[i] = { ...friend, conversation, conversationHistoryIsEmpty };
+    let lastMessageTimestamp;
+    if (!conversationHistoryIsEmpty) {
+      const messages = await getOrLoadMessages({ context, friendId: friend.id });
+      lastMessageTimestamp = messages[0]?.date;
+    }
+    allFriends[i] = { ...friend, conversation, conversationHistoryIsEmpty, lastMessageTimestamp };
   }
 
   const friendsOpenToMessages = allFriends.filter(friend => friend.can_write_private_message);
 
-  const orderedFriends = _.orderBy(friendsOpenToMessages, ['conversationHistoryIsEmpty', 'online', 'last_seen', 'last_seen.time'], ['desc', 'desc', 'asc', 'desc']);
+  const orderedFriends = _.orderBy(friendsOpenToMessages, ['conversationHistoryIsEmpty', 'online', 'lastMessageTimestamp', 'last_seen', 'last_seen.time'], ['desc', 'desc', 'asc', 'asc', 'desc']);
 
   // saveJsonSync('orderedFriends.json', orderedFriends);
 
