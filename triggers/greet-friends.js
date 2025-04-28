@@ -36,6 +36,10 @@ async function greetFriends(context) {
       lastMessageTimestamp = messages[0]?.date;
     }
     allFriends[i] = { ...friend, conversation, conversationHistoryIsEmpty, lastMessageTimestamp };
+    console.log(`Friend ${i+1}/${allFriends.length} processed:`, {
+      conversationHistoryIsEmpty,
+      lastMessageTimestamp,
+    });
   }
 
   const friendsOpenToMessages = allFriends.filter(friend => friend.can_write_private_message);

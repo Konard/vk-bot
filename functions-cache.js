@@ -1,5 +1,5 @@
 const { createCache } = require('cache-manager');
-const jsonStore = require('./cache-manager-json-store');
+const jsonStore = require('./json-store');
 const { eraseMetadata, clean } = require('./utils');
 const crypto = require('crypto');
 

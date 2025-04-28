@@ -1,9 +1,12 @@
 const { createCache } = require('cache-manager');
-const jsonStore = require('./cache-manager-json-store');
+const jsonStore = require('./json-store');
+const multiJsonStore = require('./multi-json-store');
 const { eraseMetadata, clean, sleep, week, second, ms } = require('./utils');
 
 const TTL_SECONDS = week / second;
-const targetPath = './data/friends/messages/messages.json';
+const targetFolder = './data/friends/messages';
+const targetPath = `${targetFolder}/messages.json`;
+
 let cache = null;
 
 async function getCache() {
@@ -11,7 +14,8 @@ async function getCache() {
     return cache;
   }
   console.log('Initializing messages cache with jsonStore');
-  const store = await jsonStore({ filePath: targetPath });
+  // const store = await jsonStore({ filePath: targetPath });
+  const store = await multiJsonStore({ folderPath: targetFolder });
   cache = createCache({
     stores: [store],
   });
@@ -21,9 +25,9 @@ async function getCache() {
 async function setMessages(friendId, messagesData) {
   console.log(`setMessages called with friendId: ${friendId}`);
   const cleanedMessagesData = clean(eraseMetadata(messagesData));
-  console.log(`Setting messages data for friendId ${friendId}:`, cleanedMessagesData);
+  // console.log(`Setting messages data for friendId ${friendId}:`, cleanedMessagesData);
   const cacheInstance = await getCache();
-  console.log(`Messages cache instance obtained:`, cacheInstance);
+  // console.log(`Messages cache instance obtained:`, cacheInstance);
   await cacheInstance.set(friendId, cleanedMessagesData, { ttl: TTL_SECONDS });
   console.log(`Messages data set for friendId ${friendId}`);
   return cleanedMessagesData;
@@ -62,11 +66,11 @@ async function loadMessages({ context, friendId, step = 200 }) {
       offset,
       count: step,
     });
-    await sleep((20 * second) / ms);
-    if (response.items.length === 0) {
+    await sleep((15 * second) / ms);
+    messages.push(...response.items);
+    if (response.items.length < step) {
       break;
     }
-    messages.push(...response.items);
     offset += step;
     console.log(`Loaded ${messages.length} messages for friendId ${friendId}`);
   }
