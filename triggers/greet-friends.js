@@ -1,20 +1,11 @@
 const _ = require('lodash');
 const { sleep, saveJsonSync, hour, second } = require('../utils');
 const { trigger: greetingTrigger } = require('./greeting');
-const { getConversation, setConversation } = require('../friends-conversations-cache');
+const { getOrLoadConversation, getConversation, setConversation, loadConversation } = require('../friends-conversations-cache');
 const { getAllFriends } = require('../friends-cache');
-const { getOrLoadMessages } = require('../messages-cache');
+const { getOrLoadMessages, loadMessages } = require('../messages-cache');
 
-const loadConversation = async function (context, friendId) {
-  console.log(`Loading conversations for ${friendId} friend from server...`);
-  const conversationsResponse = await context.vk.api.messages.getConversationsById({
-    peer_ids: [friendId],
-    count: 1
-  });
-  console.log(`Conversation for ${friendId} friend loaded from VK.`);
-  await sleep(10000);
-  return conversationsResponse.items[0];
-}
+
 
 async function greetFriends(context) {
   let greetedFriends = 0;
@@ -24,11 +15,7 @@ async function greetFriends(context) {
 
   for (let i = 0; i < allFriends.length; i++) {
     const friend = allFriends[i];
-    let conversation = await getConversation(friend.id);
-    if (!conversation) {
-      conversation = await loadConversation(context, friend.id);
-      await setConversation(friend.id, conversation);
-    }
+    let conversation = await getOrLoadConversation({ context, friendId: friend.id });
     const conversationHistoryIsEmpty = conversation.last_message_id === 0 && conversation.last_conversation_message_id === 0;
     let lastMessageTimestamp;
     if (!conversationHistoryIsEmpty) {
@@ -44,7 +31,7 @@ async function greetFriends(context) {
 
   const friendsOpenToMessages = allFriends.filter(friend => friend.can_write_private_message);
 
-  const orderedFriends = _.orderBy(friendsOpenToMessages, ['conversationHistoryIsEmpty', 'online', 'lastMessageTimestamp', 'last_seen', 'last_seen.time'], ['desc', 'desc', 'asc', 'asc', 'desc']);
+  const orderedFriends = _.orderBy(friendsOpenToMessages, ['conversationHistoryIsEmpty', 'lastMessageTimestamp'], ['desc', 'asc']);
 
   // saveJsonSync('orderedFriends.json', orderedFriends);
 
@@ -59,9 +46,8 @@ async function greetFriends(context) {
     let conversation = friend.conversation;
 
     // Temporary fix for conversation cache (reload conversation from server to check actual state)
-    conversation = await loadConversation(context, friend.id);
-
-    console.log(conversation);
+    conversation = await loadConversation({ context, friendId: friend.id });
+    await loadMessages({ context, friendId: friend.id });
 
     if (conversation.last_message_id > 0 && conversation.last_conversation_message_id > 0) {
       console.log(`Skipping friend ${friend.id} because conversation is not empty.`);
@@ -78,20 +64,19 @@ async function greetFriends(context) {
       continue;
     }
 
-    const response = await greetingTrigger.action({
+    await greetingTrigger.action({
       vk: context.vk,
       response: {
         user_id: friend.id,
       }
     });
-    console.log(`Greeting for friend ${friend.id} is sent:`, response);
+    greetedFriends++;
+    console.log(`Greeting for ${greetedFriends}/${maxGreetings} friend with id ${friend.id} is sent.`);
     await sleep(30 * second);
 
-    greetedFriends++;
-    console.log('greetedFriends:', greetedFriends);
-
     // Update conversation in cache (after sending greeting)
-    await loadConversation(context, friend.id);
+    await loadConversation({ context, friendId: friend.id });
+    await loadMessages({ context, friendId: friend.id });
 
     if (greetedFriends >= maxGreetings) {
       console.log(`No more friends to greet, ${maxGreetings} limit reached.`);
