@@ -4,6 +4,7 @@ const fs = require('fs');
 const priorityFriendIds = [
   450527,
   138919441,
+  142032068,
   243646872,
   557672854,
   1025353969,
