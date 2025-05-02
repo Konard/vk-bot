@@ -56,7 +56,7 @@ async function getMessages(friendId, defaultValueFactory) {
   return cachedMessagesData;
 }
 
-async function loadMessages({ context, friendId, step = 200 }) {
+async function loadMessages({ context, friendId, step = 200, updateCache = false }) {
   console.log(`Loading message history for friendId ${friendId}...`);
   const messages = [];
   let offset = 0;
@@ -75,6 +75,10 @@ async function loadMessages({ context, friendId, step = 200 }) {
     console.log(`Loaded ${messages.length} messages for friendId ${friendId}`);
   }
   console.log(`Total ${messages.length} messages loaded for friendId ${friendId}`);
+  if (updateCache) {
+    console.log(`Updating cache for friendId ${friendId}`);
+    await setMessages(friendId, messages);
+  }
   return messages;
 }
 

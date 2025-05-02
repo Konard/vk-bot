@@ -46,13 +46,13 @@ async function greetFriends(context) {
     let conversation = friend.conversation;
 
     // Temporary fix for conversation cache (reload conversation from server to check actual state)
-    conversation = await loadConversation({ context, friendId: friend.id });
-    await loadMessages({ context, friendId: friend.id });
+    // conversation = await loadConversation({ context, friendId: friend.id });
+    // await loadMessages({ context, friendId: friend.id });
 
-    if (conversation.last_message_id > 0 && conversation.last_conversation_message_id > 0) {
-      console.log(`Skipping friend ${friend.id} because conversation is not empty.`);
-      continue;
-    }
+    // if (conversation.last_message_id > 0 && conversation.last_conversation_message_id > 0) {
+    //   console.log(`Skipping friend ${friend.id} because conversation is not empty.`);
+    //   continue;
+    // }
 
     if (conversation.is_marked_unread) {
       console.log(`Skipping friend ${friend.id} because conversation is marked as unread.`);
@@ -75,8 +75,8 @@ async function greetFriends(context) {
     await sleep(30 * second);
 
     // Update conversation in cache (after sending greeting)
-    await loadConversation({ context, friendId: friend.id });
-    await loadMessages({ context, friendId: friend.id });
+    await loadConversation({ context, friendId: friend.id, updateCache: true });
+    await loadMessages({ context, friendId: friend.id, updateCache: true });
 
     if (greetedFriends >= maxGreetings) {
       console.log(`No more friends to greet, ${maxGreetings} limit reached.`);

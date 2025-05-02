@@ -50,14 +50,15 @@ async function getConversation(friendId, defaultValueFactory) {
   return cachedConversation;
 }
 
-const loadConversation = async function ({ context, friendId }) {
+const loadConversation = async function ({ context, friendId, updateCache = false }) {
   console.log(`Loading conversations for ${friendId} friend from server...`);
   const conversationsResponse = await context.vk.api.messages.getConversationsById({
     peer_ids: [friendId],
     count: 1
   });
   const conversation = conversationsResponse.items[0];
-  if (!conversation) {
+  if (updateCache && conversation) {
+    console.log(`Updating conversation for ${friendId} friend in cache...`);
     setConversation(friendId, conversation);
   }
   console.log(`Conversation for ${friendId} friend loaded from VK.`);
