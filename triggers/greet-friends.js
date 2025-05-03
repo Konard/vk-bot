@@ -5,8 +5,6 @@ const { getOrLoadConversation, getConversation, setConversation, loadConversatio
 const { getAllFriends } = require('../friends-cache');
 const { getOrLoadMessages, loadMessages } = require('../messages-cache');
 
-
-
 async function greetFriends(context) {
   let greetedFriends = 0;
   const maxGreetings = context?.options?.maxGreetings || 0;
@@ -35,7 +33,7 @@ async function greetFriends(context) {
 
   // saveJsonSync('orderedFriends.json', orderedFriends);
 
-  const skipFriends = [631154494, 592773712];
+  const skipFriends = [631154494, 592773712, 421547531, 280114933, 63045320];
 
   for (const friend of orderedFriends) {
     if (skipFriends.includes(friend.id)) {
