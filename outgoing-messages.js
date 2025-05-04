@@ -169,7 +169,7 @@ const handleOutgoingMessage = async () => {
       return; // This error requires to do nothing.
       // TODO: unfriend or block user if he blocked you
     } else if (e.code === 7) { // Permission to perform this action is denied
-      console.log(`${userId} user is deactivated (blocked or deleted) or limit reached.`);
+      console.log(`Limit reached or ${userId} user is deactivated (blocked or deleted).`);
       return; // This error requires to do nothing.
       // TODO: unfriend of it is deactivated, block if he blocked you or just wait on the limit
     } else {
