@@ -1,9 +1,9 @@
 const { createCache } = require('cache-manager');
 const jsonStore = require('./json-store');
 const multiJsonStore = require('./multi-json-store');
-const { eraseMetadata, clean, sleep, week, second, ms } = require('./utils');
+const { eraseMetadata, clean, sleep, month, second, ms } = require('./utils');
 
-const TTL_SECONDS = week / second;
+const TTL_SECONDS = month / second;
 const targetFolder = './data/friends/messages';
 const targetPath = `${targetFolder}/messages.json`;
 
