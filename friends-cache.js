@@ -25,11 +25,11 @@ async function getCache() {
 }
 
 async function setFriend(friendId, friendData) {
-  console.log(`setFriend called with friendId: ${friendId}`);
+  // console.log(`setFriend called with friendId: ${friendId}`);
   const cleanedFriendData = clean(eraseMetadata(friendData));
-  console.log(`Setting friend data for friendId ${friendId}:`, cleanedFriendData);
+  // console.log(`Setting friend data for friendId ${friendId}:`, cleanedFriendData);
   const cacheInstance = await getCache();
-  console.log(`Cache instance obtained:`, cacheInstance);
+  // console.log(`Cache instance obtained:`, cacheInstance);
   await cacheInstance.set(friendId, cleanedFriendData, { ttl: TTL_SECONDS }); // Use the constant for TTL
   console.log(`Friend data set for friendId ${friendId}`);
   return cleanedFriendData;
