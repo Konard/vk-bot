@@ -1,4 +1,4 @@
-const { sleep, getRandomElement, second, minute, app } = require('../utils');
+const { sleep, getRandomElement, second, minute, day, app } = require('../utils');
 // const fs = require('fs');
 
 const communities = [
@@ -28,7 +28,7 @@ const disabledCommunitiesCleanupInterval = setInterval(() => {
     return;
   }
   disabledCommunities = [];
-}, 24 * hour);
+}, 1 * day);
 
 const restrictedCommunities = [
   64758790,   // https://vk.com/club64758790
