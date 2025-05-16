@@ -107,7 +107,7 @@ function makeCachedFunction(func, options = {}, ignoreFields = []) {
     console.log('Generated cache key:', cacheKey);
 
     const cachedResult = await cacheInstance.get(cacheKey);
-    console.log('Cached result:', cachedResult);
+    // console.log('Cached result:', cachedResult);
 
     if (cachedResult) {
       console.log(`Cache hit for key: ${cacheKey}`);

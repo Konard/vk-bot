@@ -34,7 +34,7 @@ async function jsonStore({ filePath }) {
   async function savePersistentCache() {
     if (pendingSaveTimeout) {
       clearTimeout(pendingSaveTimeout); // Restart the pending save
-      console.log('Pending save restarted');
+      // console.log('Pending save restarted');
     }
 
     pendingSaveTimeout = setTimeout(async () => {
