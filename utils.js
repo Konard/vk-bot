@@ -1,6 +1,10 @@
 const { DateTime } = require('luxon');
 const fs = require('fs');
 
+const app = {
+  gracefullyFinished: false,
+}
+
 const priorityFriendIds = [
   450527,
   138919441,
@@ -195,6 +199,7 @@ module.exports = {
   readJsonSync,
   saveTextSync,
   saveJsonSync,
+  app,
   ms,
   second,
   minute,

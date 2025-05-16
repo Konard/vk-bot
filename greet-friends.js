@@ -1,8 +1,6 @@
 const { VK } = require('vk-io');
-const { executeTrigger, getToken } = require('./utils');
-const { trigger: greetingTrigger } = require('./triggers/greeting');
-const { randomInRange, handleOutgoingMessage, enqueueMessage, queue } = require('./outgoing-messages');
-const fs = require('fs');
+const { executeTrigger, getToken, app } = require('./utils');
+const { handleOutgoingMessage, queue } = require('./outgoing-messages');
 const token = getToken();
 const vk = new VK({ token });
 const { trigger } = require('./triggers/greet-friends');
@@ -10,16 +8,15 @@ const { trigger } = require('./triggers/greet-friends');
 const maxGreetings = Number(process.argv[2]) || 0;
 
 if (maxGreetings > 0) {
-  let finished = false;
   executeTrigger(trigger, { vk, options: { maxGreetings } }).then(() => { 
-    finished = true
+    app.gracefullyFinished = true;
   }).catch((e) => {
-    finished = true;
+    app.gracefullyFinished = true;
     console.error(e);
   });
   const messagesHandlerInterval = setInterval(handleOutgoingMessage, 1000);
   const finalizerInterval = setInterval(() => {
-    if (finished && queue.length == 0) {
+    if (app.gracefullyFinished && queue.length == 0) {
       setTimeout(() => {
         clearInterval(messagesHandlerInterval);
       }, 10000);

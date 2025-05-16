@@ -1,4 +1,4 @@
-const { sleep, getRandomElement, second, minute } = require('../utils');
+const { sleep, getRandomElement, second, minute, app } = require('../utils');
 // const fs = require('fs');
 
 const communities = [
@@ -19,6 +19,16 @@ const communities = [
   180442247,  // https://vk.com/club180442247
   214787806,  // https://vk.com/club214787806
 ];
+
+let disabledCommunities = [];
+
+const disabledCommunitiesCleanupInterval = setInterval(() => {
+  if (app.gracefullyFinished) {
+    clearInterval(disabledCommunitiesCleanupInterval);
+    return;
+  }
+  disabledCommunities = [];
+}, 24 * hour);
 
 const restrictedCommunities = [
   64758790,   // https://vk.com/club64758790
@@ -77,9 +87,21 @@ async function uploadAvatarPicture(context, communityId, imagePath) {
   return 'photo3972090_457245285_5f56ac9e1f0de697db'; // attempt to use avatar
 }
 
+function disableCommunity(communityId) {
+  if (!disabledCommunities.includes(communityId)) {
+    disabledCommunities.push(communityId);
+    console.warn(trigger.name, `Community ${communityId} is added to disabled communities list.`);
+  }
+}
+
 async function sendInvitationPosts(context) {
   try {
     for (const communityId of communities) {
+      if (disabledCommunities.includes(communityId)) {
+        console.log(trigger.name, `Community ${communityId} is disabled. Skipping.`);
+        continue;
+      }
+
       // For wall posts, VK expects a negative owner_id for communities.
       const ownerId = '-' + communityId.toString();
 
@@ -129,23 +151,32 @@ async function sendInvitationPosts(context) {
       } catch (e) {
         if (e.code === 210) { // APIError: Code №210 - Access to wall's post denied
           console.warn(trigger.name, `Warning: Access to wall's post denied for community ${communityId}.
-As this usually corresponds to the rate limit of VK API, the request should be repeated after a delay.`);
+As this may correspond to the rate limit of VK API, any next request should be repeated after a delay.`);
+          disableCommunity(communityId);
           await sleep(trigger.name, 1 * minute);
           continue;
         } else if (e.code === 14) { // APIError: Code №14 - Captcha needed
           console.warn(trigger.name, `Warning: Captcha needed to post to community ${communityId}.
-As this usually corresponds to the rate limit of VK API, the request should be repeated after a delay.`);
+As this usually corresponds to the rate limit of VK API, any next request should be repeated after a delay.`);
           await sleep(trigger.name, 1 * minute);
           continue;
         } else if (e.code === 219) { // APIError: Code №219 - Advertisement post was recently added
           console.warn(trigger.name, `Warning: Advertisement post was recently added to community ${communityId}.
-As this usually corresponds to the rate limit of VK API, the request should be repeated after a delay.`);
+As this may correspond to the rate limit of VK API, any next request should be repeated after a delay.`);
+          disableCommunity(communityId);
           await sleep(trigger.name, 1 * minute);
           continue;
         } else if (e.code === 10) { // APIError: Code №10 - Internal server error: Unknown error, try later
           console.warn(trigger.name, `Warning: Unknown error occurred while posting to community ${communityId}.
-As we explicitly asked to try later by VK API, the request should be repeated after a delay.`);
+As we explicitly asked to try later by VK API, any next request should be repeated after a delay.`);
           await sleep(trigger.name, 1 * minute);
+          continue;
+        } else if (e.code === 15) { // APIError: Code №15 - Access denied: wall is disabled
+          console.warn(trigger.name, `Warning: Access denied to post to community ${communityId} wall because it was disabled by administrator.
+It may be done for an unknown period of time, moving the community to disabled communities list.`);
+          disableCommunity(communityId);
+          await sleep(trigger.name, 1 * minute);
+          continue;
         } else {
           throw e;
         }
