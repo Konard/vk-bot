@@ -102,38 +102,38 @@ async function sendInvitationPosts(context) {
         continue;
       }
 
-      // For wall posts, VK expects a negative owner_id for communities.
-      const ownerId = '-' + communityId.toString();
-
-      const topPosts = await context.vk.api.wall.get({
-        owner_id: ownerId,
-        count: 10
-      });
-      // console.log(JSON.stringify(topPosts.items.map(post => {
-      //   return {
-      //     id: post.id,
-      //     communityId: post.owner_id,
-      //     text: post.text,
-      //     date: new Date(post.date * 1000).toISOString()
-      //   };
-      // }), null, 2));
-
-      const topPostsHaveInvitation = topPosts.items.some(post => post.text.includes(postsSearchRequest));
-
-      console.log(trigger.name, `Loaded ${topPosts.items.length} posts from ${communityId} community. Our invitation post is ${topPostsHaveInvitation ? 'found' : 'not found'} in these posts.`);
-
-      await sleep(trigger.name, 10 * second);
-
-      if (topPostsHaveInvitation) {
-        continue;
-      }
-
-      const previousPosts = await context.vk.api.wall.search({ owner_id: ownerId, query: postsSearchRequest, count: 15 });
-      const postsToDelete = previousPosts.items.filter(post => post.text.includes(postsSearchRequest) && post.can_delete);
-      console.log(trigger.name, `Found ${postsToDelete.length} previous posts to be deleted.`);
-      await sleep(trigger.name, 5 * second);
-
       try {
+        // For wall posts, VK expects a negative owner_id for communities.
+        const ownerId = '-' + communityId.toString();
+
+        const topPosts = await context.vk.api.wall.get({
+          owner_id: ownerId,
+          count: 10
+        });
+
+        // console.log(JSON.stringify(topPosts.items.map(post => {
+        //   return {
+        //     id: post.id,
+        //     communityId: post.owner_id,
+        //     text: post.text,
+        //     date: new Date(post.date * 1000).toISOString()
+        //   };
+        // }), null, 2));
+
+        const topPostsHaveInvitation = topPosts.items.some(post => post.text.includes(postsSearchRequest));
+
+        console.log(trigger.name, `Loaded ${topPosts.items.length} posts from ${communityId} community. Our invitation post is ${topPostsHaveInvitation ? 'found' : 'not found'} in these posts.`);
+
+        await sleep(trigger.name, 10 * second);
+
+        if (topPostsHaveInvitation) {
+          continue;
+        }
+
+        const previousPosts = await context.vk.api.wall.search({ owner_id: ownerId, query: postsSearchRequest, count: 15 });
+        const postsToDelete = previousPosts.items.filter(post => post.text.includes(postsSearchRequest) && post.can_delete);
+        console.log(trigger.name, `Found ${postsToDelete.length} previous posts to be deleted.`);
+        await sleep(trigger.name, 5 * second);
         console.log(trigger.name, `Sending post to ${communityId} community.`);
 
         const message = restrictedCommunities.includes(communityId) ? restrictedPostMessage : postMessage;
@@ -148,60 +148,50 @@ async function sendInvitationPosts(context) {
         await context.vk.api.wall.post({ owner_id: ownerId, message, attachments });
         console.log(trigger.name, 'Post is sent to', communityId, 'community.');
         await sleep(trigger.name, 5 * second);
-      } catch (e) {
-        if (e.code === 210) { // APIError: Code №210 - Access to wall's post denied
+
+        for (const post of postsToDelete) {
+          try {
+            await context.vk.api.wall.delete({ owner_id: ownerId, post_id: post.id });
+            console.log(trigger.name, `Post ${post.id} is deleted.`);
+            await sleep(trigger.name, 5 * second);
+          } catch (e) {
+            if (e.code === 104) { // APIError: Code №104 - Not found
+              console.warn(trigger.name, `Post ${post.id} is not found. It may already be deleted.`);
+              continue;
+            }
+            if (e.code === 100) { // APIError: Code №100 - One of the parameters specified was missing or invalid: no post with this post_id
+              console.warn(trigger.name, `Post ${post.id} is not found. It may already be deleted.`);
+              continue;
+            }
+            throw e;
+          }
+        }
+      } catch (err) {
+        if (err.code === 210) { // APIError: Code №210 - Access to wall's post denied
           console.warn(trigger.name, `Warning: Access to wall's post denied for community ${communityId}.
 As this may correspond to the rate limit of VK API, any next request should be repeated after a delay.`);
           disableCommunity(communityId);
           await sleep(trigger.name, 1 * minute);
-          continue;
-        } else if (e.code === 14) { // APIError: Code №14 - Captcha needed
-          console.warn(trigger.name, `Warning: Captcha needed to post to community ${communityId}.
-As this usually corresponds to the rate limit of VK API, any next request should be repeated after a delay.`);
-          await sleep(trigger.name, 1 * minute);
-          continue;
-        } else if (e.code === 219) { // APIError: Code №219 - Advertisement post was recently added
+        } else if (err.code === 219) { // APIError: Code №219 - Advertisement post was recently added
           console.warn(trigger.name, `Warning: Advertisement post was recently added to community ${communityId}.
 As this may correspond to the rate limit of VK API, any next request should be repeated after a delay.`);
           disableCommunity(communityId);
           await sleep(trigger.name, 1 * minute);
-          continue;
-        } else if (e.code === 10) { // APIError: Code №10 - Internal server error: Unknown error, try later
-          console.warn(trigger.name, `Warning: Unknown error occurred while posting to community ${communityId}.
-As we explicitly asked to try later by VK API, any next request should be repeated after a delay.`);
-          await sleep(trigger.name, 1 * minute);
-          continue;
-        } else if (e.code === 15) { // APIError: Code №15 - Access denied: wall is disabled
+        } else if (err.code === 15) { // APIError: Code №15 - Access denied: wall is disabled
           console.warn(trigger.name, `Warning: Access denied to post to community ${communityId} wall because it was disabled by administrator.
 It may be done for an unknown period of time, moving the community to disabled communities list.`);
           disableCommunity(communityId);
           await sleep(trigger.name, 1 * minute);
-          continue;
+        } else if (err.code === 14) { // APIError: Code №14 - Captcha needed
+          console.warn(trigger.name, `Warning: Captcha needed to post to community ${communityId}.
+As this usually corresponds to the rate limit of VK API, any next request should be repeated after a delay.`);
+          await sleep(trigger.name, 1 * minute);
+        } else if (err.code === 10) { // APIError: Code №10 - Internal server error: Unknown error, try later
+          console.warn(trigger.name, `Warning: Unknown error occurred while posting to community ${communityId}.
+As we explicitly asked to try later by VK API, any next request should be repeated after a delay.`);
+          await sleep(trigger.name, 1 * minute);
         } else {
-          throw e;
-        }
-      }
-
-      for (const post of postsToDelete) {
-        try {
-          await context.vk.api.wall.delete({ owner_id: ownerId, post_id: post.id });
-          console.log(trigger.name, `Post ${post.id} is deleted.`);
-          await sleep(trigger.name, 5 * second);
-        } catch (e) {
-          if (e.code === 104) { // APIError: Code №104 - Not found
-            console.warn(trigger.name, `Post ${post.id} is not found. It may already be deleted.`);
-            continue;
-          }
-          if (e.code === 100) { // APIError: Code №100 - One of the parameters specified was missing or invalid: no post with this post_id
-            console.warn(trigger.name, `Post ${post.id} is not found. It may already be deleted.`);
-            continue;
-          }
-          if (e.code === 210) {
-            console.warn(trigger.name, `Access to wall's post denied for community ${communityId}.
-As this usually corresponds to the rate limit, the request should be repeated after a delay.`);
-            break;
-          }
-          throw e;
+          throw err;
         }
       }
     }
