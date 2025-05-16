@@ -99,27 +99,27 @@ function generateCacheKey(funcName, args, options, ignoreFields = []) {
 }
 
 function makeCachedFunction(func, options = {}, ignoreFields = []) {
-  console.log('makeCachedFunction called with:', { func, options, ignoreFields });
+  // console.log('makeCachedFunction called with:', { func, options, ignoreFields });
   return async function (...args) {
-    console.log('Cached function called with args:', args);
+    // console.log('Cached function called with args:', args);
     const cacheInstance = await getCache();
     const cacheKey = generateCacheKey(func.name, args, options, ignoreFields);
-    console.log('Generated cache key:', cacheKey);
+    // console.log('Generated cache key:', cacheKey);
 
     const cachedResult = await cacheInstance.get(cacheKey);
     // console.log('Cached result:', cachedResult);
 
     if (cachedResult) {
-      console.log(`Cache hit for key: ${cacheKey}`);
+      // console.log(`Cache hit for key: ${cacheKey}`);
       return cachedResult;
     }
 
-    console.log(`Cache miss for key: ${cacheKey}`);
+    // console.log(`Cache miss for key: ${cacheKey}`);
     const result = await func(...args);
-    console.log('Function result:', result);
+    // console.log('Function result:', result);
 
     await cacheInstance.set(cacheKey, result, { ttl: TTL_SECONDS });
-    console.log('Result cached with key:', cacheKey);
+    // console.log('Result cached with key:', cacheKey);
 
     return result;
   };
