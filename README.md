@@ -30,3 +30,9 @@ node index.js 2>&1 | tee log.txt
 ```bash
 grep -Ei 'error|fail' log.txt
 ```
+
+```bash
+grep -Ei -B10 -A30 'error|fail' log.txt
+```
+
+
