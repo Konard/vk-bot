@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { VK } = require('vk-io');
-const { getToken } = require('./utils');
+const { getToken, sleep, minute } = require('./utils');
 
 const token = getToken();
 const vk = new VK({ token });
@@ -13,11 +13,25 @@ async function loadMessages(friendId) {
     const count = 200; // VK API allows a maximum of 200 messages per request
 
     while (true) {
-      const response = await vk.api.messages.getHistory({
-        peer_id: friendId,
-        offset,
-        count
-      });
+      let response;
+      while (true) {
+        try {
+          response = await vk.api.messages.getHistory({
+            peer_id: friendId,
+            offset,
+            count
+          });
+          break; // Success, exit retry loop
+        } catch (error) {
+          if (error.code === 10) { // APIError: Code ? 10 - Internal server error: engine not available, please try again later
+            console.warn(`VK API internal server error (code 10) for friend ${friendId}. Retrying in 5 minutes...`);
+            await sleep(minute * 5);
+            continue;
+          } else {
+            throw error;
+          }
+        }
+      }
 
       if (response.items.length === 0) {
         break;
