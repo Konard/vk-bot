@@ -47,7 +47,7 @@ async function getOrSetMessages(friendId, messagesData) {
 async function getMessages(friendId, defaultValueFactory) {
   console.log(`Getting messages data for friendId ${friendId}`);
   let cachedMessagesData = await (await getCache()).get(friendId);
-  console.log(`Cached messages data for friendId ${friendId}:`, cachedMessagesData);
+  // console.log(`Cached messages data for friendId ${friendId}:`, cachedMessagesData);
   if (!cachedMessagesData && defaultValueFactory) {
     console.log(`No cached messages data found for friendId ${friendId}, using defaultValueFactory`);
     const messagesData = await defaultValueFactory(friendId);
