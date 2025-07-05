@@ -6,6 +6,8 @@ const TTL_SECONDS = week / second; // One week TTL for friends count
 const targetPath = './data/friends-count/friends-count.json';
 let cache;
 
+const PAGE_LIMIT = 5000;
+
 async function getCache() {
   if (!cache) {
     const store = await jsonStore({ filePath: targetPath });
@@ -15,15 +17,21 @@ async function getCache() {
 }
 
 async function fetchFriendsCount(context, userId) {
-  const response = await context.vk.api.friends.get({ user_id: userId, count: 1, offset: 0, fields: ['online'] });
-  // Rate limiting to avoid hitting VK API limits
-  await sleep(10 * second);
-
-  console.log('fetchFriendsCount', 'response', response);
-  console.log('fetchFriendsCount', 'response.count', response.count);
-  console.log('fetchFriendsCount', 'response.total', response.total);
-
-  return response.count || response.total || 0;
+  try {
+    let total = 0;
+    let offset = 0;
+    let response;
+    do {
+      response = await context.vk.api.friends.get({ user_id: userId, count: 1, offset });
+      await sleep(10 * second);
+      total += (typeof response.count === 'number' ? response.count : 0);
+      offset += PAGE_LIMIT;
+    } while (response.count === PAGE_LIMIT);
+    return total;
+  } catch (error) {
+    console.log(`Could not fetch friends count for user ${userId}:`, error.message);
+    return 0;
+  }
 }
 
 async function getFriendsCountCached(context, userId) {
