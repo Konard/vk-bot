@@ -1,3 +1,16 @@
+const yargs = require('yargs/yargs');
+const { hideBin } = require('yargs/helpers');
+
+const argv = yargs(hideBin(process.argv))
+  .option('order-by', {
+    type: 'string',
+    choices: ['total-friends', 'default'],
+    default: 'default',
+    describe: 'Order friends by specified criteria'
+  })
+  .help()
+  .argv;
+
 const { VK } = require('vk-io');
 const { executeTrigger, getToken, app } = require('./utils');
 const { handleOutgoingMessage, queue } = require('./outgoing-messages');
@@ -8,7 +21,13 @@ const { trigger } = require('./triggers/greet-friends');
 const maxGreetings = Number(process.argv[2]) || 0;
 
 if (maxGreetings > 0) {
-  executeTrigger(trigger, { vk, options: { maxGreetings } }).then(() => { 
+  executeTrigger(trigger, { 
+    vk, 
+    options: { 
+      maxGreetings,
+      orderBy: argv['order-by']
+    } 
+  }).then(() => { 
     app.gracefullyFinished = true;
   }).catch((e) => {
     app.gracefullyFinished = true;

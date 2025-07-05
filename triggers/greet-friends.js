@@ -3,11 +3,13 @@ const { sleep, saveJsonSync, hour, second } = require('../utils');
 const { trigger: greetingTrigger } = require('./greeting');
 const { getOrLoadConversation, getConversation, setConversation, loadConversation } = require('../friends-conversations-cache');
 const { getAllFriends } = require('../friends-cache');
+const { getFriendsCountCached } = require('../friends-count-cache');
 const { getOrLoadMessages, loadMessages } = require('../messages-cache');
 
 async function greetFriends(context) {
   let greetedFriends = 0;
   const maxGreetings = context?.options?.maxGreetings || 0;
+  const orderBy = context?.options?.orderBy || 'default';
 
   const allFriends = (await getAllFriends({ context }));
 
@@ -20,16 +22,45 @@ async function greetFriends(context) {
       const messages = await getOrLoadMessages({ context, friendId: friend.id });
       lastMessageTimestamp = messages[0]?.date;
     }
-    allFriends[i] = { ...friend, conversation, conversationHistoryIsEmpty, lastMessageTimestamp };
+    
+    // Get friends count via cache module if ordering by total friends
+    let friendsCount = friend.contacts;
+
+    if (orderBy === 'total-friends' && _.isNil(friendsCount)) {
+      friendsCount = await getFriendsCountCached(context, friend.id);
+    }
+    
+    allFriends[i] = { 
+      ...friend, 
+      conversation, 
+      conversationHistoryIsEmpty, 
+      lastMessageTimestamp,
+      friendsCount
+    };
     console.log(`Friend ${i+1}/${allFriends.length} processed:`, {
       conversationHistoryIsEmpty,
       lastMessageTimestamp,
+      contacts: friend.contacts,
+      friendsCount: orderBy === 'total-friends' ? friendsCount : undefined,
     });
   }
 
   const friendsOpenToMessages = allFriends.filter(friend => friend.can_write_private_message);
 
-  const orderedFriends = _.orderBy(friendsOpenToMessages, ['conversationHistoryIsEmpty', 'lastMessageTimestamp'], ['desc', 'asc']);
+  let orderedFriends;
+  if (orderBy === 'total-friends') {
+    // Sort by friends count (descending) first, then by conversation history and last message timestamp
+    orderedFriends = _.orderBy(
+      friendsOpenToMessages, 
+      ['friendsCount', 'conversationHistoryIsEmpty', 'lastMessageTimestamp'], 
+      ['desc', 'desc', 'asc']
+    );
+    console.log('Ordering friends by total friends count (descending)');
+  } else {
+    // Default ordering
+    orderedFriends = _.orderBy(friendsOpenToMessages, ['conversationHistoryIsEmpty', 'lastMessageTimestamp'], ['desc', 'asc']);
+    console.log('Using default ordering');
+  }
 
   // saveJsonSync('orderedFriends.json', orderedFriends);
 

@@ -60,7 +60,7 @@ async function getFriend(friendId, defaultValueFactory) {
 
 const loadAllFriends = async function ({
   context,
-  fields = ['online', 'last_seen', 'can_write_private_message', 'sex', 'bdate', 'deactivated'],
+  fields = ['online', 'last_seen', 'can_write_private_message', 'sex', 'bdate', 'deactivated', 'contacts'],
   limit = 10000,
   step = 5000,
 }) {
