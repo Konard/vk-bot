@@ -15,11 +15,13 @@ async function getCache() {
 }
 
 async function fetchFriendsCount(context, userId) {
-  const response = await context.vk.api.friends.get({ user_id: userId, count: 1 });
+  const response = await context.vk.api.friends.get({ user_id: userId, count: 1, offset: 0, fields: ['online'] });
   // Rate limiting to avoid hitting VK API limits
   await sleep(10 * second);
 
   console.log('fetchFriendsCount', 'response', response);
+  console.log('fetchFriendsCount', 'response.count', response.count);
+  console.log('fetchFriendsCount', 'response.total', response.total);
 
   return response.count || response.total || 0;
 }
