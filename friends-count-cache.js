@@ -29,7 +29,7 @@ async function fetchFriendsCount(context, userId) {
     } while (response.count === PAGE_LIMIT);
     return total;
   } catch (error) {
-    if (error.code === 9) { // Could not fetch friends count for user 32296879: Code ? 9 - Flood control
+    if (error.code === 9) { // APIError: Code ? 9 - Flood control
       await sleep(2 * minute);
       return await fetchFriendsCount(context, userId);
     }
