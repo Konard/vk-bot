@@ -1,5 +1,5 @@
 const { VK } = require('vk-io');
-const { getRandomElement, sleep, getToken } = require('../utils');
+const { getRandomElement, sleep, getToken, minute } = require('../utils');
 const { randomInRange, handleOutgoingMessage, enqueueMessage, queue } = require('../outgoing-messages');
 const { at } = require('lodash');
 const token = getToken();
@@ -81,6 +81,7 @@ async function sendBirthdayCongratulations() {
       count: 5000,
       offset,
     });
+    await sleep(2 * minute);
 
     if (response.items.length === 0) break;
 

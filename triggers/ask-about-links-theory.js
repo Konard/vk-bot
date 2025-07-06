@@ -1,4 +1,4 @@
-const { sleep, getRandomElement } = require('../utils');
+const { sleep, getRandomElement, minute } = require('../utils');
 const { trigger: greetingTrigger } = require('./greeting');
 const { DateTime } = require('luxon');
 const { randomInRange, handleOutgoingMessage, enqueueMessage, queue } = require('../outgoing-messages');
@@ -30,7 +30,7 @@ async function askAboutLinksTheory(context) {
       offset,
     });
     console.log(`${offset}-${offset+step} friends loaded.`);
-    await sleep(40000);
+    await sleep(2 * minute);
 
     if (response.items.length === 0) {
       break;

@@ -1,6 +1,6 @@
 const { createCache } = require('cache-manager');
 const jsonStore = require('./json-store');
-const { eraseMetadata, sleep, clean, hour, second, week } = require('./utils');
+const { eraseMetadata, sleep, clean, second, week, minute } = require('./utils');
 const { makeCachedFunction } = require('./functions-cache');
 
 const allFriendsTtl = 2 * week;
@@ -73,7 +73,7 @@ const loadAllFriends = async function ({
       offset,
     });
     console.log(`${offset}-${offset + step} friends loaded.`);
-    await sleep(30000);
+    await sleep(2 * minute);
     if (response.items.length === 0) {
       break;
     }
