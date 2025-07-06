@@ -1,9 +1,9 @@
 const { createCache } = require('cache-manager');
 const jsonStore = require('./json-store');
-const { eraseMetadata, sleep, clean, hour, second } = require('./utils');
+const { eraseMetadata, sleep, clean, hour, second, week } = require('./utils');
 const { makeCachedFunction } = require('./functions-cache');
 
-const allFriendsTtl = 12 * hour;
+const allFriendsTtl = 2 * week;
 const allFriendsTtlSeconds = allFriendsTtl / second;
 const TTL_SECONDS = 3600; // Time-to-live in seconds
 const targetPath = './data/friends/friends.json';
