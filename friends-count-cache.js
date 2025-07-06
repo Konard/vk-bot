@@ -17,25 +17,27 @@ async function getCache() {
 }
 
 async function fetchFriendsCount(context, userId) {
-  try {
-    let total = 0;
-    let offset = 0;
-    let response;
-    do {
-      response = await context.vk.api.friends.get({ user_id: userId, count: 1, offset });
-      await sleep(30 * second);
-      total += (typeof response.count === 'number' ? response.count : 0);
-      offset += PAGE_LIMIT;
-    } while (response.count === PAGE_LIMIT);
-    return total;
-  } catch (error) {
-    if (error.code === 9) { // APIError: Code ? 9 - Flood control
-      await sleep(2 * minute);
-      return await fetchFriendsCount(context, userId);
-    }
-    console.log(`Could not fetch friends count for user ${userId}:`, error.message);
-    return 0;
-  }
+  // try {
+  
+  let total = 0;
+  let offset = 0;
+  let response;
+  do {
+    response = await context.vk.api.friends.get({ user_id: userId, count: 1, offset });
+    await sleep(30 * second);
+    total += (typeof response.count === 'number' ? response.count : 0);
+    offset += PAGE_LIMIT;
+  } while (response.count === PAGE_LIMIT);
+  return total;
+
+  // } catch (error) {
+  //   if (error.code === 9) { // APIError: Code ? 9 - Flood control
+  //     await sleep(2 * minute);
+  //     return await fetchFriendsCount(context, userId);
+  //   }
+  //   console.log(`Could not fetch friends count for user ${userId}:`, error.message);
+  //   return 0;
+  // }
 }
 
 async function getFriendsCountCached(context, userId) {
