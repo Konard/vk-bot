@@ -33,7 +33,7 @@ async function getFriendsCountCached(context, userId) {
   const cacheInstance = await getCache();
   const key = String(userId);
   let count = await cacheInstance.get(key);
-  if (typeof count === 'number') {
+  if (typeof count === 'number' && count > 0 && count !== 5000) {
     return count;
   }
   count = await fetchFriendsCount(context, userId);
