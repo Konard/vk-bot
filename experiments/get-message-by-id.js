@@ -1,10 +1,6 @@
 const { VK } = require('vk-io');
-const { getRandomElement, getToken } = require('../utils');
-const { trigger: greetingTrigger } = require('../triggers/greeting');
-const { randomInRange, handleOutgoingMessage, enqueueMessage, queue } = require('../outgoing-messages');
-const { sleep } = require('../utils');
+const { getToken } = require('../utils');
 const { DateTime } = require('luxon');
-const fs = require('fs');
 const token = getToken();
 const vk = new VK({ token });
 

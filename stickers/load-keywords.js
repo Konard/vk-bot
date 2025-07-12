@@ -1,5 +1,5 @@
 const { VK } = require('vk-io');
-const { saveJsonSync, readTextSync, getToken } = require('../utils');
+const { saveJsonSync, getToken } = require('../utils');
 const token = getToken();
 const vk = new VK({ token });
 

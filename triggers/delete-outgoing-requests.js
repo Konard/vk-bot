@@ -1,4 +1,4 @@
-const { sleep, priorityFriendIds } = require('../utils');
+const { sleep, priorityFriendIds, second, ms } = require('../utils');
 
 async function deleteOutgoingFriendRequests(context) {
   try {
@@ -22,7 +22,7 @@ async function deleteOutgoingFriendRequests(context) {
       } catch (error) {
         console.error(`Failed to delete outgoing friend request: ${error}`);
       }
-      await sleep(3000);
+      await sleep((3 * second) / ms);
     }
     return requests;
   } catch (error) {

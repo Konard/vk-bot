@@ -1,9 +1,9 @@
 const { createCache } = require('cache-manager');
 const jsonStore = require('./json-store');
-const { eraseMetadata, clean } = require('./utils');
+const { hour, second } = require('./utils');
 const crypto = require('crypto');
 
-const TTL_SECONDS = 3600; // Time-to-live in seconds
+const TTL_SECONDS = (hour / second); // Time-to-live in seconds
 const targetPath = './data/functions/functions.json';
 let cache = null;
 

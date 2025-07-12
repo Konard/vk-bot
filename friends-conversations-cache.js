@@ -1,6 +1,6 @@
 const { createCache } = require('cache-manager');
 const jsonStore = require('./json-store');
-const { eraseMetadata, clean, sleep, second } = require('./utils');
+const { eraseMetadata, clean, sleep, second, ms } = require('./utils');
 
 const targetPath = './data/friends/friends-conversations.json';
 
@@ -62,7 +62,7 @@ const loadConversation = async function ({ context, friendId, updateCache = fals
     setConversation(friendId, conversation);
   }
   console.log(`Conversation for ${friendId} friend loaded from VK.`);
-  await sleep(10 * second);
+  await sleep((10 * second) / ms);
   return conversation;
 }
 

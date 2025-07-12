@@ -1,6 +1,6 @@
-
+const { second, ms } = require('./time-units');
 const { executeTrigger, getToken } = require('./utils');
-const { handleOutgoingMessage, enqueueMessage } = require('./outgoing-messages');
+const { handleOutgoingMessage } = require('./outgoing-messages');
 
 const peers = {}; // TODO: keep state about what triggers then last triggered for each peer
 
@@ -77,26 +77,24 @@ vk.updates.on(['message_new'], async (request) => {
 
 vk.updates.start().catch(console.error);
 
-const ms = 1;
-const second = 1000 * ms;
-const minute = 60 * second;
 
-const messagesHandlerInterval = setInterval(handleOutgoingMessage, second);
+
+const messagesHandlerInterval = setInterval(handleOutgoingMessage, second / ms);
 
 const { trigger: setOnlineStatusTrigger } = require('./triggers/set-online-status');
 const setOnlineStatusInterval = setInterval(async () => {
   await executeTrigger(setOnlineStatusTrigger, { vk });
-}, 14 * minute);
+}, (14 * minute) / ms);
 
 const { trigger: acceptFriendRequestsTrigger } = require('./triggers/accept-friend-requests');
 const acceptFriendRequestsInterval = setInterval(async () => {
   await executeTrigger(acceptFriendRequestsTrigger, { vk });
-}, 20 * minute);
+}, (20 * minute) / ms);
 
 const { trigger: deleteDeactivatedFriendsTrigger } = require('./triggers/delete-deactivated-friends');
 const deleteDeactivatedFriendsInterval = setInterval(async () => {
   await executeTrigger(deleteDeactivatedFriendsTrigger, { vk });
-}, 30 * minute);
+}, (30 * minute) / ms);
 
 // const { trigger: greetFriends } = require('./triggers/greet-friends');
 // const greetFriendsInterval = setInterval(async () => {
@@ -111,13 +109,13 @@ const deleteDeactivatedFriendsInterval = setInterval(async () => {
 const { trigger: deleteOutgoingFriendRequestsTrigger } = require('./triggers/delete-outgoing-requests');
 const deleteOutgoingFriendRequestsInterval = setInterval(async () => {
   await executeTrigger(deleteOutgoingFriendRequestsTrigger, { vk, options: { maxRequests: 20 } });
-}, 8 * minute);
+}, (8 * minute) / ms);
 
 const { trigger: sendInvitationPostsForFriendsTrigger } = require('./triggers/send-invitation-posts-for-friends');
 const sendInvitationPostsForFriendsIntervalAction = async () => {
   await executeTrigger(sendInvitationPostsForFriendsTrigger, { vk });
 };
-const sendInvitationPostsForFriendsInterval = setInterval(sendInvitationPostsForFriendsIntervalAction, 9 * minute);
+const sendInvitationPostsForFriendsInterval = setInterval(sendInvitationPostsForFriendsIntervalAction, (9 * minute) / ms);
 sendInvitationPostsForFriendsIntervalAction();
 
 let lastBirthday;
@@ -130,5 +128,5 @@ const sendBirthDayCongratulationsIntervalAction = async () => {
     await executeTrigger(sendBirthDayCongratulationsTrigger, { vk });
   }
 }
-const sendBirthDayCongratulationsInterval = setInterval(sendBirthDayCongratulationsIntervalAction, 23 * 60 * minute);
+const sendBirthDayCongratulationsInterval = setInterval(sendBirthDayCongratulationsIntervalAction, (23 * 60 * minute) / ms);
 // sendBirthDayCongratulationsIntervalAction();

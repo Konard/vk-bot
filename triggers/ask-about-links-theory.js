@@ -1,8 +1,7 @@
-const { sleep, getRandomElement, minute } = require('../utils');
+const { sleep, getRandomElement, minute, second, ms } = require('../utils');
 const { trigger: greetingTrigger } = require('./greeting');
 const { DateTime } = require('luxon');
-const { randomInRange, handleOutgoingMessage, enqueueMessage, queue } = require('../outgoing-messages');
-const { getConversation, setConversation } = require('../friends-conversations-cache');
+const { enqueueMessage } = require('../outgoing-messages');
 
 const messages = [
   "Какой первый символ или слово тебе не понятны в теории связей?",
@@ -30,7 +29,7 @@ async function askAboutLinksTheory(context) {
       offset,
     });
     console.log(`${offset}-${offset+step} friends loaded.`);
-    await sleep(2 * minute);
+    await sleep((2 * minute) / ms);
 
     if (response.items.length === 0) {
       break;
@@ -54,7 +53,7 @@ async function askAboutLinksTheory(context) {
       const conversation = conversationsResponse.items[0];
       // await setConversation(friend.id, conversation);
       console.log(`Conversation for ${friend.id} friend loaded.`);
-      await sleep(40000);
+      await sleep((40 * second) / ms);
 
       if (conversation.last_message_id == 0 || conversation.last_conversation_message_id == 0)
       {
@@ -69,7 +68,7 @@ async function askAboutLinksTheory(context) {
       const lastMessageDate = DateTime.fromSeconds(lastMessage.date);
       const diff = now.diff(lastMessageDate, 'days').days;
       const minimumInterval = 7;
-      await sleep(20000);
+      await sleep((20 * second) / ms);
 
       if (diff < minimumInterval) {
         console.log(`Skipping friend ${friend.id} because last message with this friend was less than ${minimumInterval} days ago.`);
@@ -95,7 +94,7 @@ async function askAboutLinksTheory(context) {
         }
       });
       console.log(`Greeting for friend ${friend.id} is added to queue.`);
-      await sleep(30000);
+      await sleep((30 * second) / ms);
 
       friendsProcessed++;
       console.log('friendsProcessed:', friendsProcessed);

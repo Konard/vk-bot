@@ -1,5 +1,5 @@
 const { getAllFriends, loadAllFriends } = require('../friends-cache');
-const { sleep, priorityFriendIds, second, minute } = require('../utils');
+const { sleep, priorityFriendIds, second, minute, ms } = require('../utils');
 
 const sortByMutuals = { sort: 1 };
 const maxFriends = 10000;
@@ -33,19 +33,19 @@ async function acceptFriendRequests({ vk }) {
           break;
         } else if (error.code === 29) { // APIError: Code №29 - Rate limit reached
           console.log(`Could not send friend request to priority friend with id ${friendId}, because rate limit reached.`);
-          await sleep(1 * minute);
+          await sleep((1 * minute) / ms);
           break;
         } else {
           console.error(`Could not send priority friend request to ${friendId}:`, error);
           break;
         }
       }
-      await sleep(10 * second);
+      await sleep((10 * second) / ms);
     }
 
     const maxFriendRequestsCount = 23;
     const requests = await vk.api.friends.getRequests({ count: maxFriendRequestsCount, ...sortByMutuals });
-    await sleep(2 * second);
+    await sleep((2 * second) / ms);
     if (requests?.items?.length <= 0) {
       console.log('No incoming friend requests to be accepted.');
       if (addedFriends > 0) {
@@ -78,7 +78,7 @@ async function acceptFriendRequests({ vk }) {
           break;
         }
       }
-      await sleep(10 * second);
+      await sleep((10 * second) / ms);
     }
 
     if (addedFriends > 0) {

@@ -1,7 +1,7 @@
 const _ = require('lodash');
-const { sleep, saveJsonSync, hour, second } = require('../utils');
+const { sleep, second, ms } = require('../utils');
 const { trigger: greetingTrigger } = require('./greeting');
-const { getOrLoadConversation, getConversation, setConversation, loadConversation } = require('../friends-conversations-cache');
+const { getOrLoadConversation, loadConversation } = require('../friends-conversations-cache');
 const { getAllFriends } = require('../friends-cache');
 const { getFriendsCountCached } = require('../friends-count-cache');
 const { getOrLoadMessages, loadMessages } = require('../messages-cache');
@@ -101,7 +101,7 @@ async function greetFriends(context) {
     });
     greetedFriends++;
     console.log(`Greeting for ${greetedFriends}/${maxGreetings} friend with id ${friend.id} is sent.`);
-    await sleep(30 * second);
+    await sleep((30 * second) / ms);
 
     // Update conversation in cache (after sending greeting)
     await loadConversation({ context, friendId: friend.id, updateCache: true });

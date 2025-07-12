@@ -1,5 +1,5 @@
 const { getAllFriends } = require('../friends-cache');
-const { sleep, priorityFriendIds, second } = require('../utils');
+const { sleep, priorityFriendIds, second, ms } = require('../utils');
 
 async function deleteDeactivatedFriends({ vk }) {
   const deactivatedValues = ['banned', 'deleted'];
@@ -20,7 +20,7 @@ async function deleteDeactivatedFriends({ vk }) {
     } catch (error) {
       console.error(`Failed to delete deactivated friend: ${error}`);
     }
-    await sleep(5 * second);
+    await sleep((5 * second) / ms);
   }
 }
 

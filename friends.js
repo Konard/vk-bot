@@ -1,5 +1,5 @@
 const { VK } = require('vk-io');
-const { sleep, getToken } = require('./utils');
+const { sleep, getToken, second, ms } = require('./utils');
 const token = getToken();
 const vk = new VK({ token });
 
@@ -102,7 +102,7 @@ async function main() {
   while (onlineFollowersIds.length < targetFriendsCount) {
     onlineFollowersIds = [...onlineFollowersIds, ...await getOnlineFollowers(sourceCommunityId, requestsIds)];
     console.log('Current number of friends to invite: ', onlineFollowersIds.length);
-    await sleep(3000);
+    await sleep((3 * second) / ms);
   }
 
   if (onlineFollowersIds.length <= 0) {
@@ -133,7 +133,7 @@ async function main() {
     // } catch (e) {
     //   console.log(e);
     // }
-  }, 5000);
+  }, (5 * second) / ms);
 }
 
 main();

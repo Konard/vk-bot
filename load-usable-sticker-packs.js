@@ -1,5 +1,5 @@
 const { VK } = require('vk-io');
-const { sleep, getToken } = require('./utils');
+const { getToken } = require('./utils');
 const fs = require('fs');
 const token = getToken();
 const vk = new VK({ token });

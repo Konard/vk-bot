@@ -1,7 +1,9 @@
+const { minute, second, ms } = require('./time-units');
+
 const pendingSendQueue = [];
 const completeSendQueue = [];
 
-const tickSize = 1000; // ms
+const tickSize = (1 * second) / ms; // ms
 
 const typingSpeedInCharactersPerMinute = 450;
 const typingSpeedInCharactersPerSecond = typingSpeedInCharactersPerMinute / 60;
@@ -105,7 +107,7 @@ function enqueueMessage(options) {
 }
 
 async function sendMessage(context) {
-  const awaitTimeoutMs = context?.options?.awaitTimeoutMs || (120 * 1000);
+  const awaitTimeoutMs = context?.options?.awaitTimeoutMs || ((2 * minute) / ms);
   enqueueMessage({ 
     ...context,
     awaited: true,

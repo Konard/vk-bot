@@ -1,5 +1,5 @@
 const { VK } = require('vk-io');
-const { getToken, executeTrigger, sleep } = require('./utils');
+const { getToken, executeTrigger, second, ms } = require('./utils');
 const { handleOutgoingMessage, queue } = require('./outgoing-messages');
 const { trigger: sendBirthDayCongratulationsTrigger } = require('./triggers/send-birthday-congratulations');
 const token = getToken();
@@ -13,7 +13,7 @@ executeTrigger(sendBirthDayCongratulationsTrigger, { vk }).then(() => {
   console.error(e);
 });
 
-const messagesHandlerInterval = setInterval(handleOutgoingMessage, 1000);
+const messagesHandlerInterval = setInterval(handleOutgoingMessage, (1 * second) / ms);
 const finalizerInterval = setInterval(async () => {
   if (finished && queue.length === 0) {
     if (finalizerInterval) {
@@ -23,6 +23,6 @@ const finalizerInterval = setInterval(async () => {
       if (messagesHandlerInterval) {
         clearInterval(messagesHandlerInterval);
       }
-    }, 5000);
+    }, (5 * second) / ms);
   }
-}, 2000);
+}, (2 * second) / ms);

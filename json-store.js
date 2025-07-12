@@ -1,9 +1,9 @@
 const fs = require('fs').promises;
 const path = require('path');
 
-const { second } = require('./utils');
+const { second, ms } = require('./utils');
 
-const saveDelay = 5 * second; // Delay before saving to file
+const saveDelay = (5 * second) / ms; // Delay before saving to file
 
 async function jsonStore({ filePath }) {
   let persistentCache = {}; // Use only persistentCache for all operations

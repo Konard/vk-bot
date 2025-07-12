@@ -5,9 +5,9 @@ const { base32hex } = require('rfc4648');
 const encoder = new TextEncoder(); 
 const decoder = new TextDecoder('utf-8');
 
-const { second } = require('./utils');
+const { second, ms } = require('./time-units');
 
-const saveDelay = 5 * second; // Delay before saving individual files
+const saveDelay = (5 * second) / ms; // Delay before saving individual files
 
 async function multiJsonStore({ folderPath }) {
   let persistentCache = {};                  // In-memory cache of all entries

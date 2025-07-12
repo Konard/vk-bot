@@ -1,11 +1,11 @@
 const { createCache } = require('cache-manager');
 const jsonStore = require('./json-store');
-const { eraseMetadata, sleep, clean, second, week, minute } = require('./utils');
+const { eraseMetadata, sleep, clean, hour, second, week, minute, ms } = require('./utils');
 const { makeCachedFunction } = require('./functions-cache');
 
 const allFriendsTtl = 2 * week;
 const allFriendsTtlSeconds = allFriendsTtl / second;
-const TTL_SECONDS = 3600; // Time-to-live in seconds
+const TTL_SECONDS = (hour / second); // Time-to-live in seconds
 const targetPath = './data/friends/friends.json';
 let cache = null;
 
@@ -73,7 +73,7 @@ const loadAllFriends = async function ({
       offset,
     });
     console.log(`${offset}-${offset + step} friends loaded.`);
-    await sleep(2 * minute);
+    await sleep((2 * minute) / ms);
     if (response.items.length === 0) {
       break;
     }

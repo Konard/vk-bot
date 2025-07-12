@@ -1,4 +1,4 @@
-const { sleep, getToken } = require('./utils');
+const { sleep, getToken, second, ms } = require('./utils');
 const { VK } = require('vk-io');
 
 const token = getToken();
@@ -17,14 +17,14 @@ async function deleteFriendRequests() {
     var currentUserId = (await vk.api.users.get())[0].id;
     console.log('currentUserId', currentUserId);
     const suggestions = (await vk.api.friends.getSuggestions({ filter: "mutual", fields: "online,can_post,can_see_all_posts,can_write_private_message,contacts,counters", count, offset: 0 })).items;
-    await sleep(3000);
+    await sleep((3 * second) / ms);
     console.log('suggestions: ', suggestions.length);
     const candidates = suggestions.filter(s => s.can_post && s.can_see_all_posts && s.can_write_private_message && s.can_access_closed);
     console.log('candidates: ', candidates.length);
     const candidatesWithMutualFriendsCount = [];
     for (const candidate of candidates) {
       var mutualFriendsCount = (await vk.api.friends.getMutual({ source_uid: currentUserId, target_uid: candidate.id })).length;
-      await sleep(3000);
+      await sleep((3 * second) / ms);
       candidatesWithMutualFriendsCount.push([candidate.id, mutualFriendsCount]);
     }
     candidatesWithMutualFriendsCount.sort((a, b) => b[1] - a[1]);
@@ -37,7 +37,7 @@ async function deleteFriendRequests() {
       const candidateId = candidate[0];
       const candidateMutualFriends = candidate[1];
       (await vk.api.friends.add({ user_id: candidateId }));
-      await sleep(3000);
+      await sleep((3 * second) / ms);
       console.log('Friend request to', candidateId, 'sent.');
       suggestionsAccepted++;
     }

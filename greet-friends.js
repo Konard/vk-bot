@@ -12,7 +12,7 @@ const argv = yargs(hideBin(process.argv))
   .argv;
 
 const { VK } = require('vk-io');
-const { executeTrigger, getToken, app } = require('./utils');
+const { executeTrigger, getToken, app, second, ms } = require('./utils');
 const { handleOutgoingMessage, queue } = require('./outgoing-messages');
 const token = getToken();
 const vk = new VK({ token });
@@ -33,13 +33,13 @@ if (maxGreetings > 0) {
     app.gracefullyFinished = true;
     console.error(e);
   });
-  const messagesHandlerInterval = setInterval(handleOutgoingMessage, 1000);
+  const messagesHandlerInterval = setInterval(handleOutgoingMessage, (1 * second) / ms);
   const finalizerInterval = setInterval(() => {
     if (app.gracefullyFinished && queue.length == 0) {
       setTimeout(() => {
         clearInterval(messagesHandlerInterval);
-      }, 10000);
+      }, (10 * second) / ms);
       clearInterval(finalizerInterval);
     }
-  }, 1000);
+  }, (1 * second) / ms);
 }

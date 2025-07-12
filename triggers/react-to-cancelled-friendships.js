@@ -1,8 +1,8 @@
 const { DateTime } = require('luxon');
-const { getRandomElement, sleep } = require('../utils');
+const { getRandomElement, sleep, second, ms } = require('../utils');
 const { trigger: greetingTrigger } = require('./greeting');
 const { enqueueMessage } = require('../outgoing-messages');
-const { getConversation, setConversation } = require('../friends-conversations-cache');
+const { setConversation } = require('../friends-conversations-cache');
 
 const questions = [
   'Почему не хочешь больше дружить?'
@@ -15,7 +15,7 @@ async function reactToCancelledFriendships(context) {
       return;
     }
     const requests = await context.vk.api.friends.getRequests({ count, out: 1, need_viewed: 1 });
-    await sleep(3000);
+    await sleep((3 * second) / ms);
     if (requests.items.length <= 0) {
       console.log('No cancelled friendships to react to.');
       return requests;
@@ -28,7 +28,7 @@ async function reactToCancelledFriendships(context) {
           count: 1
         })).items[0];
         await setConversation(friendId, conversation);
-        await sleep(15000);
+        await sleep((15 * second) / ms);
 
         if (context?.state?.history) {
           const history = context?.state?.history;
@@ -48,7 +48,7 @@ async function reactToCancelledFriendships(context) {
           const now = DateTime.now();
           const messageDate = DateTime.fromSeconds(message.date);
           const diff = now.diff(messageDate, 'days').days;
-          await sleep(3000);
+          await sleep((3 * second) / ms);
 
           const waitDaysLimit = 2;
 
@@ -56,7 +56,7 @@ async function reactToCancelledFriendships(context) {
             await context.vk.api.account.ban({
               owner_id: friendId
             });
-            await sleep(3000);
+            await sleep((3 * second) / ms);
             console.log(`Friend ${friendId} is blocked because there was no answer from this friend for more than ${waitDaysLimit} days, and friendship is cancelled.`);
             continue;
           }
@@ -66,7 +66,7 @@ async function reactToCancelledFriendships(context) {
           await context.vk.api.account.ban({
             owner_id: friendId
           });
-          await sleep(3000);
+          await sleep((3 * second) / ms);
           console.log(`Friend ${friendId} is blocked because it is not allowed to send message to this friend, and friendship is cancelled.`);
         } else {
           if (context?.states?.[friendId]?.reactedToCancelledFriendRequest) {

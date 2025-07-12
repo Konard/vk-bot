@@ -1,8 +1,7 @@
 const { VK } = require('vk-io');
-const { executeTrigger, getToken } = require('./utils');
+const { executeTrigger, getToken, second, ms } = require('./utils');
 const { trigger } = require('./triggers/do-you-like-this-music');
-const { randomInRange, handleOutgoingMessage, enqueueMessage, queue } = require('./outgoing-messages');
-const fs = require('fs');
+const { handleOutgoingMessage, queue } = require('./outgoing-messages');
 const token = getToken();
 const vk = new VK({ token });
 
@@ -16,13 +15,13 @@ if (maxGreetings > 0) {
     finished = true;
     console.error(e);
   });
-  const messagesHandlerInterval = setInterval(handleOutgoingMessage, 1000);
+  const messagesHandlerInterval = setInterval(handleOutgoingMessage, (1 * second) / ms);
   const finalizerInterval = setInterval(() => {
     if (finished && queue.length == 0) {
       setTimeout(() => {
         clearInterval(messagesHandlerInterval);
-      }, 10000);
+      }, (10 * second) / ms);
       clearInterval(finalizerInterval);
     }
-  }, 1000);
+  }, (1 * second) / ms);
 }

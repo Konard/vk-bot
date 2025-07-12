@@ -28,7 +28,7 @@ const disabledCommunitiesCleanupInterval = setInterval(() => {
     return;
   }
   disabledCommunities = [];
-}, 1 * day);
+}, (1 * day) / ms);
 
 const restrictedCommunities = [
   64758790,   // https://vk.com/club64758790
@@ -124,7 +124,7 @@ async function sendInvitationPosts(context) {
 
         console.log(trigger.name, `Loaded ${topPosts.items.length} posts from ${communityId} community. Our invitation post is ${topPostsHaveInvitation ? 'found' : 'not found'} in these posts.`);
 
-        await sleep(trigger.name, 10 * second);
+        await sleep(trigger.name, (10 * second) / ms);
 
         if (topPostsHaveInvitation) {
           continue;
@@ -133,7 +133,7 @@ async function sendInvitationPosts(context) {
         const previousPosts = await context.vk.api.wall.search({ owner_id: ownerId, query: postsSearchRequest, count: 15 });
         const postsToDelete = previousPosts.items.filter(post => post.text.includes(postsSearchRequest) && post.can_delete);
         console.log(trigger.name, `Found ${postsToDelete.length} previous posts to be deleted.`);
-        await sleep(trigger.name, 5 * second);
+        await sleep(trigger.name, (5 * second) / ms);
         console.log(trigger.name, `Sending post to ${communityId} community.`);
 
         const message = restrictedCommunities.includes(communityId) ? restrictedPostMessage : postMessage;
@@ -147,13 +147,13 @@ async function sendInvitationPosts(context) {
         // await context.vk.api.wall.post({ owner_id: ownerId, message, attachments: attachments.join(',') });
         await context.vk.api.wall.post({ owner_id: ownerId, message, attachments });
         console.log(trigger.name, 'Post is sent to', communityId, 'community.');
-        await sleep(trigger.name, 5 * second);
+        await sleep(trigger.name, (5 * second) / ms);
 
         for (const post of postsToDelete) {
           try {
             await context.vk.api.wall.delete({ owner_id: ownerId, post_id: post.id });
             console.log(trigger.name, `Post ${post.id} is deleted.`);
-            await sleep(trigger.name, 5 * second);
+            await sleep(trigger.name, (5 * second) / ms);
           } catch (e) {
             if (e.code === 104) { // APIError: Code №104 - Not found
               console.warn(trigger.name, `Post ${post.id} is not found. It may already be deleted.`);
@@ -171,25 +171,25 @@ async function sendInvitationPosts(context) {
           console.warn(trigger.name, `Warning: Access to wall's post denied for community ${communityId}.
 As this may correspond to the rate limit of VK API, any next request should be repeated after a delay.`);
           disableCommunity(communityId);
-          await sleep(trigger.name, 1 * minute);
+          await sleep(trigger.name, (1 * minute) / ms);
         } else if (err.code === 219) { // APIError: Code №219 - Advertisement post was recently added
           console.warn(trigger.name, `Warning: Advertisement post was recently added to community ${communityId}.
 As this may correspond to the rate limit of VK API, any next request should be repeated after a delay.`);
           disableCommunity(communityId);
-          await sleep(trigger.name, 1 * minute);
+          await sleep(trigger.name, (1 * minute) / ms);
         } else if (err.code === 15) { // APIError: Code №15 - Access denied: wall is disabled
           console.warn(trigger.name, `Warning: Access denied to post to community ${communityId} wall because it was disabled by administrator.
 It may be done for an unknown period of time, moving the community to disabled communities list.`);
           disableCommunity(communityId);
-          await sleep(trigger.name, 1 * minute);
+          await sleep(trigger.name, (1 * minute) / ms);
         } else if (err.code === 14) { // APIError: Code №14 - Captcha needed
           console.warn(trigger.name, `Warning: Captcha needed to post to community ${communityId}.
 As this usually corresponds to the rate limit of VK API, any next request should be repeated after a delay.`);
-          await sleep(trigger.name, 1 * minute);
+          await sleep(trigger.name, (1 * minute) / ms);
         } else if (err.code === 10) { // APIError: Code №10 - Internal server error: Unknown error, try later
           console.warn(trigger.name, `Warning: Unknown error occurred while posting to community ${communityId}.
 As we explicitly asked to try later by VK API, any next request should be repeated after a delay.`);
-          await sleep(trigger.name, 1 * minute);
+          await sleep(trigger.name, (1 * minute) / ms);
         } else {
           throw err;
         }

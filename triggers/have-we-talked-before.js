@@ -1,7 +1,6 @@
 const { getRandomElement, hasSticker } = require('../utils');
 const { greetingRegex, incomingGreetingStickersIds } = require('./greeting');
 const { enqueueMessage } = require('../outgoing-messages');
-const { DateTime } = require('luxon');
 
 const questions = [
   "Мы общались ранее?"

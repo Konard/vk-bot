@@ -1,5 +1,5 @@
 const { VK } = require('vk-io');
-const { readTextSync, sleep, getToken } = require('./utils');
+const { sleep, getToken, second, ms } = require('./utils');
 const token = getToken();
 const vk = new VK({ token });
 
@@ -14,14 +14,14 @@ const rejectDeactivatedFriendRequests = async () => {
           user_ids: [userId],
           fields: ['deactivated']
         });
-        await sleep(5000);
+        await sleep((5 * second) / ms);
 
         const deactivationStatus = response?.[0]?.deactivated;
 
         if (deactivationStatus === 'banned' || deactivationStatus === 'deleted') {
           await vk.api.friends.delete({ user_id: userId });
           console.log(`Rejected friend request from banned user: ${userId}`);
-          await sleep(10000);
+          await sleep((10 * second) / ms);
         } else if(deactivationStatus) {
           console.log(`User ${userId} deactivation status: ${deactivationStatus}`);
         }
