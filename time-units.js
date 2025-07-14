@@ -30,5 +30,4 @@ module.exports = {
   decade,
   century,
   millennium,
-  priorityFriendIds,
 };
