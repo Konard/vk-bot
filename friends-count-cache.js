@@ -2,7 +2,7 @@ const { createCache } = require('cache-manager');
 const jsonStore = require('./json-store');
 const { sleep, second, minute, month, ms } = require('./utils');
 
-const TTL_SECONDS = (4 * month) / second; // TTL for friends count
+const TTL_SECONDS = (8 * month) / second; // TTL for friends count
 const targetPath = './data/friends-count/friends-count.json';
 let cache;
 
@@ -22,7 +22,7 @@ async function fetchFriendsCount(context, userId) {
   let response;
   do {
     response = await context.vk.api.friends.get({ user_id: userId, count: 1, offset });
-    await sleep((16 * minute) / ms);
+    await sleep((32 * minute) / ms);
     total += (typeof response.count === 'number' ? response.count : 0);
     offset += PAGE_LIMIT;
   } while (response.count === PAGE_LIMIT);
