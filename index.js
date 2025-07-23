@@ -1,4 +1,4 @@
-const { second, ms } = require('./time-units');
+const { second, minute, ms } = require('./time-units');
 const { executeTrigger, getToken } = require('./utils');
 const { handleOutgoingMessage } = require('./outgoing-messages');
 
