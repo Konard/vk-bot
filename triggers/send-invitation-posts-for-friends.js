@@ -1,4 +1,4 @@
-const { sleep, getRandomElement, second, minute, day, app } = require('../utils');
+const { sleep, getRandomElement, second, minute, ms, day, app } = require('../utils');
 // const fs = require('fs');
 
 const communities = [
