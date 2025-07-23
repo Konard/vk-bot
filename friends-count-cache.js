@@ -2,7 +2,7 @@ const { createCache } = require('cache-manager');
 const jsonStore = require('./json-store');
 const { sleep, second, minute, month, ms } = require('./utils');
 
-const TTL_SECONDS = (8 * month) / second; // TTL for friends count
+const TTL_SECONDS = (36 * month) / second; // TTL for friends count
 const targetPath = './data/friends-count/friends-count.json';
 let cache;
 
