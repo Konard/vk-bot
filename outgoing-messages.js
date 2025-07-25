@@ -162,7 +162,7 @@ const handleOutgoingMessage = async () => {
       });
     }
   } catch (e) {
-    const userId = e.params.find((param) => param.key === 'user_id')?.value || context?.response?.user_id || context?.request?.peerId;
+    const userId = e.params?.find?.((param) => param.key === 'user_id')?.value || context?.response?.user_id || context?.request?.peerId;
     if (e.code === 900) { // Can't send messages for users from blacklist
       console.log(`${userId} user is blocked from sending messages to him.`);
       return; // This error requires to do nothing.
