@@ -22,7 +22,7 @@ async function fetchFriendsCount(context, userId) {
   let response;
   do {
     response = await context.vk.api.friends.get({ user_id: userId, count: 1, offset });
-    await sleep((32 * minute) / ms);
+    await sleep((64 * minute) / ms);
     total += (typeof response.count === 'number' ? response.count : 0);
     offset += PAGE_LIMIT;
   } while (response.count === PAGE_LIMIT);

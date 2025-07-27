@@ -73,7 +73,7 @@ const loadAllFriends = async function ({
       offset,
     });
     console.log(`${offset}-${offset + step} friends loaded.`);
-    await sleep((32 * minute) / ms);
+    await sleep((64 * minute) / ms);
     if (response.items.length === 0) {
       break;
     }
