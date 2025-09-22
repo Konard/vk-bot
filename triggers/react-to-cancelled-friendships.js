@@ -1,5 +1,5 @@
 const { DateTime } = require('luxon');
-const { getRandomElement, sleep, second, ms } = require('../utils');
+const { getRandomElement, sleep, retryWithBackoff, second, ms } = require('../utils');
 const { trigger: greetingTrigger } = require('./greeting');
 const { enqueueMessage } = require('../outgoing-messages');
 const { setConversation } = require('../friends-conversations-cache');
@@ -14,7 +14,9 @@ async function reactToCancelledFriendships(context) {
     if (count <= 0) {
       return;
     }
-    const requests = await context.vk.api.friends.getRequests({ count, out: 1, need_viewed: 1 });
+    const requests = await retryWithBackoff(async () => {
+      return await context.vk.api.friends.getRequests({ count, out: 1, need_viewed: 1 });
+    });
     await sleep((3 * second) / ms);
     if (requests.items.length <= 0) {
       console.log('No cancelled friendships to react to.');

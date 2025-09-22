@@ -1,4 +1,4 @@
-const { sleep, priorityFriendIds, second, ms } = require('../utils');
+const { sleep, retryWithBackoff, priorityFriendIds, second, ms } = require('../utils');
 
 async function deleteOutgoingFriendRequests(context) {
   try {
@@ -6,7 +6,9 @@ async function deleteOutgoingFriendRequests(context) {
     if (count <= 0) {
       return;
     }
-    const requests = await context.vk.api.friends.getRequests({ count, out: 1, need_viewed: 1 });
+    const requests = await retryWithBackoff(async () => {
+      return await context.vk.api.friends.getRequests({ count, out: 1, need_viewed: 1 });
+    });
     if (requests.items.length <= 0) {
       console.log('No outgoing friend requests to be deleted');
       return requests;
@@ -17,7 +19,9 @@ async function deleteOutgoingFriendRequests(context) {
         if (priorityFriendIds.includes(friendId)) {
           continue;
         }
-        await context.vk.api.friends.delete({ user_id: friendId });
+        await retryWithBackoff(async () => {
+          return await context.vk.api.friends.delete({ user_id: friendId });
+        });
         console.log('Deleted outgoing friend request:', friendId)
       } catch (error) {
         console.error(`Failed to delete outgoing friend request: ${error}`);

@@ -1,5 +1,5 @@
 const { getAllFriends, loadAllFriends } = require('../friends-cache');
-const { sleep, priorityFriendIds, second, minute, ms } = require('../utils');
+const { sleep, retryWithBackoff, priorityFriendIds, second, minute, ms } = require('../utils');
 
 const sortByMutuals = { sort: 1 };
 const maxFriends = 10000;
@@ -22,7 +22,9 @@ async function acceptFriendRequests({ vk }) {
         continue;
       }
       try {
-        await vk.api.friends.add({ user_id: friendId, text: '' });
+        await retryWithBackoff(async () => {
+          return await vk.api.friends.add({ user_id: friendId, text: '' });
+        });
         addedFriends++;
         console.log(`Friend request is sent to priority friend with id ${friendId}.`);
       } catch (error) {
@@ -44,7 +46,9 @@ async function acceptFriendRequests({ vk }) {
     }
 
     const maxFriendRequestsCount = 23;
-    const requests = await vk.api.friends.getRequests({ count: maxFriendRequestsCount, ...sortByMutuals });
+    const requests = await retryWithBackoff(async () => {
+      return await vk.api.friends.getRequests({ count: maxFriendRequestsCount, ...sortByMutuals });
+    });
     await sleep((2 * second) / ms);
     if (requests?.items?.length <= 0) {
       console.log('No incoming friend requests to be accepted.');
@@ -64,7 +68,9 @@ async function acceptFriendRequests({ vk }) {
         continue;
       }
       try {
-        await vk.api.friends.add({ user_id: friendId, text: '' });
+        await retryWithBackoff(async () => {
+          return await vk.api.friends.add({ user_id: friendId, text: '' });
+        });
         addedFriends++;
         console.log(`Incoming request for friend ${friendId} is accepted.`);
       } catch(error) {

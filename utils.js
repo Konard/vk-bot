@@ -147,6 +147,42 @@ function saveJsonSync(path, obj) {
   return saveTextSync(path, JSON.stringify(obj, null, 2));
 }
 
+async function retryWithBackoff(operation, options = {}) {
+  const {
+    maxRetries = 3,
+    baseDelay = 1000,
+    maxDelay = 30000,
+    backoffFactor = 2,
+    retryCondition = (error) => {
+      // Retry on network errors
+      return error.code === 'ETIMEDOUT' ||
+             error.type === 'system' ||
+             error.errno === 'ETIMEDOUT' ||
+             (error.message && error.message.includes('request to https://api.vk.com'));
+    }
+  } = options;
+
+  let lastError;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error;
+
+      if (attempt === maxRetries || !retryCondition(error)) {
+        throw error;
+      }
+
+      const delay = Math.min(baseDelay * Math.pow(backoffFactor, attempt), maxDelay);
+      console.log(`Operation failed (attempt ${attempt + 1}/${maxRetries + 1}), retrying in ${delay}ms. Error: ${error.message}`);
+      await sleep(delay);
+    }
+  }
+
+  throw lastError;
+}
+
 async function executeTrigger(trigger, context) {
   if (!trigger) {
     return;
@@ -184,6 +220,7 @@ module.exports = {
   hasSticker,
   sleep,
   executeTrigger,
+  retryWithBackoff,
   eraseMetadata,
   clean,
   readTextSync,
