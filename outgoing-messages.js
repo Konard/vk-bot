@@ -174,6 +174,43 @@ const handleOutgoingMessage = async () => {
       console.log(`Limit reached or ${userId} user is deactivated (blocked or deleted).`);
       return; // This error requires to do nothing.
       // TODO: unfriend of it is deactivated, block if he blocked you or just wait on the limit
+    } else if (e.code === 10) { // Internal server error
+      console.log(`Internal server error (Code 10) for user ${userId}. Attempting to retry without attachments.`);
+
+      // Log detailed error information for debugging
+      console.log('Error details:', {
+        userId,
+        attachment: context?.response?.attachment,
+        message: context?.response?.message,
+        random_id: context?.response?.random_id,
+        params: e.params
+      });
+
+      // If the original request had an attachment, try again without it
+      if (context?.response?.attachment) {
+        try {
+          console.log(`Retrying message to user ${userId} without attachment...`);
+          const retryResponse = { ...context.response };
+          delete retryResponse.attachment;
+
+          if (context.request) {
+            sendResponse = await context.request.send(retryResponse);
+          } else if (context.vk) {
+            sendResponse = await context.vk.api.messages.send({
+              random_id: Math.random(),
+              ...retryResponse
+            });
+          }
+          console.log(`Successfully sent message to user ${userId} without attachment.`);
+        } catch (retryError) {
+          console.log(`Retry also failed for user ${userId}:`, retryError.message);
+          return; // Failed even without attachment, skip this message
+        }
+      } else {
+        // No attachment but still got Code 10, likely a temporary server issue
+        console.log(`Code 10 error without attachment for user ${userId}. Skipping message due to server issue.`);
+        return;
+      }
     } else {
       throw e;
     }
