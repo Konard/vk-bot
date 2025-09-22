@@ -1,17 +1,31 @@
 const { getCache, loadMessages } = require('../messages-cache');
 const { sleep, second, ms } = require('../utils');
 
-const maxMessages = 1000;
-
-const chatsToMonitor = [
-  // Add chat IDs here, e.g., 123456789
-];
+const maxMessages = 5000; // Reduced from 15M to be conservative
 
 const trigger = {
   name: "ClearHistoryTrigger",
   condition: () => true,
   action: async (context) => {
-    for (const chatId of chatsToMonitor) {
+    console.log('ClearHistoryTrigger: Starting auto-clear check...');
+
+    // Get active conversations automatically
+    let conversations = [];
+    try {
+      const conversationsResponse = await context.vk.api.messages.getConversations({
+        count: 200, // VK API allows max 200 conversations per request
+        offset: 0,
+        filter: 'all'
+      });
+      conversations = conversationsResponse.items;
+      console.log(`ClearHistoryTrigger: Found ${conversations.length} conversations to check`);
+    } catch (error) {
+      console.error('ClearHistoryTrigger: Error getting conversations:', error);
+      return;
+    }
+
+    for (const conversationItem of conversations) {
+      const chatId = conversationItem.conversation.peer.id;
       try {
         const response = await context.vk.api.messages.getHistory({
           peer_id: chatId,
@@ -22,23 +36,23 @@ const trigger = {
           continue;
         }
 
-        console.log(`Chat ${chatId} has ${messageCount} messages, clearing...`);
+        console.log(`ClearHistoryTrigger: Chat ${chatId} has ${messageCount} messages, clearing...`);
 
         // Try to delete the entire conversation in one call
         let conversationDeleted = false;
         try {
           // Try old method first
           await context.vk.api.messages.deleteDialog({ peer_id: chatId });
-          console.log(`Deleted dialog for chat ${chatId} using deleteDialog`);
+          console.log(`ClearHistoryTrigger: Deleted dialog for chat ${chatId} using deleteDialog`);
           conversationDeleted = true;
         } catch (error) {
-          console.log(`Failed deleteDialog for chat ${chatId}, trying deleteConversation:`, error);
+          console.log(`ClearHistoryTrigger: Failed deleteDialog for chat ${chatId}, trying deleteConversation:`, error);
           try {
             await context.vk.api.messages.deleteConversation({ peer_id: chatId });
-            console.log(`Deleted conversation for chat ${chatId} using deleteConversation`);
+            console.log(`ClearHistoryTrigger: Deleted conversation for chat ${chatId} using deleteConversation`);
             conversationDeleted = true;
           } catch (error2) {
-            console.log(`Failed deleteConversation for chat ${chatId}, falling back to deleting messages:`, error2);
+            console.log(`ClearHistoryTrigger: Failed deleteConversation for chat ${chatId}, falling back to deleting messages:`, error2);
           }
         }
 
@@ -60,10 +74,10 @@ const trigger = {
                 delete_for_all: 0  // Delete only for the current user (bot)
               };
               await context.vk.api.messages.delete(deleteParams);
-              console.log(`Deleted ${batch.length} messages from chat ${chatId} (for bot only)`);
+              console.log(`ClearHistoryTrigger: Deleted ${batch.length} messages from chat ${chatId} (for bot only)`);
               await sleep((2 * second) / ms); // Rate limit
             } catch (deleteError) {
-              console.error(`Error deleting batch for chat ${chatId}:`, deleteError);
+              console.error(`ClearHistoryTrigger: Error deleting batch for chat ${chatId}:`, deleteError);
             }
           }
         }
@@ -71,22 +85,23 @@ const trigger = {
         // Clear the messages cache
         const cache = await getCache();
         await cache.del(chatId);
-        console.log(`Cleared messages cache for chat ${chatId}`);
+        console.log(`ClearHistoryTrigger: Cleared messages cache for chat ${chatId}`);
 
         // Clear the local history in peers state
         if (context?.states?.[chatId]) {
           context.states[chatId].history = [];
-          console.log(`Cleared local history for chat ${chatId}`);
+          console.log(`ClearHistoryTrigger: Cleared local history for chat ${chatId}`);
         }
       } catch (error) {
-        console.error(`Error clearing history for chat ${chatId}:`, error);
+        console.error(`ClearHistoryTrigger: Error clearing history for chat ${chatId}:`, error);
       }
     }
+
+    console.log('ClearHistoryTrigger: Auto-clear check completed.');
   }
 };
 
 module.exports = {
   trigger,
-  maxMessages,
-  chatsToMonitor
+  maxMessages
 };
