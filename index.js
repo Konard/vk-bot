@@ -1,5 +1,5 @@
 const { second, minute, ms } = require('./time-units');
-const { executeTrigger, getToken } = require('./utils');
+const { executeTrigger, createVK } = require('./utils');
 const { handleOutgoingMessage } = require('./outgoing-messages');
 
 const peers = {}; // TODO: keep state about what triggers then last triggered for each peer
@@ -18,9 +18,7 @@ const triggers = [
   // require('./triggers/engage-with-acquaintance').trigger
 ];
 
-const token = getToken();
-const { VK } = require('vk-io');
-const vk = new VK({ token });
+const vk = createVK();
 
 vk.updates.on(['message_new'], async (request) => {
   let peerState;

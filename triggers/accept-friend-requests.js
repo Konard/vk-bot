@@ -35,6 +35,9 @@ async function acceptFriendRequests({ vk }) {
           console.log(`Could not send friend request to priority friend with id ${friendId}, because rate limit reached.`);
           await sleep((1 * minute) / ms);
           break;
+        } else if (error.name === 'AbortError' || error.type === 'aborted') {
+          console.log(`Could not send friend request to priority friend with id ${friendId}, because request timed out. Will retry later.`);
+          break;
         } else {
           console.error(`Could not send priority friend request to ${friendId}:`, error);
           break;
@@ -73,6 +76,9 @@ async function acceptFriendRequests({ vk }) {
         } else if (error.code === 242) { // APIError: Code №242 - Too many friends: friends count exceeded
           console.log(`Could not accept ${friendId} friend request, because friends count (10000) exceeded.`);
           break;
+        } else if (error.name === 'AbortError' || error.type === 'aborted') {
+          console.log(`Could not accept ${friendId} friend request, because request timed out. Will retry later.`);
+          break;
         } else {
           console.error(`Could not accept ${friendId} friend request:`, error);
           break;
@@ -85,7 +91,11 @@ async function acceptFriendRequests({ vk }) {
       await loadAllFriends({ context: { vk } }); // needed to reload friends cache
     }
   } catch (error) {
-    console.error('Could not accept friend requests:', error);
+    if (error.name === 'AbortError' || error.type === 'aborted') {
+      console.error('Could not accept friend requests: Request timed out. The VK API request took too long to complete. This usually happens due to network issues or VK API server overload.');
+    } else {
+      console.error('Could not accept friend requests:', error);
+    }
   }
 }
 
