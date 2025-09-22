@@ -1,6 +1,6 @@
 const { createCache } = require('cache-manager');
 const jsonStore = require('./json-store');
-const { eraseMetadata, sleep, clean, hour, second, week, minute, ms } = require('./utils');
+const { eraseMetadata, sleep, clean, hour, second, week, minute, ms, withFloodControlRetry } = require('./utils');
 const { makeCachedFunction } = require('./functions-cache');
 
 const allFriendsTtl = 2 * week;
@@ -67,11 +67,18 @@ const loadAllFriends = async function ({
   let friends = [];
   for (let offset = 0; offset < limit; offset += step) {
     console.log(`Loading ${offset}-${offset + step} friends...`);
-    const response = await context.vk.api.friends.get({
-      fields,
-      count: step,
-      offset,
-    });
+
+    // Wrap the API call with flood control retry
+    const response = await withFloodControlRetry(
+      () => context.vk.api.friends.get({
+        fields,
+        count: step,
+        offset,
+      }),
+      3, // max retries
+      'loadAllFriends'
+    );
+
     console.log(`${offset}-${offset + step} friends loaded.`);
     await sleep((64 * minute) / ms);
     if (response.items.length === 0) {

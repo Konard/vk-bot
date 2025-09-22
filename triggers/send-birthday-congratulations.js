@@ -1,5 +1,5 @@
 const { VK } = require('vk-io');
-const { getRandomElement, sleep, getToken, minute, ms } = require('../utils');
+const { getRandomElement, sleep, getToken, minute, ms, withFloodControlRetry } = require('../utils');
 const { enqueueMessage } = require('../outgoing-messages');
 const token = getToken();
 const vk = new VK({ token });
@@ -75,11 +75,15 @@ async function sendBirthdayCongratulations() {
   while (true) {
     if (offset >= 10000) break;
 
-    const response = await vk.api.friends.get({
-      fields: ['bdate'],
-      count: 5000,
-      offset,
-    });
+    const response = await withFloodControlRetry(
+      () => vk.api.friends.get({
+        fields: ['bdate'],
+        count: 5000,
+        offset,
+      }),
+      3, // max retries
+      'sendBirthdayCongratulations'
+    );
     await sleep((2 * minute) / ms);
 
     if (response.items.length === 0) break;
