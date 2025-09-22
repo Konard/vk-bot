@@ -50,25 +50,53 @@ async function getConversation(friendId, defaultValueFactory) {
   return cachedConversation;
 }
 
-const loadConversation = async function ({ context, friendId, updateCache = false }) {
+const loadConversation = async function ({ context, friendId, updateCache = false, retryCount = 0 }) {
+  const maxRetries = 3;
+  const retryDelay = (30 * second) / ms; // 30 seconds delay between retries
+
   console.log(`Loading conversations for ${friendId} friend from server...`);
-  const conversationsResponse = await context.vk.api.messages.getConversationsById({
-    peer_ids: [friendId],
-    count: 1
-  });
-  const conversation = conversationsResponse.items[0];
-  if (updateCache && conversation) {
-    console.log(`Updating conversation for ${friendId} friend in cache...`);
-    setConversation(friendId, conversation);
+
+  try {
+    const conversationsResponse = await context.vk.api.messages.getConversationsById({
+      peer_ids: [friendId],
+      count: 1
+    });
+    const conversation = conversationsResponse.items[0];
+    if (updateCache && conversation) {
+      console.log(`Updating conversation for ${friendId} friend in cache...`);
+      setConversation(friendId, conversation);
+    }
+    console.log(`Conversation for ${friendId} friend loaded from VK.`);
+    await sleep((10 * second) / ms);
+    return conversation;
+  } catch (error) {
+    // Handle VK API error code 10 (Internal server error)
+    if (error.code === 10 && retryCount < maxRetries) {
+      console.log(`VK API error ${error.code} for friend ${friendId}. Retrying in ${retryDelay}ms... (attempt ${retryCount + 1}/${maxRetries})`);
+      await sleep(retryDelay);
+      return loadConversation({ context, friendId, updateCache, retryCount: retryCount + 1 });
+    }
+
+    // Handle other VK API errors or max retries exceeded
+    if (error.code === 10) {
+      console.error(`VK API error ${error.code} for friend ${friendId}. Max retries (${maxRetries}) exceeded. Skipping this friend.`);
+      return null; // Return null to indicate failure after retries
+    }
+
+    // Re-throw other errors
+    throw error;
   }
-  console.log(`Conversation for ${friendId} friend loaded from VK.`);
-  await sleep((10 * second) / ms);
-  return conversation;
 }
 
 async function getOrLoadConversation({ context, friendId }) {
   console.log(`Getting or loading conversation for friendId ${friendId}...`);
   let conversation = await getConversation(friendId, () => loadConversation({ context, friendId }));
+
+  // If conversation is null due to API errors, log and return null
+  if (conversation === null) {
+    console.log(`Unable to load conversation for friend ${friendId} due to persistent API errors.`);
+  }
+
   return conversation;
 }
 
