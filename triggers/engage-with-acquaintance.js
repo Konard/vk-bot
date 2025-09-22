@@ -2,6 +2,7 @@ const { getRandomElement, hasSticker } = require('../utils');
 const { greetingRegex, incomingGreetingStickersIds } = require('./greeting');
 const { questions: haveWeTalkedBeforeQuestions } = require('./have-we-talked-before')
 const { enqueueMessage } = require('../outgoing-messages');
+const { getRandomValidSticker } = require('../sticker-validator');
 const { DateTime } = require('luxon');
 
 const questions = [
@@ -46,12 +47,18 @@ const trigger = {
     return trigger;
   },
   action: (context) => {
-    enqueueMessage({
-      ...context,
-      response: {
-        sticker_id: getRandomElement(okStickerIds),
-      }
-    });
+    const validStickerId = getRandomValidSticker(okStickerIds);
+    if (validStickerId) {
+      enqueueMessage({
+        ...context,
+        response: {
+          sticker_id: validStickerId,
+        }
+      });
+    } else {
+      console.warn('No valid OK stickers available, skipping sticker response');
+    }
+
     enqueueMessage({
       ...context,
       response: {

@@ -1,6 +1,7 @@
 const { hasSticker, getRandomElement } = require('../utils');
 const { enqueueMessage } = require('../outgoing-messages');
 const { stickers } = require('../stickers');
+const { getRandomValidSticker } = require('../sticker-validator');
 
 const hello = /(привет(ик)?|здравствуй(те)?|добр(ый|ого)[^\p{L}]+(дня|день|вечер))/;
 const mention = /(константин|костя|кость|костян)/;
@@ -328,10 +329,16 @@ const trigger = {
       );
   },
   action: (context) => {
+    const validStickerId = getRandomValidSticker(outgoingGratitudeResponseStickerIds);
+    if (!validStickerId) {
+      console.warn('No valid gratitude stickers available, skipping gratitude response');
+      return;
+    }
+
     enqueueMessage({
       ...context,
       response: {
-        sticker_id: getRandomElement(outgoingGratitudeResponseStickerIds) ,
+        sticker_id: validStickerId,
       }
     });
   }
