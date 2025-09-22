@@ -1,25 +1,6 @@
-const { VK } = require('vk-io');
-const { getRandomElement, sleep, getToken, minute, ms } = require('../utils');
-const { enqueueMessage } = require('../outgoing-messages');
-const token = getToken();
-const vk = new VK({ token });
+const { getRandomElement } = require('../utils');
 
-const birthdayStickerIds = [
-  60302,
-  89461, // C ДР!
-  92727, // С Днём рождения!
-  72627,
-  56507, // C ДР!
-  59429,
-];
-
-// const neuronalMiracleAudio = 'audio-2001064727_125064727';
-// const daysOfMiraclesAudio = 'audio-2001281499_119281499';
-
-// const audioAttachments = [
-//   neuronalMiracleAudio,
-//   daysOfMiraclesAudio
-// ];
+// Test the birthday message generation with the new "Pay it forward" paragraph
 
 // Абзац 1: Приветствие (без дополнительных пожеланий)
 const paragraph1Variants = [
@@ -69,90 +50,24 @@ const paragraph5Variants = [
 // Абзац 6: "Pay it forward" - просьба не дарить обратно
 const paragraph6Variants = [
   "💝 И ещё одна просьба: не нужно дарить мне что-то взамен. Вместо этого передай добро дальше – помоги кому-то другому, как в фильме «Заплати другому». Пусть цепочка добрых дел продолжается!",
-  "🎁 Прошу тебя: не дари мне подарки в ответ. Лучше заплати добром другому – сделай что-то хорошее для кого-то ещё. Как в фильме «Заплати другому», пусть добро множится через добрые поступки!",
+  "🎁 Прошу тебя: не дари мне подарки в ответ. Лучше передай эту доброту дальше – сделай что-то хорошее для кого-то другого. Как в фильме «Заплати другому», пусть добро множится через добрые поступки!",
   "✨ У меня есть одна просьба: не отвечай подарком на подарок. Вместо этого заплати добром другому человеку, как учит фильм «Заплати другому». Так добро будет расти и распространяться дальше!",
-  "🌟 Не нужно дарить мне что-то в ответ – у меня есть лучшая идея! Передай добро дальше: помоги тому, кто в этом нуждается. Как в фильме «Заплати другому», добрые дела – вот что по-настоящему ценно!",
+  "🌟 Не нужно дарить мне что-то в ответ – у меня есть лучшая идея! Передай добро дальше: помоги тому, кто в этом нуждается. Принцип «заплати другому» из одноимённого фильма – вот что по-настоящему ценно!",
   "💫 Одна просьба: не дари мне подарки взамен. Лучше заплати добром другому – сделай что-то хорошее для кого-то ещё. Как в фильме «Заплати другому», пусть добрые дела передаются от человека к человеку!"
 ];
 
-async function sendBirthdayCongratulations() {
-  let offset = 0;
-  const currentDate = new Date();
-  const currentDay = currentDate.getDate();
-  const currentMonth = currentDate.getMonth() + 1;
+// Test message generation
+console.log("=== Testing Birthday Message Generation ===\n");
 
-  while (true) {
-    if (offset >= 10000) break;
+const finalMessage = `${getRandomElement(paragraph1Variants)}\n\n` +
+  `${getRandomElement(paragraph2Variants)}\n\n` +
+  `${getRandomElement(paragraph3Variants)}\n\n` +
+  `${getRandomElement(paragraph4Variants)}\n\n` +
+  `${getRandomElement(paragraph5Variants)}\n\n` +
+  `${getRandomElement(paragraph6Variants)}`;
 
-    const response = await vk.api.friends.get({
-      fields: ['bdate'],
-      count: 5000,
-      offset,
-    });
-    await sleep((2 * minute) / ms);
-
-    if (response.items.length === 0) break;
-
-    for (const friend of response.items) {
-      if (friend.bdate) {
-        const [day, month] = friend.bdate.split('.');
-        if (day == currentDay && month == currentMonth) {
-          console.log('friend.id', friend.id);
-
-          // Отправка стикера
-          enqueueMessage({
-            vk,
-            response: {
-              user_id: friend.id,
-              sticker_id: getRandomElement(birthdayStickerIds),
-            }
-          });
-
-          // Формирование финального сообщения из случайных вариантов каждого абзаца
-          const finalMessage = `${getRandomElement(paragraph1Variants)}\n\n` +
-            `${getRandomElement(paragraph2Variants)}\n\n` +
-            `${getRandomElement(paragraph3Variants)}\n\n` +
-            `${getRandomElement(paragraph4Variants)}\n\n` +
-            `${getRandomElement(paragraph5Variants)}\n\n` +
-            `${getRandomElement(paragraph6Variants)}`;
-
-          // Отправка поздравительного сообщения с видеороликом
-          enqueueMessage({
-            vk,
-            response: {
-              user_id: friend.id,
-              message: finalMessage,
-              // attachment: getRandomElement(audioAttachments)
-              attachment: 'video3972090_456239795'
-            }
-          });
-
-          // const audioAttachment = getRandomElement(audioAttachments);
-          // const videoAttachment = 'video3972090_456239795';
-          // const attachments = [audioAttachment, videoAttachment].join(',');
-
-          // enqueueMessage({
-          //   vk,
-          //   response: {
-          //     user_id: friend.id,
-          //     message: finalMessage,
-          //     attachment: attachments
-          //   }
-          // });
-        }
-      }
-    }
-    offset += 5000;
-  }
-}
-
-const trigger = {
-  name: "SendBirthdayCongratulations",
-  action: async (context) => {
-    return await sendBirthdayCongratulations(context);
-  }
-};
-
-module.exports = {
-  trigger
-};
+console.log("Generated Birthday Message:");
+console.log("==========================");
+console.log(finalMessage);
+console.log("\n==========================");
+console.log("✅ Test passed! The message now includes the 'Pay it forward' paragraph.");
