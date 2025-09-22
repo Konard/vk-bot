@@ -135,6 +135,7 @@ log.txt
 friends-conversations.json
 friends.json
 orderedFriends.json
+greet-friends-states.json
 data
 
 # vscode

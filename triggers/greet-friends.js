@@ -1,15 +1,30 @@
 const _ = require('lodash');
-const { sleep, second, ms } = require('../utils');
+const { sleep, second, ms, executeTrigger, readJsonSync, saveJsonSync } = require('../utils');
 const { trigger: greetingTrigger } = require('./greeting');
 const { getOrLoadConversation, loadConversation } = require('../friends-conversations-cache');
 const { getAllFriends } = require('../friends-cache');
 const { getFriendsCountCached } = require('../friends-count-cache');
 const { getOrLoadMessages, loadMessages } = require('../messages-cache');
+const { DateTime } = require('luxon');
+const fs = require('fs');
 
 async function greetFriends(context) {
   let greetedFriends = 0;
   const maxGreetings = context?.options?.maxGreetings || 0;
   const orderBy = context?.options?.orderBy || 'default';
+
+  // Load existing states from file or initialize empty object
+  const statesFilePath = 'greet-friends-states.json';
+  let states = {};
+  try {
+    if (fs.existsSync(statesFilePath)) {
+      states = readJsonSync(statesFilePath);
+      console.log(`Loaded greeting states for ${Object.keys(states).length} friends from ${statesFilePath}`);
+    }
+  } catch (error) {
+    console.warn(`Failed to load states from ${statesFilePath}:`, error.message);
+    states = {};
+  }
 
   const allFriends = (await getAllFriends({ context }));
 
@@ -93,12 +108,41 @@ async function greetFriends(context) {
       continue;
     }
 
+    // Initialize state for this friend if it doesn't exist
+    states[friend.id] = states[friend.id] || {};
+
+    // Check if we already sent a greeting to this friend today
+    const friendState = states[friend.id];
+    const triggers = friendState.triggers ??= {};
+    const greetingTriggerState = triggers[greetingTrigger.name] ??= {};
+    const lastTriggered = greetingTriggerState.lastTriggered;
+    const now = DateTime.now();
+    const lastTriggeredDiff = lastTriggered ? now.diff(lastTriggered, 'days').days : Number.MAX_SAFE_INTEGER;
+
+    if (lastTriggeredDiff < 1) {
+      console.log(`Skipping friend ${friend.id} because greeting was already sent today (${lastTriggeredDiff.toFixed(2)} days ago).`);
+      continue;
+    }
+
+    // Send greeting and update state
     await greetingTrigger.action({
       vk: context.vk,
       response: {
         user_id: friend.id,
       }
     });
+
+    // Update the state to record that we sent a greeting
+    greetingTriggerState.lastTriggered = now;
+    console.log(`Greeting trigger state updated for friend ${friend.id}:`, JSON.stringify(greetingTriggerState, null, 2));
+
+    // Save state after each greeting to prevent loss in case of interruption
+    try {
+      saveJsonSync(statesFilePath, states);
+    } catch (error) {
+      console.warn(`Failed to save states to ${statesFilePath}:`, error.message);
+    }
+
     greetedFriends++;
     console.log(`Greeting for ${greetedFriends}/${maxGreetings} friend with id ${friend.id} is sent.`);
     await sleep((30 * second) / ms);
@@ -109,8 +153,16 @@ async function greetFriends(context) {
 
     if (greetedFriends >= maxGreetings) {
       console.log(`No more friends to greet, ${maxGreetings} limit reached.`);
-      return;
+      break;
     }
+  }
+
+  // Final state save
+  try {
+    saveJsonSync(statesFilePath, states);
+    console.log(`Final state saved to ${statesFilePath} for ${Object.keys(states).length} friends.`);
+  } catch (error) {
+    console.warn(`Failed to save final states to ${statesFilePath}:`, error.message);
   }
 }
 
