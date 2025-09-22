@@ -1,7 +1,6 @@
-const { VK } = require('vk-io');
-const { sleep, getToken, second, ms } = require('./utils');
+const { sleep, getToken, createVK, second, ms } = require('./utils');
 const token = getToken();
-const vk = new VK({ token });
+const vk = createVK(token);
 
 const targetFriendsCount = Number(process.argv[2]) || 0;
 

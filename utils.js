@@ -178,8 +178,18 @@ async function executeTrigger(trigger, context) {
   }
 }
 
+function createVK(token) {
+  const { VK } = require('vk-io');
+  return new VK({
+    token,
+    apiTimeout: 30000, // Increase timeout to 30 seconds to prevent AbortError
+    apiRetryLimit: 5   // Increase retry attempts for better reliability
+  });
+}
+
 module.exports = {
   getToken,
+  createVK,
   getRandomElement,
   hasSticker,
   sleep,
