@@ -1,4 +1,4 @@
-const { sleep, getRandomElement, second, minute, ms, day, app } = require('../utils');
+const { sleep, getRandomElement, shuffleArray, second, minute, ms, day, app } = require('../utils');
 // const fs = require('fs');
 
 const communities = [
@@ -141,7 +141,8 @@ async function sendInvitationPosts(context) {
         const avatarAttachment = await uploadAvatarPicture(context, communityId, avatarImagePath);
         let attachments = [avatarAttachment];
         if (!restrictedCommunities.includes(communityId)) {
-          attachments.push(getRandomElement(audioAttachments));
+          const shuffledAudio = shuffleArray(audioAttachments);
+          attachments.push(...shuffledAudio);
         }
 
         // await context.vk.api.wall.post({ owner_id: ownerId, message, attachments: attachments.join(',') });
