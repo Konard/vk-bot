@@ -4,6 +4,32 @@ const { sleep, priorityFriendIds, second, minute, ms } = require('../utils');
 const sortByMutuals = { sort: 1 };
 const maxFriends = 10000;
 
+// Retry configuration for handling network errors and timeouts
+const retryConfig = {
+  maxRetries: 3,
+  baseDelay: 5 * second,
+  maxDelay: 60 * second
+};
+
+async function retryApiCall(apiCall, retries = retryConfig.maxRetries) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      return await apiCall();
+    } catch (error) {
+      const isAbortError = error.type === 'aborted' || error.message?.includes('AbortError') || error.message?.includes('operation was aborted');
+      const isNetworkError = error.code === 'ECONNRESET' || error.code === 'ENOTFOUND' || error.code === 'ETIMEDOUT';
+
+      if ((isAbortError || isNetworkError) && attempt < retries) {
+        const delay = Math.min(retryConfig.baseDelay * Math.pow(2, attempt - 1), retryConfig.maxDelay);
+        console.log(`Network/timeout error on attempt ${attempt}/${retries}. Retrying in ${delay / ms}ms...`);
+        await sleep(delay / ms);
+        continue;
+      }
+      throw error; // Re-throw if not a retryable error or max retries reached
+    }
+  }
+}
+
 async function acceptFriendRequests({ vk }) {
   try {
     let allFriends = await getAllFriends({ context: { vk } });
@@ -22,7 +48,7 @@ async function acceptFriendRequests({ vk }) {
         continue;
       }
       try {
-        await vk.api.friends.add({ user_id: friendId, text: '' });
+        await retryApiCall(() => vk.api.friends.add({ user_id: friendId, text: '' }));
         addedFriends++;
         console.log(`Friend request is sent to priority friend with id ${friendId}.`);
       } catch (error) {
@@ -35,6 +61,9 @@ async function acceptFriendRequests({ vk }) {
           console.log(`Could not send friend request to priority friend with id ${friendId}, because rate limit reached.`);
           await sleep((1 * minute) / ms);
           break;
+        } else if (error.type === 'aborted' || error.message?.includes('AbortError')) {
+          console.error(`Network timeout error when sending friend request to ${friendId}. This might indicate internet connectivity issues.`);
+          break;
         } else {
           console.error(`Could not send priority friend request to ${friendId}:`, error);
           break;
@@ -44,7 +73,7 @@ async function acceptFriendRequests({ vk }) {
     }
 
     const maxFriendRequestsCount = 23;
-    const requests = await vk.api.friends.getRequests({ count: maxFriendRequestsCount, ...sortByMutuals });
+    const requests = await retryApiCall(() => vk.api.friends.getRequests({ count: maxFriendRequestsCount, ...sortByMutuals }));
     await sleep((2 * second) / ms);
     if (requests?.items?.length <= 0) {
       console.log('No incoming friend requests to be accepted.');
@@ -64,7 +93,7 @@ async function acceptFriendRequests({ vk }) {
         continue;
       }
       try {
-        await vk.api.friends.add({ user_id: friendId, text: '' });
+        await retryApiCall(() => vk.api.friends.add({ user_id: friendId, text: '' }));
         addedFriends++;
         console.log(`Incoming request for friend ${friendId} is accepted.`);
       } catch(error) {
@@ -72,6 +101,9 @@ async function acceptFriendRequests({ vk }) {
           console.log(`Could not accept ${friendId} friend request, because this friend is not found.`);
         } else if (error.code === 242) { // APIError: Code №242 - Too many friends: friends count exceeded
           console.log(`Could not accept ${friendId} friend request, because friends count (10000) exceeded.`);
+          break;
+        } else if (error.type === 'aborted' || error.message?.includes('AbortError')) {
+          console.error(`Network timeout error when accepting friend request from ${friendId}. This might indicate internet connectivity issues.`);
           break;
         } else {
           console.error(`Could not accept ${friendId} friend request:`, error);
@@ -85,7 +117,11 @@ async function acceptFriendRequests({ vk }) {
       await loadAllFriends({ context: { vk } }); // needed to reload friends cache
     }
   } catch (error) {
-    console.error('Could not accept friend requests:', error);
+    if (error.type === 'aborted' || error.message?.includes('AbortError')) {
+      console.error('Could not accept friend requests: Network timeout error (AbortError). This might indicate internet connectivity issues or VK API overload. The bot will retry on the next scheduled run.');
+    } else {
+      console.error('Could not accept friend requests:', error);
+    }
   }
 }
 
@@ -97,5 +133,6 @@ const trigger = {
 };
 
 module.exports = {
-  trigger
+  trigger,
+  retryApiCall // Export for testing
 };
