@@ -138,10 +138,15 @@ async function sendInvitationPosts(context) {
 
         const message = restrictedCommunities.includes(communityId) ? restrictedPostMessage : postMessage;
 
-        const avatarAttachment = await uploadAvatarPicture(context, communityId, avatarImagePath);
-        let attachments = [avatarAttachment];
-        if (!restrictedCommunities.includes(communityId)) {
-          attachments.push(getRandomElement(audioAttachments));
+        let attachments;
+        if (restrictedCommunities.includes(communityId)) {
+          // For restricted communities, use only photo attachment
+          const avatarAttachment = await uploadAvatarPicture(context, communityId, avatarImagePath);
+          attachments = [avatarAttachment];
+        } else {
+          // For non-restricted communities, use only audio attachment to avoid VK API grid mode error
+          // VK API does not allow mixing photo and audio attachments in grid mode
+          attachments = [getRandomElement(audioAttachments)];
         }
 
         // await context.vk.api.wall.post({ owner_id: ownerId, message, attachments: attachments.join(',') });
