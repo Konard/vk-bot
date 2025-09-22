@@ -130,3 +130,10 @@ const sendBirthDayCongratulationsIntervalAction = async () => {
 }
 const sendBirthDayCongratulationsInterval = setInterval(sendBirthDayCongratulationsIntervalAction, (23 * 60 * minute) / ms);
 // sendBirthDayCongratulationsIntervalAction();
+
+// Uncomment the lines below to enable the HPMOR conversation starter
+// const { trigger: askAboutHPMORTrigger } = require('./triggers/ask-about-hpmor');
+// const askAboutHPMORIntervalAction = async () => {
+//   await executeTrigger(askAboutHPMORTrigger, { vk, options: { maxGreetings: 5 } });
+// };
+// const askAboutHPMORInterval = setInterval(askAboutHPMORIntervalAction, (7 * 24 * 60 * minute) / ms); // Once a week
