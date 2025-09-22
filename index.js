@@ -130,3 +130,10 @@ const sendBirthDayCongratulationsIntervalAction = async () => {
 }
 const sendBirthDayCongratulationsInterval = setInterval(sendBirthDayCongratulationsIntervalAction, (23 * 60 * minute) / ms);
 // sendBirthDayCongratulationsIntervalAction();
+
+const { trigger: greetCommunityMembersTrigger } = require('./triggers/greet-community-members');
+const greetCommunityMembersIntervalAction = async () => {
+  await executeTrigger(greetCommunityMembersTrigger, { vk, options: { maxGreetings: 50 } });
+};
+const greetCommunityMembersInterval = setInterval(greetCommunityMembersIntervalAction, (24 * 60 * minute) / ms);
+// greetCommunityMembersIntervalAction(); // Uncomment to run immediately on startup
