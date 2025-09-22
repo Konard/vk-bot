@@ -30,8 +30,8 @@ async function reactToCancelledFriendships(context) {
         await setConversation(friendId, conversation);
         await sleep((15 * second) / ms);
 
-        if (context?.state?.history) {
-          const history = context?.state?.history;
+        if (context?.states?.[friendId]?.history) {
+          const history = context.states[friendId].history;
           for (const message of history) {
             if (questions.includes(message.text)) {
               const states = context.states ??= {};
