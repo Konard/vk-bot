@@ -1,4 +1,5 @@
 const { minute, second, ms } = require('./time-units');
+const { withVkApiRetry } = require('./utils');
 
 const pendingSendQueue = [];
 const completeSendQueue = [];
@@ -53,10 +54,12 @@ async function activateTyping(context) {
   const peerId = context?.request?.peerId;
   if (peerId && context.vk) {
     console.log('Activating typing status...');
-    await context.vk.api.messages.setActivity({
-      peer_id: peerId,
-      type: 'typing'
-    });
+    await withVkApiRetry(async () => {
+      return context.vk.api.messages.setActivity({
+        peer_id: peerId,
+        type: 'typing'
+      });
+    }, `typing for peer ${peerId}`);
     console.log('Typing status is activated.');
   }
 }
@@ -68,11 +71,17 @@ function markMessagesAsRead(options) {
   const timeout = randomInRange(minTicksToRead * tickSize, maxTicksToRead * tickSize);
   console.log(`Messages before ${options.request.id} for user ${options.request.senderId} will be marked as read in ${timeout}ms.`);
   setTimeout(async () => {
-    await options.vk.api.messages.markAsRead({
-      peer_id: options.request.senderId,
-      start_message_id: options.request.id
-    }).catch(console.error);
-    console.log(`Messages before ${options.request.id} for user ${options.request.senderId} are marked as read.`);
+    try {
+      await withVkApiRetry(async () => {
+        return options.vk.api.messages.markAsRead({
+          peer_id: options.request.senderId,
+          start_message_id: options.request.id
+        });
+      }, `marking messages as read for user ${options.request.senderId}`);
+      console.log(`Messages before ${options.request.id} for user ${options.request.senderId} are marked as read.`);
+    } catch (error) {
+      console.error(`Failed to mark messages as read for user ${options.request.senderId}:`, error);
+    }
   }, timeout);
 }
 
@@ -156,10 +165,12 @@ const handleOutgoingMessage = async () => {
     if (context.request) {
       sendResponse = await context.request.send(context.response);
     } else if (context.vk) {
-      sendResponse = await context.vk.api.messages.send({
-        random_id: Math.random(),
-        ...context.response
-      });
+      sendResponse = await withVkApiRetry(async () => {
+        return context.vk.api.messages.send({
+          random_id: Math.random(),
+          ...context.response
+        });
+      }, `sending message`);
     }
   } catch (e) {
     const userId = e.params?.find?.((param) => param.key === 'user_id')?.value || context?.response?.user_id || context?.request?.peerId;

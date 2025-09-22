@@ -1,6 +1,6 @@
 const { createCache } = require('cache-manager');
 const jsonStore = require('./json-store');
-const { eraseMetadata, clean, sleep, second, ms } = require('./utils');
+const { eraseMetadata, clean, sleep, second, ms, withVkApiRetry } = require('./utils');
 
 const targetPath = './data/friends/friends-conversations.json';
 
@@ -52,10 +52,12 @@ async function getConversation(friendId, defaultValueFactory) {
 
 const loadConversation = async function ({ context, friendId, updateCache = false }) {
   console.log(`Loading conversations for ${friendId} friend from server...`);
-  const conversationsResponse = await context.vk.api.messages.getConversationsById({
-    peer_ids: [friendId],
-    count: 1
-  });
+  const conversationsResponse = await withVkApiRetry(async () => {
+    return context.vk.api.messages.getConversationsById({
+      peer_ids: [friendId],
+      count: 1
+    });
+  }, `friend ${friendId}`);
   const conversation = conversationsResponse.items[0];
   if (updateCache && conversation) {
     console.log(`Updating conversation for ${friendId} friend in cache...`);

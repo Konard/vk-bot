@@ -147,6 +147,32 @@ function saveJsonSync(path, obj) {
   return saveTextSync(path, JSON.stringify(obj, null, 2));
 }
 
+async function withVkApiRetry(apiCall, context = '', maxRetries = 3) {
+  let retryCount = 0;
+  const { minute, ms } = timeUnits;
+
+  while (retryCount <= maxRetries) {
+    try {
+      return await apiCall();
+    } catch (error) {
+      if (error.code === 10) { // Internal server error: could not check access_token now, check later
+        retryCount++;
+        if (retryCount <= maxRetries) {
+          const waitTime = (5 * minute) / ms;
+          console.warn(`VK API internal server error (code 10) ${context ? `for ${context}` : ''}. Retrying in 5 minutes... (Attempt ${retryCount}/${maxRetries})`);
+          await sleep(waitTime);
+          continue;
+        } else {
+          console.error(`VK API internal server error (code 10) ${context ? `for ${context}` : ''}. Max retries (${maxRetries}) exceeded.`);
+          throw error;
+        }
+      } else {
+        throw error;
+      }
+    }
+  }
+}
+
 async function executeTrigger(trigger, context) {
   if (!trigger) {
     return;
@@ -183,6 +209,7 @@ module.exports = {
   getRandomElement,
   hasSticker,
   sleep,
+  withVkApiRetry,
   executeTrigger,
   eraseMetadata,
   clean,

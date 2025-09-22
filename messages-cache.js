@@ -1,7 +1,7 @@
 const { createCache } = require('cache-manager');
 const jsonStore = require('./json-store');
 const multiJsonStore = require('./multi-json-store');
-const { eraseMetadata, clean, sleep, month, second, ms } = require('./utils');
+const { eraseMetadata, clean, sleep, month, second, ms, withVkApiRetry } = require('./utils');
 
 const TTL_SECONDS = month / second;
 const targetFolder = './data/friends/messages';
@@ -61,11 +61,13 @@ async function loadMessages({ context, friendId, step = 200, updateCache = false
   const messages = [];
   let offset = 0;
   while (true) {
-    const response = await context.vk.api.messages.getHistory({
-      peer_id: friendId,
-      offset,
-      count: step,
-    });
+    const response = await withVkApiRetry(async () => {
+      return context.vk.api.messages.getHistory({
+        peer_id: friendId,
+        offset,
+        count: step,
+      });
+    }, `friend ${friendId} messages`);
     await sleep((15 * second) / ms);
     messages.push(...response.items);
     if (response.items.length < step) {
