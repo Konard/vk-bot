@@ -147,7 +147,7 @@ function saveJsonSync(path, obj) {
   return saveTextSync(path, JSON.stringify(obj, null, 2));
 }
 
-async function executeTrigger(trigger, context) {
+async function executeTrigger(trigger, context, personalityManager = null) {
   if (!trigger) {
     return;
   }
@@ -156,13 +156,24 @@ async function executeTrigger(trigger, context) {
   if (context?.states && peerId) {
     peerState = context?.states[peerId];
   }
-  const currentContext = { ...context, state: peerState };
+
+  // If personality manager is provided, get the appropriate personality for this trigger
+  let triggerContext = { ...context, state: peerState };
+  if (personalityManager) {
+    const personality = personalityManager.getPersonalityForTrigger(trigger.name);
+    if (personality) {
+      triggerContext.vk = personality.vk;
+      triggerContext.personality = personality;
+      console.log(`Using personality '${personality.name}' for trigger '${trigger.name}'`);
+    }
+  }
+
   console.log(`Checking for '${trigger.name}' trigger...`);
-  if (!trigger.condition || (await trigger.condition(currentContext))) {
+  if (!trigger.condition || (await trigger.condition(triggerContext))) {
     try {
       console.log(`'${trigger.name}' trigger selected to be executed.`);
       const start = new Date();
-      await trigger.action(currentContext);
+      await trigger.action(triggerContext);
       console.log(`'${trigger.name}' trigger is executed in ${new Date() - start} ms.`);
       if (peerState && trigger.name) {
         const triggers = peerState.triggers ??= {};
