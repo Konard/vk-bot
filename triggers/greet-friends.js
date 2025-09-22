@@ -5,6 +5,7 @@ const { getOrLoadConversation, loadConversation } = require('../friends-conversa
 const { getAllFriends } = require('../friends-cache');
 const { getFriendsCountCached } = require('../friends-count-cache');
 const { getOrLoadMessages, loadMessages } = require('../messages-cache');
+const { NeuralFriendRanker } = require('../neural-friend-ranker');
 
 async function greetFriends(context) {
   let greetedFriends = 0;
@@ -48,11 +49,17 @@ async function greetFriends(context) {
   const friendsOpenToMessages = allFriends.filter(friend => friend.can_write_private_message);
 
   let orderedFriends;
-  if (orderBy === 'total-friends') {
+  if (orderBy === 'neural') {
+    // Use neural network ranking
+    console.log('Ordering friends using neural network...');
+    const ranker = new NeuralFriendRanker();
+    orderedFriends = await ranker.rankFriends(friendsOpenToMessages);
+    console.log('Neural network ranking completed');
+  } else if (orderBy === 'total-friends') {
     // Sort by friends count (descending) first, then by conversation history and last message timestamp
     orderedFriends = _.orderBy(
-      friendsOpenToMessages, 
-      ['friendsCount', 'conversationHistoryIsEmpty', 'lastMessageTimestamp'], 
+      friendsOpenToMessages,
+      ['friendsCount', 'conversationHistoryIsEmpty', 'lastMessageTimestamp'],
       ['desc', 'desc', 'asc']
     );
     console.log('Ordering friends by total friends count (descending)');
