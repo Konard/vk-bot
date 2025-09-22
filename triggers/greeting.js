@@ -2,6 +2,7 @@ const { hasSticker, getRandomElement } = require('../utils');
 const { sendMessage } = require('../outgoing-messages');
 const { DateTime } = require('luxon');
 const { stickers } = require('../stickers');
+const { getOrLoadMessages } = require('../messages-cache');
 
 const greetingRegex = /^[^\p{L}]*((трям|🖖|👋|🖐|мо[иё] приветстви[ея]|салам|салют|з?д[ао]ров[ао]?|ку|q+|шалом|хай|хэллоу|йоу?|привет(ствую|ики?)?|здрав?с(твуй|ь)?(те)?|дд|((день|вечер)[^\p{L}]+)?добр(ый([^\p{L}]*(день|вечер))?|ое[^\p{L}]*утро|ой[^\p{L}]*ночи|ого[^\p{L}]*времени[^\p{L}]*суток))[^\p{L}]*)+([^\p{L}]*(тебе|вам))?[^\p{L}]*$/ui;
 
@@ -168,38 +169,51 @@ const outgoingGreetingStickersIds = [
 
 const trigger = {
   name: "GreetingTrigger",
-  condition: (context) => {
+  condition: async (context) => {
     if (context.request.peerType !== "user") {
       return false;
     }
 
-    // console.log('context!!', context)
-    // console.log('!context?.request?.isFromUser', !context?.request?.isFromUser)
-    // if (!context?.request?.isFromUser) {
-    //   return false;
-    // }
+    // Check if message matches greeting patterns first
+    const isGreetingPattern = greetingRegex.test(context.request.text) || hasSticker(context.request, incomingGreetingStickersIds);
+    if (!isGreetingPattern) {
+      return false;
+    }
+
     const now = DateTime.now();
-    // console.log('now', now);
     const lastTriggered = context?.state?.triggers?.[trigger.name]?.lastTriggered;
-    // console.log('lastTriggered', lastTriggered);
     const lastTriggeredDiff = lastTriggered ? now.diff(lastTriggered, 'days').days : Number.MAX_SAFE_INTEGER;
-    // console.log('lastTriggeredDiff >= 1', lastTriggeredDiff >= 1)
-    // console.log('greetingRegex.test(context.request.text)', greetingRegex.test(context.request.text))
-    // console.log('hasSticker(context.request, incomingGreetingStickersIds)', hasSticker(context.request, incomingGreetingStickersIds))
-    // console.log(`lastTriggeredDiff >= 1
-    // && (
-    //     greetingRegex.test(context.request.text)
-    // ||  hasSticker(context.request, incomingGreetingStickersIds)
-    // )`, lastTriggeredDiff >= 1
-    // && (
-    //     greetingRegex.test(context.request.text)
-    // ||  hasSticker(context.request, incomingGreetingStickersIds)
-    // ))
-    return lastTriggeredDiff >= 1
-        && (
-            greetingRegex.test(context.request.text)
-        ||  hasSticker(context.request, incomingGreetingStickersIds)
-        );
+
+    // If already triggered within 24 hours, don't trigger again
+    if (lastTriggeredDiff < 1) {
+      return false;
+    }
+
+    // Check if this is the first message in 24+ hours
+    try {
+      const messages = await getOrLoadMessages({ context, friendId: context.request.user_id });
+      if (!messages || messages.length === 0) {
+        // No message history, treat as first message
+        return true;
+      }
+
+      // Check if the last message (excluding current one) was sent more than 24 hours ago
+      const lastMessage = messages.find(msg => msg.id !== context.request.id);
+      if (!lastMessage) {
+        // Only one message (current), treat as first message
+        return true;
+      }
+
+      const lastMessageTime = DateTime.fromSeconds(lastMessage.date);
+      const timeSinceLastMessage = now.diff(lastMessageTime, 'hours').hours;
+
+      // Only treat as greeting if it's the first message in 24+ hours
+      return timeSinceLastMessage >= 24;
+    } catch (error) {
+      console.error('Error checking message history for greeting trigger:', error);
+      // If we can't check message history, fall back to previous behavior
+      return true;
+    }
   },
   action: async (context) => {
     if (context?.request?.isOutbox) {
