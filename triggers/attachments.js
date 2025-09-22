@@ -4,14 +4,23 @@ const targetPath = 'received-attachments.json';
 
 let receivedAttachments = {};
 if (fs.existsSync(targetPath)) {
-    const rawData = fs.readFileSync(targetPath);
-    receivedAttachments = JSON.parse(rawData);
+    try {
+        const rawData = fs.readFileSync(targetPath);
+        receivedAttachments = JSON.parse(rawData);
 
-    // Clean on start up
-    for (const propName in receivedAttachments) {
-      if (receivedAttachments[propName]) {
-        receivedAttachments[propName] = clean(receivedAttachments[propName]);
-      }
+        // Clean on start up
+        for (const propName in receivedAttachments) {
+          if (receivedAttachments[propName]) {
+            receivedAttachments[propName] = clean(receivedAttachments[propName]);
+          }
+        }
+    } catch (error) {
+        if (error.message.includes('Unexpected token') || error.message.includes('JSON')) {
+            console.error(`Error: File "${targetPath}" contains invalid JSON. Please check the file format and syntax. Starting with empty attachments.`);
+        } else {
+            console.error(`Error: Unable to read file "${targetPath}". ${error.message}. Starting with empty attachments.`);
+        }
+        receivedAttachments = {};
     }
 }
 

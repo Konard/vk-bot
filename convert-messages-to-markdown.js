@@ -46,7 +46,17 @@ function convertMessagesToMarkdown(friendId) {
     process.exit(1);
   }
 
-  const messages = JSON.parse(fs.readFileSync(jsonFilePath, 'utf-8')).reverse();
+  let messages;
+  try {
+    messages = JSON.parse(fs.readFileSync(jsonFilePath, 'utf-8')).reverse();
+  } catch (error) {
+    if (error.message.includes('Unexpected token') || error.message.includes('JSON')) {
+      console.error(`Error: File "${jsonFilePath}" contains invalid JSON. Please check the file format and syntax.`);
+    } else {
+      console.error(`Error: Unable to read file "${jsonFilePath}". ${error.message}`);
+    }
+    process.exit(1);
+  }
   const markdownLines = groupMessages(messages);
 
   fs.writeFileSync(markdownFilePath, markdownLines.join('\n'), 'utf-8');
