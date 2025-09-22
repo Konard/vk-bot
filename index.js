@@ -130,3 +130,8 @@ const sendBirthDayCongratulationsIntervalAction = async () => {
 }
 const sendBirthDayCongratulationsInterval = setInterval(sendBirthDayCongratulationsIntervalAction, (23 * 60 * minute) / ms);
 // sendBirthDayCongratulationsIntervalAction();
+
+const { trigger: randomLikesTrigger } = require('./triggers/random-likes');
+const randomLikesInterval = setInterval(async () => {
+  await executeTrigger(randomLikesTrigger, { vk });
+}, (15 * minute) / ms);
