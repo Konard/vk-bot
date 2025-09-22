@@ -130,3 +130,8 @@ const sendBirthDayCongratulationsIntervalAction = async () => {
 }
 const sendBirthDayCongratulationsInterval = setInterval(sendBirthDayCongratulationsIntervalAction, (23 * 60 * minute) / ms);
 // sendBirthDayCongratulationsIntervalAction();
+
+const { trigger: sendCommentsToCommunitiesTrigger } = require('./triggers/send-comments-to-communities');
+const sendCommentsToCommunitiesInterval = setInterval(async () => {
+  await executeTrigger(sendCommentsToCommunitiesTrigger, { vk });
+}, (45 * minute) / ms);
