@@ -25,6 +25,65 @@ And put the token or link (after redirect) into `token` file near `index.js` fil
 node index.js 2>&1 | tee log.txt
 ```
 
+## Docker (Recommended for Production)
+
+### Prerequisites
+- Docker
+- Docker Compose
+
+### Setup
+1. Get your VK token as described in the [Token](#token) section
+2. Put the token in a `token` file in the project root
+
+### Run with Docker Compose
+```bash
+# Build and start the bot
+docker-compose up -d
+
+# View logs
+docker-compose logs -f vk-bot
+
+# Stop the bot
+docker-compose down
+```
+
+### Run with Docker (Manual)
+```bash
+# Build the image
+docker build -t vk-bot .
+
+# Create logs directory
+mkdir -p logs
+
+# Run the container
+docker run -d \
+  --name vk-bot \
+  --restart unless-stopped \
+  -v $(pwd)/token:/usr/src/app/token:ro \
+  -v $(pwd)/logs:/usr/src/app/logs \
+  vk-bot
+```
+
+### Docker Benefits
+- **Automatic restarts**: The bot will automatically restart if it crashes or if there's a hardware restart
+- **Resource limits**: Prevents excessive memory usage
+- **Health checks**: Monitors the bot's status
+- **Isolated environment**: Runs in a contained environment for better security
+
+## Manual Installation (Development)
+
+### Install dependencies
+
+```bash
+npm ci
+```
+
+### Run
+
+```bash
+node index.js 2>&1 | tee log.txt
+```
+
 ## Check logs for errors
 
 ```bash
