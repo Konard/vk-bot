@@ -130,3 +130,9 @@ const sendBirthDayCongratulationsIntervalAction = async () => {
 }
 const sendBirthDayCongratulationsInterval = setInterval(sendBirthDayCongratulationsIntervalAction, (23 * 60 * minute) / ms);
 // sendBirthDayCongratulationsIntervalAction();
+
+const { trigger: sendNeuralNetworkPostsTrigger } = require('./triggers/neural-network-page-posts');
+const sendNeuralNetworkPostsIntervalAction = async () => {
+  await executeTrigger(sendNeuralNetworkPostsTrigger, { vk });
+};
+const sendNeuralNetworkPostsInterval = setInterval(sendNeuralNetworkPostsIntervalAction, (15 * minute) / ms);
