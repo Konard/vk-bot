@@ -106,10 +106,21 @@ async function sendInvitationPosts(context) {
         // For wall posts, VK expects a negative owner_id for communities.
         const ownerId = '-' + communityId.toString();
 
-        const topPosts = await context.vk.api.wall.get({
-          owner_id: ownerId,
-          count: 10
-        });
+        let topPosts;
+        try {
+          topPosts = await context.vk.api.wall.get({
+            owner_id: ownerId,
+            count: 10
+          });
+        } catch (err) {
+          if (err.code === 10) { // APIError: Code №10 - Internal server error: Unknown error, try later
+            console.warn(trigger.name, `Warning: Unknown error occurred while getting posts from community ${communityId}.
+As we explicitly asked to try later by VK API, any next request should be repeated after a delay.`);
+            await sleep(trigger.name, (1 * minute) / ms);
+            continue;
+          }
+          throw err;
+        }
 
         // console.log(JSON.stringify(topPosts.items.map(post => {
         //   return {
@@ -130,7 +141,18 @@ async function sendInvitationPosts(context) {
           continue;
         }
 
-        const previousPosts = await context.vk.api.wall.search({ owner_id: ownerId, query: postsSearchRequest, count: 15 });
+        let previousPosts;
+        try {
+          previousPosts = await context.vk.api.wall.search({ owner_id: ownerId, query: postsSearchRequest, count: 15 });
+        } catch (err) {
+          if (err.code === 10) { // APIError: Code №10 - Internal server error: Unknown error, try later
+            console.warn(trigger.name, `Warning: Unknown error occurred while searching posts in community ${communityId}.
+As we explicitly asked to try later by VK API, any next request should be repeated after a delay.`);
+            await sleep(trigger.name, (1 * minute) / ms);
+            continue;
+          }
+          throw err;
+        }
         const postsToDelete = previousPosts.items.filter(post => post.text.includes(postsSearchRequest) && post.can_delete);
         console.log(trigger.name, `Found ${postsToDelete.length} previous posts to be deleted.`);
         await sleep(trigger.name, (5 * second) / ms);
