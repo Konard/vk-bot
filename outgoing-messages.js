@@ -97,7 +97,7 @@ function enqueueMessage(options) {
   };
   if (!combinedOptions?.response?.random_id) {
     combinedOptions.response.random_id = randomInteger();
-    console.log('combinedOptions.response.random_id', options.response.random_id)
+    console.log('combinedOptions.response.random_id', combinedOptions.response.random_id)
   }
   if (!combinedOptions.waitTicksLeft) {
     combinedOptions.waitTicksLeft = combinedOptions.waitTicks;
