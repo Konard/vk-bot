@@ -1,12 +1,14 @@
 const { VK } = require('vk-io');
-const { sleep, getToken, second, ms } = require('./utils');
+const { sleep, getToken, second, ms, withRetry } = require('./utils');
 const token = getToken();
 const vk = new VK({ token });
 
 const rejectDeactivatedFriendRequests = async () => {
   try {
     const maxFriendRequestsCount = 1000;
-    const requests = await vk.api.friends.getRequests({ count: maxFriendRequestsCount, sort: 1 });
+    const requests = await withRetry(() =>
+      vk.api.friends.getRequests({ count: maxFriendRequestsCount, sort: 1 })
+    );
 
     for (let userId of requests.items) {
       try {
