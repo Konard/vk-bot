@@ -20,7 +20,10 @@ const triggers = [
 
 const token = getToken();
 const { VK } = require('vk-io');
-const vk = new VK({ token });
+const vk = new VK({
+  token,
+  apiTimeout: 30000 // Increase timeout to 30 seconds to handle slow friends.get requests
+});
 
 vk.updates.on(['message_new'], async (request) => {
   let peerState;
