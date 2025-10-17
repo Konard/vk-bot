@@ -5,6 +5,7 @@ const { handleOutgoingMessage } = require('./outgoing-messages');
 const peers = {}; // TODO: keep state about what triggers then last triggered for each peer
 
 const triggers = [
+  require('./triggers/suggest-answer').trigger,  // Vector search answer suggestions
   // require('./triggers/acquaintance').trigger,
   // require('./triggers/attachments').trigger,
   // require('./triggers/goal').trigger,

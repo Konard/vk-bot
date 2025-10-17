@@ -137,5 +137,8 @@ friends.json
 orderedFriends.json
 data
 
+# Vector search indexes
+.vector-indexes/
+
 # vscode
 .vscode/settings.json
