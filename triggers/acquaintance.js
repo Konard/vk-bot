@@ -50,5 +50,6 @@ const trigger = {
 
 module.exports = {
   trigger,
-  acquaintanceSuggestions
+  acquaintanceSuggestions,
+  acquaintedRegex
 };
