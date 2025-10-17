@@ -17,6 +17,16 @@ describe(triggerDescription, () => {
     ['Привет как дела😏😏'],
     ['How are you'],
     ['How are you?'],
+    ['How are you doing?'],
+    ['How have you been?'],
+    ['How\'s everything?'],
+    ['How\'s it going?'],
+    ['How are things going?'],
+    ['What\'s going on?'],
+    ['What\'s new?'],
+    ['What\'s up?'],
+    ['Whassup?'],
+    ['What are you up to?'],
   ])(`"%s" matches ${triggerDescription} and gives expected response`, (incomingMessage) => {
     const context = { request: { isFromUser: true, isOutbox: false, text: incomingMessage } };
     expect(wellBeingTrigger.condition(context)).toBe(true);
