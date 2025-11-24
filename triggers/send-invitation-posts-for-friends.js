@@ -38,8 +38,7 @@ const restrictedCommunities = [
 const postMessage = `Я программист, принимаю все заявки в друзья.
 А ещё у меня много друзей, которые тоже будут рады принять тебя в друзья.
 Пиши в личку, буду рад обсудить любые предложения.
-Я в Telegram: https://t.me/link_konard - канал, https://t.me/drakonard - личка.
-Если нужен доступ к GPT: https://t.me/DeepGPTBot?start=1339837872 (наша разработка).`;
+Я в Telegram: https://t.me/link_konard - канал, https://t.me/drakonard - личка.`;
 
 const restrictedPostMessage = `Я программист, принимаю все заявки в друзья.
 А ещё у меня много друзей, которые тоже будут рады принять тебя в друзья.
