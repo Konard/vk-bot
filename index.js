@@ -15,7 +15,8 @@ const triggers = [
   // require('./triggers/who-multiple').trigger,
   // require('./triggers/who-singular').trigger,
   // require('./triggers/have-we-talked-before').trigger,
-  // require('./triggers/engage-with-acquaintance').trigger
+  // require('./triggers/engage-with-acquaintance').trigger,
+  require('./triggers/friendship-meaning').trigger
 ];
 
 const token = getToken();
