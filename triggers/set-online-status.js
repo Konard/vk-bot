@@ -3,7 +3,11 @@ async function setOnlineStatus({ vk }) {
     await vk.api.account.setOnline();
     console.log('Online status is set');
   } catch (error) {
-    console.log('Could not set online status', error);
+    if (error.name === 'AbortError' || error.type === 'aborted') {
+      console.log('Could not set online status: Request timed out (AbortError). This is usually temporary and will retry on next interval.');
+    } else {
+      console.error('Could not set online status:', error);
+    }
   }
 }
 
