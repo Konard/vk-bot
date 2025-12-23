@@ -61,6 +61,23 @@ async function activateTyping(context) {
   }
 }
 
+async function deactivateTyping(context) {
+  const peerId = context?.request?.peerId || context?.response?.peer_id;
+  if (peerId && context.vk) {
+    console.log('Deactivating typing status...');
+    try {
+      // To deactivate typing, we need to call setActivity without the type parameter
+      // or with type set to an empty/null value. According to VK API, this stops the activity.
+      await context.vk.api.messages.setActivity({
+        peer_id: peerId
+      });
+      console.log('Typing status deactivated.');
+    } catch (error) {
+      console.log('Error deactivating typing status:', error.message);
+    }
+  }
+}
+
 function markMessagesAsRead(options) {
   if (!options?.vk || !options?.request) {
     return;
@@ -161,7 +178,13 @@ const handleOutgoingMessage = async () => {
         ...context.response
       });
     }
+
+    // Deactivate typing status after message is sent
+    await deactivateTyping(context);
   } catch (e) {
+    // Deactivate typing status even if message sending failed
+    await deactivateTyping(context);
+
     const userId = e.params?.find?.((param) => param.key === 'user_id')?.value || context?.response?.user_id || context?.request?.peerId;
     if (e.code === 900) { // Can't send messages for users from blacklist
       console.log(`${userId} user is blocked from sending messages to him.`);
