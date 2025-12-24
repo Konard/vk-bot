@@ -7,7 +7,7 @@ const peers = {}; // TODO: keep state about what triggers then last triggered fo
 const triggers = [
   // require('./triggers/acquaintance').trigger,
   // require('./triggers/attachments').trigger,
-  // require('./triggers/goal').trigger,
+  require('./triggers/goal').trigger,
   // require('./triggers/gratitude').trigger,
   // require('./triggers/greeting').trigger,
   // require('./triggers/undefined-question').trigger,
