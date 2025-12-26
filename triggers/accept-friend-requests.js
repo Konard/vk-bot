@@ -1,5 +1,6 @@
 const { getAllFriends, loadAllFriends } = require('../friends-cache');
 const { sleep, priorityFriendIds, second, minute, ms } = require('../utils');
+const { rateLimitHandler } = require('../rate-limit-handler');
 
 const sortByMutuals = { sort: 1 };
 const maxFriends = 10000;
@@ -22,21 +23,27 @@ async function acceptFriendRequests({ vk }) {
         continue;
       }
       try {
-        await vk.api.friends.add({ user_id: friendId, text: '' });
-        addedFriends++;
-        console.log(`Friend request is sent to priority friend with id ${friendId}.`);
+        const result = await rateLimitHandler.executeWithRateLimit(
+          (options) => vk.api.friends.add(options),
+          { user_id: friendId, text: '' },
+          `priority friend request to ${friendId}`
+        );
+
+        if (result !== null) {
+          addedFriends++;
+          console.log(`Friend request is sent to priority friend with id ${friendId}.`);
+        } else {
+          // Rate limited, break out of the loop
+          break;
+        }
       } catch (error) {
         if (error.code === 177) { // APIError: Code №177 - Cannot add this user to friends as user not found
           console.log(`Could not send friend request to priority friend with id ${friendId}, because this friend is not found.`);
         } else if (error.code === 242) { // APIError: Code №242 - Too many friends: friends count exceeded
           console.log(`Could not send friend request to priority friend with id ${friendId}, because friends count (10000) exceeded.`);
           break;
-        } else if (error.code === 29) { // APIError: Code №29 - Rate limit reached
-          console.log(`Could not send friend request to priority friend with id ${friendId}, because rate limit reached.`);
-          await sleep((1 * minute) / ms);
-          break;
         } else {
-          console.error(`Could not send priority friend request to ${friendId}:`, error);
+          console.log(`Could not send priority friend request to ${friendId}. Error code: ${error.code}, message: ${error.message || 'Unknown error'}`);
           break;
         }
       }
@@ -64,9 +71,19 @@ async function acceptFriendRequests({ vk }) {
         continue;
       }
       try {
-        await vk.api.friends.add({ user_id: friendId, text: '' });
-        addedFriends++;
-        console.log(`Incoming request for friend ${friendId} is accepted.`);
+        const result = await rateLimitHandler.executeWithRateLimit(
+          (options) => vk.api.friends.add(options),
+          { user_id: friendId, text: '' },
+          `accept friend request from ${friendId}`
+        );
+
+        if (result !== null) {
+          addedFriends++;
+          console.log(`Incoming request for friend ${friendId} is accepted.`);
+        } else {
+          // Rate limited, break out of the loop
+          break;
+        }
       } catch(error) {
         if (error.code === 177) { // APIError: Code №177 - Cannot add this user to friends as user not found
           console.log(`Could not accept ${friendId} friend request, because this friend is not found.`);
@@ -74,7 +91,7 @@ async function acceptFriendRequests({ vk }) {
           console.log(`Could not accept ${friendId} friend request, because friends count (10000) exceeded.`);
           break;
         } else {
-          console.error(`Could not accept ${friendId} friend request:`, error);
+          console.log(`Could not accept ${friendId} friend request. Error code: ${error.code}, message: ${error.message || 'Unknown error'}`);
           break;
         }
       }
