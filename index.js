@@ -56,7 +56,7 @@ vk.updates.on(['message_new'], async (request) => {
       from_id: !request?.isOutbox ? request?.senderId : 0, // -
       text: request?.text,
       out: +request?.isOutbox,
-      attachments: request?.attachments, 
+      attachments: request?.attachments,
       important: request?.isImportant,
       random_id: 0,
       conversation_message_id: request?.conversationMessageId,
@@ -73,6 +73,12 @@ vk.updates.on(['message_new'], async (request) => {
   for (const trigger of triggers) {
     await executeTrigger(trigger, { vk, request, states: peers });
   }
+});
+
+// Handle like events
+const { trigger: likeInResponseToLikesTrigger } = require('./triggers/like-in-response-to-likes');
+vk.updates.on(['like_add'], async (context) => {
+  await executeTrigger(likeInResponseToLikesTrigger, { vk, context, states: peers });
 });
 
 vk.updates.start().catch(console.error);
