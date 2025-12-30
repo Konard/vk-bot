@@ -1,10 +1,9 @@
 const fs = require('fs');
 const path = require('path');
-const { VK } = require('vk-io');
-const { getToken, sleep, minute, ms } = require('./utils');
+const { getToken, createVK, sleep, minute, ms } = require('./utils');
 
 const token = getToken();
-const vk = new VK({ token });
+const vk = createVK(token);
 
 async function loadMessages(friendId) {
   try {

@@ -1,8 +1,7 @@
-const { VK } = require('vk-io');
-const { getRandomElement, sleep, getToken, minute, ms } = require('../utils');
+const { getRandomElement, sleep, getToken, createVK, minute, ms } = require('../utils');
 const { enqueueMessage } = require('../outgoing-messages');
 const token = getToken();
-const vk = new VK({ token });
+const vk = createVK(token);
 
 const birthdayStickerIds = [
   60302,
