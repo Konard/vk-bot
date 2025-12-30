@@ -1,6 +1,7 @@
 const { VK } = require('vk-io');
 const { getRandomElement, sleep, getToken, minute, ms } = require('../utils');
 const { enqueueMessage } = require('../outgoing-messages');
+const { getRandomValidSticker } = require('../sticker-validator');
 const token = getToken();
 const vk = new VK({ token });
 
@@ -91,13 +92,18 @@ async function sendBirthdayCongratulations() {
           console.log('friend.id', friend.id);
 
           // Отправка стикера
-          enqueueMessage({
-            vk,
-            response: {
-              user_id: friend.id,
-              sticker_id: getRandomElement(birthdayStickerIds),
-            }
-          });
+          const validStickerId = getRandomValidSticker(birthdayStickerIds);
+          if (validStickerId) {
+            enqueueMessage({
+              vk,
+              response: {
+                user_id: friend.id,
+                sticker_id: validStickerId,
+              }
+            });
+          } else {
+            console.warn('No valid birthday stickers available for user', friend.id);
+          }
 
           // Формирование финального сообщения из случайных вариантов каждого абзаца
           const finalMessage = `${getRandomElement(paragraph1Variants)}\n\n` +

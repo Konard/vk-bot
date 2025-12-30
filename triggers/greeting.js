@@ -2,6 +2,7 @@ const { hasSticker, getRandomElement } = require('../utils');
 const { sendMessage } = require('../outgoing-messages');
 const { DateTime } = require('luxon');
 const { stickers } = require('../stickers');
+const { getRandomValidSticker } = require('../sticker-validator');
 
 const greetingRegex = /^[^\p{L}]*((трям|🖖|👋|🖐|мо[иё] приветстви[ея]|салам|салют|з?д[ао]ров[ао]?|ку|q+|шалом|хай|хэллоу|йоу?|привет(ствую|ики?)?|здрав?с(твуй|ь)?(те)?|дд|((день|вечер)[^\p{L}]+)?добр(ый([^\p{L}]*(день|вечер))?|ое[^\p{L}]*утро|ой[^\p{L}]*ночи|ого[^\p{L}]*времени[^\p{L}]*суток))[^\p{L}]*)+([^\p{L}]*(тебе|вам))?[^\p{L}]*$/ui;
 
@@ -205,11 +206,17 @@ const trigger = {
     if (context?.request?.isOutbox) {
       return;
     }
+    const validStickerId = getRandomValidSticker(outgoingGreetingStickersIds);
+    if (!validStickerId) {
+      console.warn('No valid greeting stickers available, skipping greeting response');
+      return;
+    }
+
     return await sendMessage({
       ...context,
       response: {
         ...context.response,
-        sticker_id: getRandomElement(outgoingGreetingStickersIds)
+        sticker_id: validStickerId
       }
     });
   }

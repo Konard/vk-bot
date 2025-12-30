@@ -1,4 +1,5 @@
 const { minute, second, ms } = require('./time-units');
+const { markStickerAsInvalid } = require('./sticker-validator');
 
 const pendingSendQueue = [];
 const completeSendQueue = [];
@@ -163,6 +164,8 @@ const handleOutgoingMessage = async () => {
     }
   } catch (e) {
     const userId = e.params?.find?.((param) => param.key === 'user_id')?.value || context?.response?.user_id || context?.request?.peerId;
+    const stickerId = e.params?.find?.((param) => param.key === 'sticker_id')?.value || context?.response?.sticker_id;
+
     if (e.code === 900) { // Can't send messages for users from blacklist
       console.log(`${userId} user is blocked from sending messages to him.`);
       return; // This error requires to do nothing.
@@ -174,6 +177,10 @@ const handleOutgoingMessage = async () => {
       console.log(`Limit reached or ${userId} user is deactivated (blocked or deleted).`);
       return; // This error requires to do nothing.
       // TODO: unfriend of it is deactivated, block if he blocked you or just wait on the limit
+    } else if (e.code === 10 && stickerId) { // Internal server error when sending sticker
+      console.log(`Sticker ${stickerId} is no longer available (Internal server error). Skipping message to user ${userId}.`);
+      markStickerAsInvalid(stickerId, 'VK API error code 10 - Internal server error');
+      return; // This error requires to do nothing.
     } else {
       throw e;
     }
