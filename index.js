@@ -16,6 +16,9 @@ const triggers = [
   // require('./triggers/who-singular').trigger,
   // require('./triggers/have-we-talked-before').trigger,
   // require('./triggers/engage-with-acquaintance').trigger
+  require('./triggers/two-four-six-game').startGameTrigger,
+  require('./triggers/two-four-six-game').handleTripleGuessTrigger,
+  require('./triggers/two-four-six-game').handleRuleGuessTrigger,
 ];
 
 const token = getToken();
