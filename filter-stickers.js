@@ -1,6 +1,18 @@
 const fs = require("fs");
 
-const data = JSON.parse(fs.readFileSync("received-attachments.json"));
+let data;
+try {
+  data = JSON.parse(fs.readFileSync("received-attachments.json"));
+} catch (error) {
+  if (error.code === 'ENOENT') {
+    console.error(`Error: File "received-attachments.json" not found. Please make sure the file exists and the path is correct.`);
+  } else if (error.message.includes('Unexpected token') || error.message.includes('JSON')) {
+    console.error(`Error: File "received-attachments.json" contains invalid JSON. Please check the file format and syntax.`);
+  } else {
+    console.error(`Error: Unable to read file "received-attachments.json". ${error.message}`);
+  }
+  process.exit(1);
+}
 
 const uniqueProducts = {};
 

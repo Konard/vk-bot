@@ -25,7 +25,11 @@ function getToken(filePath = 'token') {
   try {
     content = fs.readFileSync(filePath, 'utf-8').trim();
   } catch (error) {
-    throw new Error(`Error: Unable to read file "${filePath}". Please make sure the file exists and is accessible.`, { cause: error });
+    if (error.code === 'ENOENT') {
+      throw new Error(`Error: Token file "${filePath}" not found. Please create a file named "${filePath}" containing either:\n  1. Your VK API access token (a string of characters)\n  2. A VK OAuth URL with access_token parameter\n\nFor more information on how to get a VK API token, visit: https://vk.com/dev/access_token`);
+    } else {
+      throw new Error(`Error: Unable to read file "${filePath}". Please make sure the file exists and is accessible. ${error.message}`, { cause: error });
+    }
   }
 
   // Try to parse the content as a URL but handle URL parsing errors as warnings
@@ -133,11 +137,28 @@ function clean(obj) {
 const defaultEncoding = 'utf-8';
 
 function readTextSync(path) {
-  return fs.readFileSync(path, { encoding: defaultEncoding });
+  try {
+    return fs.readFileSync(path, { encoding: defaultEncoding });
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      throw new Error(`Error: File "${path}" not found. Please make sure the file exists and the path is correct.`);
+    } else {
+      throw new Error(`Error: Unable to read file "${path}". ${error.message}`, { cause: error });
+    }
+  }
 }
 
 function readJsonSync(path) {
-  return JSON.parse(readTextSync(path));
+  try {
+    const content = readTextSync(path);
+    return JSON.parse(content);
+  } catch (error) {
+    if (error.message.includes('Unexpected token') || error.message.includes('JSON')) {
+      throw new Error(`Error: File "${path}" contains invalid JSON. Please check the file format and syntax.`, { cause: error });
+    } else {
+      throw error; // Re-throw errors from readTextSync (already have good messages)
+    }
+  }
 }
 
 function saveTextSync(path, text) {
