@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "vk-bot",
   "main": "index.js",
+  "bin": {
+    "vk-bot": "./bin/cli.js"
+  },
   "scripts": {
     "test": "jest"
   },
