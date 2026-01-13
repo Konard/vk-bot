@@ -1,4 +1,4 @@
-const { sleep, getRandomElement, minute, second, ms } = require('../utils');
+const { sleep, getRandomElement, shuffleArray, minute, second, ms } = require('../utils');
 const { trigger: greetingTrigger } = require('./greeting');
 const { DateTime } = require('luxon');
 const { enqueueMessage } = require('../outgoing-messages');
@@ -94,11 +94,12 @@ async function doYouLikeThisMusic(context) {
           user_id: friend.id,
         }
       });
+      const shuffledAudio = shuffleArray(audioAttachments);
       enqueueMessage({
         vk: context.vk,
         response: {
           user_id: friend.id,
-          attachment: getRandomElement(audioAttachments),
+          attachment: getRandomElement(shuffledAudio),
         }
       });
       enqueueMessage({

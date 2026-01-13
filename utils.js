@@ -87,6 +87,15 @@ function getRandomElement(array) {
   return array[Math.floor(Math.random() * array.length)];
 }
 
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 const hasSticker = (context, stickersIds) => {
   for (const attachment of context?.attachments || []) {
     if (attachment?.id) {
@@ -182,6 +191,7 @@ async function executeTrigger(trigger, context) {
 module.exports = {
   getToken,
   getRandomElement,
+  shuffleArray,
   hasSticker,
   sleep,
   executeTrigger,

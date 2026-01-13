@@ -1,4 +1,4 @@
-const { sleep, second, ms } = require('../utils');
+const { sleep, second, ms, shuffleArray } = require('../utils');
 
 const communitiesIds = [
   76672098,
@@ -18,6 +18,11 @@ const postMessage = `Подпишись на группу Олевии Кибе�
 
 const neuronalMiracleAudio = 'audio-2001064727_125064727';
 const daysOfMiraclesAudio = 'audio-2001281499_119281499';
+
+const audioAttachments = [
+  neuronalMiracleAudio,
+  daysOfMiraclesAudio
+];
 
 const postsSearchRequest = `club225128425`;
 
@@ -47,7 +52,8 @@ async function sendInvitationPosts(context) {
         }
       }
 
-      const response = await context.vk.api.wall.post({ owner_id: ownerId, message: postMessage, attachments: `${neuronalMiracleAudio},${daysOfMiraclesAudio}` })
+      const shuffledAudio = shuffleArray(audioAttachments);
+      const response = await context.vk.api.wall.post({ owner_id: ownerId, message: postMessage, attachments: shuffledAudio.join(',') })
       console.log('Post is sent to', communityId, 'community.');
       await sleep((5 * second) / ms);
     }
