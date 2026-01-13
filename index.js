@@ -16,6 +16,7 @@ const triggers = [
   // require('./triggers/who-singular').trigger,
   // require('./triggers/have-we-talked-before').trigger,
   // require('./triggers/engage-with-acquaintance').trigger
+  require('./triggers/greet-group-members').trigger,
 ];
 
 const token = getToken();
