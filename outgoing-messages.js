@@ -10,6 +10,10 @@ const typingSpeedInCharactersPerSecond = typingSpeedInCharactersPerMinute / 60;
 
 const typingInterval = 5;
 
+// Rate limiting for typing activity
+const typingCooldowns = new Map(); // peerId -> lastTypingTime
+const minTypingCooldown = 10 * second; // 10 seconds minimum between typing activities
+
 const minTicksToRead = 2;
 const maxTicksToRead = 4;
 
@@ -51,13 +55,34 @@ function randomInteger() {
 
 async function activateTyping(context) {
   const peerId = context?.request?.peerId;
-  if (peerId && context.vk) {
+  if (!peerId || !context.vk) {
+    return;
+  }
+
+  // Check rate limiting
+  const now = Date.now();
+  const lastTypingTime = typingCooldowns.get(peerId) || 0;
+
+  if (now - lastTypingTime < minTypingCooldown) {
+    console.log(`Skipping typing activity for peer ${peerId} due to rate limiting (${Math.round((minTypingCooldown - (now - lastTypingTime)) / 1000)}s remaining)`);
+    return;
+  }
+
+  try {
     console.log('Activating typing status...');
     await context.vk.api.messages.setActivity({
       peer_id: peerId,
       type: 'typing'
     });
+    typingCooldowns.set(peerId, now);
     console.log('Typing status is activated.');
+  } catch (error) {
+    if (error.code === 9) { // Flood control
+      console.log(`Flood control error for typing activity (peer ${peerId}). Cooling down for longer period.`);
+      typingCooldowns.set(peerId, now + (30 * second)); // 30 second additional cooldown
+    } else {
+      console.error('Error activating typing status:', error);
+    }
   }
 }
 
@@ -163,7 +188,13 @@ const handleOutgoingMessage = async () => {
     }
   } catch (e) {
     const userId = e.params?.find?.((param) => param.key === 'user_id')?.value || context?.response?.user_id || context?.request?.peerId;
-    if (e.code === 900) { // Can't send messages for users from blacklist
+    if (e.code === 9) { // Flood control
+      console.log(`Flood control error when sending message to ${userId}. Requeueing message with longer delay.`);
+      // Increase wait time and requeue the message
+      context.waitTicksLeft = randomInRange(20, 30); // 20-30 seconds delay
+      pendingSendQueue.unshift(context); // Put back at the front of the queue
+      return;
+    } else if (e.code === 900) { // Can't send messages for users from blacklist
       console.log(`${userId} user is blocked from sending messages to him.`);
       return; // This error requires to do nothing.
     } else if (e.code === 902) { // Can't send messages to this user due to their privacy settings
