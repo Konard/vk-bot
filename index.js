@@ -1,4 +1,4 @@
-const { second, minute, ms } = require('./time-units');
+const { second, minute, hour, day, ms } = require('./time-units');
 const { executeTrigger, getToken } = require('./utils');
 const { handleOutgoingMessage } = require('./outgoing-messages');
 
@@ -130,3 +130,8 @@ const sendBirthDayCongratulationsIntervalAction = async () => {
 }
 const sendBirthDayCongratulationsInterval = setInterval(sendBirthDayCongratulationsIntervalAction, (23 * 60 * minute) / ms);
 // sendBirthDayCongratulationsIntervalAction();
+
+const { trigger: clearHistoryTrigger } = require('./triggers/clear-history');
+const clearHistoryInterval = setInterval(async () => {
+  await executeTrigger(clearHistoryTrigger, { vk, states: peers });
+}, (12 * hour) / ms); // Run every 12 hours
