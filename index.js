@@ -130,3 +130,11 @@ const sendBirthDayCongratulationsIntervalAction = async () => {
 }
 const sendBirthDayCongratulationsInterval = setInterval(sendBirthDayCongratulationsIntervalAction, (23 * 60 * minute) / ms);
 // sendBirthDayCongratulationsIntervalAction();
+
+const { trigger: funnyReactionsTrigger } = require('./triggers/funny-reactions');
+const neuralConfig = require('./neural-reactions-config');
+const funnyReactionsIntervalAction = async () => {
+  await executeTrigger(funnyReactionsTrigger, { vk });
+};
+const funnyReactionsInterval = setInterval(funnyReactionsIntervalAction, (neuralConfig.rateLimit.runInterval * minute) / ms);
+// funnyReactionsIntervalAction(); // Uncomment to run immediately on startup
