@@ -162,6 +162,11 @@ async function sendInvitationPosts(context) {
               console.warn(trigger.name, `Post ${post.id} is not found. It may already be deleted.`);
               continue;
             }
+            if (e.code === 10) { // APIError: Code №10 - Internal server error: Unknown error, try later
+              console.warn(trigger.name, `Warning: Unknown error occurred while deleting post ${post.id}.
+As we explicitly asked to try later by VK API, skipping this post deletion and continuing.`);
+              continue;
+            }
             throw e;
           }
         }
