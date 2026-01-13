@@ -1,8 +1,14 @@
 const { second, minute, ms } = require('./time-units');
 const { executeTrigger, getToken } = require('./utils');
 const { handleOutgoingMessage } = require('./outgoing-messages');
+const { PersonalityManager } = require('./personality-manager');
+const personalitiesConfig = require('./personalities.config');
 
 const peers = {}; // TODO: keep state about what triggers then last triggered for each peer
+
+// Initialize personality manager
+const personalityManager = new PersonalityManager(personalitiesConfig);
+console.log('Personality Manager initialized with', personalityManager.getStats().totalPersonalities, 'personalities');
 
 const triggers = [
   // require('./triggers/acquaintance').trigger,
@@ -18,6 +24,7 @@ const triggers = [
   // require('./triggers/engage-with-acquaintance').trigger
 ];
 
+// Get the main VK instance (fallback for backwards compatibility)
 const token = getToken();
 const { VK } = require('vk-io');
 const vk = new VK({ token });
@@ -71,7 +78,7 @@ vk.updates.on(['message_new'], async (request) => {
   }
 
   for (const trigger of triggers) {
-    await executeTrigger(trigger, { vk, request, states: peers });
+    await executeTrigger(trigger, { vk, request, states: peers }, personalityManager);
   }
 });
 
@@ -83,17 +90,17 @@ const messagesHandlerInterval = setInterval(handleOutgoingMessage, second / ms);
 
 const { trigger: setOnlineStatusTrigger } = require('./triggers/set-online-status');
 const setOnlineStatusInterval = setInterval(async () => {
-  await executeTrigger(setOnlineStatusTrigger, { vk });
+  await executeTrigger(setOnlineStatusTrigger, { vk }, personalityManager);
 }, (14 * minute) / ms);
 
 const { trigger: acceptFriendRequestsTrigger } = require('./triggers/accept-friend-requests');
 const acceptFriendRequestsInterval = setInterval(async () => {
-  await executeTrigger(acceptFriendRequestsTrigger, { vk });
+  await executeTrigger(acceptFriendRequestsTrigger, { vk }, personalityManager);
 }, (20 * minute) / ms);
 
 const { trigger: deleteDeactivatedFriendsTrigger } = require('./triggers/delete-deactivated-friends');
 const deleteDeactivatedFriendsInterval = setInterval(async () => {
-  await executeTrigger(deleteDeactivatedFriendsTrigger, { vk });
+  await executeTrigger(deleteDeactivatedFriendsTrigger, { vk }, personalityManager);
 }, (30 * minute) / ms);
 
 // const { trigger: greetFriends } = require('./triggers/greet-friends');
@@ -108,12 +115,12 @@ const deleteDeactivatedFriendsInterval = setInterval(async () => {
 
 const { trigger: deleteOutgoingFriendRequestsTrigger } = require('./triggers/delete-outgoing-requests');
 const deleteOutgoingFriendRequestsInterval = setInterval(async () => {
-  await executeTrigger(deleteOutgoingFriendRequestsTrigger, { vk, options: { maxRequests: 20 } });
+  await executeTrigger(deleteOutgoingFriendRequestsTrigger, { vk, options: { maxRequests: 20 } }, personalityManager);
 }, (8 * minute) / ms);
 
 const { trigger: sendInvitationPostsForFriendsTrigger } = require('./triggers/send-invitation-posts-for-friends');
 const sendInvitationPostsForFriendsIntervalAction = async () => {
-  await executeTrigger(sendInvitationPostsForFriendsTrigger, { vk });
+  await executeTrigger(sendInvitationPostsForFriendsTrigger, { vk }, personalityManager);
 };
 const sendInvitationPostsForFriendsInterval = setInterval(sendInvitationPostsForFriendsIntervalAction, (9 * minute) / ms);
 sendInvitationPostsForFriendsIntervalAction();
@@ -125,7 +132,7 @@ const sendBirthDayCongratulationsIntervalAction = async () => {
   const currentDay = now.getDate();
   if (currentDay != lastBirthday) {
     lastBirthday = currentDay;
-    await executeTrigger(sendBirthDayCongratulationsTrigger, { vk });
+    await executeTrigger(sendBirthDayCongratulationsTrigger, { vk }, personalityManager);
   }
 }
 const sendBirthDayCongratulationsInterval = setInterval(sendBirthDayCongratulationsIntervalAction, (23 * 60 * minute) / ms);
