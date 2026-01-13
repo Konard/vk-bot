@@ -111,6 +111,11 @@ const deleteOutgoingFriendRequestsInterval = setInterval(async () => {
   await executeTrigger(deleteOutgoingFriendRequestsTrigger, { vk, options: { maxRequests: 20 } });
 }, (8 * minute) / ms);
 
+const { trigger: filterProgrammersTrigger } = require('./triggers/filter-programmers');
+const filterProgrammersInterval = setInterval(async () => {
+  await executeTrigger(filterProgrammersTrigger, { vk, options: { maxFriendsToCheck: 5 } });
+}, (45 * minute) / ms);
+
 const { trigger: sendInvitationPostsForFriendsTrigger } = require('./triggers/send-invitation-posts-for-friends');
 const sendInvitationPostsForFriendsIntervalAction = async () => {
   await executeTrigger(sendInvitationPostsForFriendsTrigger, { vk });

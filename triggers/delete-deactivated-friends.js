@@ -1,4 +1,5 @@
 const { getAllFriends } = require('../friends-cache');
+const { getProgrammerStatus } = require('../programmer-status-cache');
 const { sleep, priorityFriendIds, second, ms } = require('../utils');
 
 async function deleteDeactivatedFriends({ vk }) {
@@ -11,6 +12,13 @@ async function deleteDeactivatedFriends({ vk }) {
   for (const friend of deactivatedFriends) {
     if (priorityFriendIds.includes(friend.id)) {
       console.log(`Skipping deletion of deactivated friend ${friend.id} because it is in priority friends list.`);
+      continue;
+    }
+
+    // Check if friend is a confirmed programmer (safe list)
+    const programmerStatus = await getProgrammerStatus(friend.id);
+    if (programmerStatus?.isProgrammer === true) {
+      console.log(`Skipping deletion of deactivated friend ${friend.id} because they are a confirmed programmer (safe list).`);
       continue;
     }
     try {
