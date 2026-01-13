@@ -1,7 +1,11 @@
 const { getRandomElement } = require('../utils');
 const { enqueueMessage } = require('../outgoing-messages');
 
-const wellBeingQuestionRegex = /^[^\p{L}\?]*(как)[^\p{L}\?]*(поживаешь|дела|жизнь)[^\p{L}\?]*\?+[^\p{L}]*$/ui;
+// Matches Russian phrases: "Как дела?", "Как жизнь?", "Как поживаешь?"
+// Matches English phrases: "How are you?", "How are you doing?", "How have you been?",
+// "How's everything?", "How's it going?", "How are things going?", "What's going on?",
+// "What's new?", "What's up?", "Whassup?", "What are you up to?"
+const wellBeingQuestionRegex = /(как)[^\p{L}]+(поживаешь|дела|жизнь)|^[^\p{L}\?]*(how|what)\b[^\p{L}]+(are|is|have|'?s)\b[^\p{L}]+(you|everything|it|things|going|new|up|been)\b.*$|^.*\b(whassup)\b.*$/ui;
 
 const answers = [
   "Хорошо, программирую.",
