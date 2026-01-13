@@ -47,10 +47,20 @@ async function howCanIHelpYou(context) {
       //     continue;
       //   } else {
       console.log(`Loading conversations for ${friend.id} friend from server...`);
-      conversationsResponse = await context.vk.api.messages.getConversationsById({
-          peer_ids: [friend.id],
-          count: 1
-      });
+
+      try {
+        conversationsResponse = await context.vk.api.messages.getConversationsById({
+            peer_ids: [friend.id],
+            count: 1
+        });
+      } catch (error) {
+        if (error.code === 10) {
+          console.log(`VK API error ${error.code} for friend ${friend.id}. Skipping this friend due to server error.`);
+          continue;
+        }
+        throw error;
+      }
+
       const conversation = conversationsResponse.items[0];
       // await setConversation(friend.id, conversation);
       console.log(`Conversation for ${friend.id} friend loaded.`);
@@ -62,7 +72,17 @@ async function howCanIHelpYou(context) {
         continue;
       }
 
-      const conversationMessages = await context.vk.api.messages.getById({ message_ids: conversation.last_message_id });
+      let conversationMessages;
+      try {
+        conversationMessages = await context.vk.api.messages.getById({ message_ids: conversation.last_message_id });
+      } catch (error) {
+        if (error.code === 10) {
+          console.log(`VK API error ${error.code} when getting message ${conversation.last_message_id} for friend ${friend.id}. Skipping this friend due to server error.`);
+          continue;
+        }
+        throw error;
+      }
+
       const lastMessage = conversationMessages.items[0];
 
       const now = DateTime.now();
