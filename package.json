@@ -24,10 +24,12 @@
   },
   "homepage": "https://github.com/Konard/vk-bot#readme",
   "dependencies": {
+    "@xenova/transformers": "^2.17.2",
     "cache-manager": "^6.4.1",
     "lodash": "^4.17.21",
     "luxon": "^3.5.0",
     "rfc4648": "^1.5.4",
+    "vectra": "^0.11.1",
     "vk-io": "^4.9.1",
     "yargs": "^18.0.0"
   },
