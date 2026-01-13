@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  vk-bot:
+    build: .
+    container_name: vk-bot
+    restart: unless-stopped
+    volumes:
+      # Mount the token file from host to container
+      - ./token:/usr/src/app/token:ro
+      # Mount logs directory for persistent logging
+      - ./logs:/usr/src/app/logs
+    environment:
+      - NODE_ENV=production
+    # Add health check to monitor the bot's status
+    healthcheck:
+      test: ["CMD", "node", "-e", "process.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    # Limit resources to prevent excessive usage
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
