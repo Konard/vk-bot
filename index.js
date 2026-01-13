@@ -101,10 +101,10 @@ const deleteDeactivatedFriendsInterval = setInterval(async () => {
 //   await executeTrigger(greetFriends, { vk, options: { maxGreetings: 20 } });
 // }, 40 * minute);
 
-// const { trigger: reactToCancelledFriendships } = require('./triggers/react-to-cancelled-friendships');
-// const reactToCancelledFriendshipsInterval = setInterval(async () => {
-//   await executeTrigger(reactToCancelledFriendships, { vk, options: { maxRequests: 20 }, states: peers });
-// }, 20 * minute);
+const { trigger: reactToCancelledFriendships } = require('./triggers/react-to-cancelled-friendships');
+const reactToCancelledFriendshipsInterval = setInterval(async () => {
+  await executeTrigger(reactToCancelledFriendships, { vk, options: { maxRequests: 20 }, states: peers });
+}, (20 * minute) / ms);
 
 const { trigger: deleteOutgoingFriendRequestsTrigger } = require('./triggers/delete-outgoing-requests');
 const deleteOutgoingFriendRequestsInterval = setInterval(async () => {
