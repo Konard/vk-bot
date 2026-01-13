@@ -148,6 +148,38 @@ function saveJsonSync(path, obj) {
   return saveTextSync(path, JSON.stringify(obj, null, 2));
 }
 
+async function withFloodControlRetry(apiCall, maxRetries = 3, triggerName = 'Unknown') {
+  let retryCount = 0;
+
+  while (retryCount <= maxRetries) {
+    try {
+      return await apiCall();
+    } catch (error) {
+      if (error.code === 9) { // Flood control error
+        if (retryCount === maxRetries) {
+          console.error(`Maximum retry attempts (${maxRetries}) reached for trigger '${triggerName}' due to flood control. Giving up.`);
+          throw error;
+        }
+
+        // Exponential backoff: 2^retry * 5 minutes with jitter
+        const baseDelayMinutes = 5;
+        const delayMinutes = baseDelayMinutes * Math.pow(2, retryCount);
+        // Add random jitter (±20%) to avoid synchronized retries
+        const jitter = 0.8 + Math.random() * 0.4; // 0.8 to 1.2
+        const finalDelayMs = delayMinutes * timeUnits.minute * jitter / timeUnits.ms;
+
+        console.warn(`Flood control error (code 9) in trigger '${triggerName}'. Retry ${retryCount + 1}/${maxRetries + 1} in ${Math.round(finalDelayMs / 1000 / 60)} minutes...`);
+
+        await sleep(finalDelayMs);
+        retryCount++;
+      } else {
+        // For non-flood control errors, throw immediately
+        throw error;
+      }
+    }
+  }
+}
+
 async function executeTrigger(trigger, context) {
   if (!trigger) {
     return;
@@ -163,7 +195,14 @@ async function executeTrigger(trigger, context) {
     try {
       console.log(`'${trigger.name}' trigger selected to be executed.`);
       const start = new Date();
-      await trigger.action(currentContext);
+
+      // Wrap trigger execution with flood control retry
+      await withFloodControlRetry(
+        () => trigger.action(currentContext),
+        3, // max 3 retries
+        trigger.name
+      );
+
       console.log(`'${trigger.name}' trigger is executed in ${new Date() - start} ms.`);
       if (peerState && trigger.name) {
         const triggers = peerState.triggers ??= {};
@@ -185,6 +224,7 @@ module.exports = {
   hasSticker,
   sleep,
   executeTrigger,
+  withFloodControlRetry,
   eraseMetadata,
   clean,
   readTextSync,
