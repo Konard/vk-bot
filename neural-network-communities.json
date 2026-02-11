@@ -1,0 +1,22 @@
+{
+  "communities": [
+    {
+      "id": null,
+      "name": "Example Neural Network Community",
+      "description": "Add your neural network/AI community IDs here. Find VK community ID from URL: vk.com/club[ID] or vk.com/public[ID]",
+      "enabled": false
+    }
+  ],
+  "instructions": {
+    "how_to_add": "To add a neural network community, find the VK community ID and add it to the 'communities' array",
+    "community_id_format": "VK community ID should be a positive number (e.g., 123456789)",
+    "finding_community_id": "Look at the VK community URL: vk.com/club123456789 or vk.com/public123456789",
+    "example": {
+      "id": 123456789,
+      "name": "AI Community",
+      "description": "Community about artificial intelligence",
+      "enabled": true
+    },
+    "note": "The bot will only post to communities where it has posting permissions"
+  }
+}
