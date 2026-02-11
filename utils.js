@@ -1,6 +1,7 @@
 const { DateTime } = require('luxon');
 const timeUnits = require('./time-units');
 const fs = require('fs');
+const { VK } = require('vk-io');
 
 const app = {
   gracefullyFinished: false,
@@ -81,6 +82,18 @@ function isValidTokenSyntax(token) {
   // Define a regex pattern for validating the token
   const tokenPattern = /^[a-zA-Z0-9_\-\.]+$/;
   return tokenPattern.test(token);
+}
+
+function createVK(options = {}) {
+  const token = options.token || getToken();
+
+  return new VK({
+    token,
+    apiTimeout: 60000, // 60 seconds timeout instead of default 10 seconds
+    apiRetryLimit: 3,   // Keep default retry limit
+    apiWait: 3000,      // 3 seconds between requests
+    ...options // Allow overriding default options
+  });
 }
 
 function getRandomElement(array) {
@@ -181,6 +194,7 @@ async function executeTrigger(trigger, context) {
 
 module.exports = {
   getToken,
+  createVK,
   getRandomElement,
   hasSticker,
   sleep,
