@@ -130,3 +130,10 @@ const sendBirthDayCongratulationsIntervalAction = async () => {
 }
 const sendBirthDayCongratulationsInterval = setInterval(sendBirthDayCongratulationsIntervalAction, (23 * 60 * minute) / ms);
 // sendBirthDayCongratulationsIntervalAction();
+
+const { trigger: likeFriendsAvatarsTrigger } = require('./triggers/like-friends-avatars');
+const likeFriendsAvatarsIntervalAction = async () => {
+  await executeTrigger(likeFriendsAvatarsTrigger, { vk, options: { maxLikes: 30, minDelaySeconds: 45 } });
+};
+const likeFriendsAvatarsInterval = setInterval(likeFriendsAvatarsIntervalAction, (6 * 60 * minute) / ms);
+// likeFriendsAvatarsIntervalAction(); // Uncomment to run immediately on start
