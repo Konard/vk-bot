@@ -1,5 +1,5 @@
 const { VK } = require('vk-io');
-const { getToken } = require('./utils');
+const { getToken, withRetry } = require('./utils');
 const token = getToken();
 const vk = new VK({ token });
 
@@ -7,7 +7,9 @@ const requestsLimit = 10000; // Maximum number of requests you expect
 const requestsSegmentSize = 1000; // Number of requests fetched per segment
 
 async function fetchRequests(segment, offset) {
-  const req = await vk.api.friends.getRequests({ out: 1, count: segment, offset: offset });
+  const req = await withRetry(() =>
+    vk.api.friends.getRequests({ out: 1, count: segment, offset: offset })
+  );
   return req || [];
 }
 

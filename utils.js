@@ -179,6 +179,59 @@ async function executeTrigger(trigger, context) {
   }
 }
 
+/**
+ * Executes an async function with retry logic and exponential backoff
+ * @param {Function} fn - The async function to execute
+ * @param {Object} options - Retry options
+ * @param {number} options.maxRetries - Maximum number of retry attempts (default: 3)
+ * @param {number} options.initialDelay - Initial delay in milliseconds (default: 1000)
+ * @param {number} options.maxDelay - Maximum delay in milliseconds (default: 30000)
+ * @param {number} options.backoffMultiplier - Multiplier for exponential backoff (default: 2)
+ * @param {Array<string>} options.retryableErrors - List of error codes to retry (default: ['ECONNRESET', 'ETIMEDOUT', 'ECONNREFUSED', 'ENOTFOUND'])
+ * @returns {Promise} The result of the function execution
+ */
+async function withRetry(fn, options = {}) {
+  const {
+    maxRetries = 3,
+    initialDelay = 1000,
+    maxDelay = 30000,
+    backoffMultiplier = 2,
+    retryableErrors = ['ECONNRESET', 'ETIMEDOUT', 'ECONNREFUSED', 'ENOTFOUND']
+  } = options;
+
+  let lastError;
+  let delay = initialDelay;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+
+      // Check if error is retryable
+      const isRetryable = retryableErrors.includes(error.code) ||
+                          retryableErrors.includes(error.errno) ||
+                          (error.type === 'system' && retryableErrors.includes(error.code));
+
+      if (!isRetryable || attempt === maxRetries) {
+        throw error;
+      }
+
+      // Log retry attempt
+      console.warn(`Attempt ${attempt + 1}/${maxRetries + 1} failed with ${error.code || error.errno}: ${error.message}`);
+      console.log(`Retrying in ${delay}ms...`);
+
+      // Wait before retrying
+      await new Promise(resolve => setTimeout(resolve, delay));
+
+      // Exponential backoff with max delay cap
+      delay = Math.min(delay * backoffMultiplier, maxDelay);
+    }
+  }
+
+  throw lastError;
+}
+
 module.exports = {
   getToken,
   getRandomElement,
@@ -191,6 +244,7 @@ module.exports = {
   readJsonSync,
   saveTextSync,
   saveJsonSync,
+  withRetry,
   app,
   ...timeUnits,
   priorityFriendIds,

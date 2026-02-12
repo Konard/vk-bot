@@ -1,5 +1,5 @@
 const { getAllFriends, loadAllFriends } = require('../friends-cache');
-const { sleep, priorityFriendIds, second, minute, ms } = require('../utils');
+const { sleep, priorityFriendIds, second, minute, ms, withRetry } = require('../utils');
 
 const sortByMutuals = { sort: 1 };
 const maxFriends = 10000;
@@ -27,7 +27,7 @@ async function acceptFriendRequests({ vk }) {
         console.log(`Friend request is sent to priority friend with id ${friendId}.`);
       } catch (error) {
         if (error.code === 177) { // APIError: Code №177 - Cannot add this user to friends as user not found
-          console.log(`Could not send friend request to priority friend with id ${friendId}, because this friend is not found.`);
+          console.log(`Could not accept ${friendId} friend request, because this friend is not found.`);
         } else if (error.code === 242) { // APIError: Code №242 - Too many friends: friends count exceeded
           console.log(`Could not send friend request to priority friend with id ${friendId}, because friends count (10000) exceeded.`);
           break;
@@ -44,7 +44,9 @@ async function acceptFriendRequests({ vk }) {
     }
 
     const maxFriendRequestsCount = 23;
-    const requests = await vk.api.friends.getRequests({ count: maxFriendRequestsCount, ...sortByMutuals });
+    const requests = await withRetry(() =>
+      vk.api.friends.getRequests({ count: maxFriendRequestsCount, ...sortByMutuals })
+    );
     await sleep((2 * second) / ms);
     if (requests?.items?.length <= 0) {
       console.log('No incoming friend requests to be accepted.');
