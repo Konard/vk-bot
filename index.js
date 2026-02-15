@@ -79,54 +79,44 @@ vk.updates.start().catch(console.error);
 
 
 
-const messagesHandlerInterval = setInterval(handleOutgoingMessage, second / ms);
+const { GlobalScheduler } = require('./global-scheduler');
+const scheduler = new GlobalScheduler();
 
 const { trigger: setOnlineStatusTrigger } = require('./triggers/set-online-status');
-const setOnlineStatusInterval = setInterval(async () => {
-  await executeTrigger(setOnlineStatusTrigger, { vk });
-}, (14 * minute) / ms);
-
 const { trigger: acceptFriendRequestsTrigger } = require('./triggers/accept-friend-requests');
-const acceptFriendRequestsInterval = setInterval(async () => {
-  await executeTrigger(acceptFriendRequestsTrigger, { vk });
-}, (20 * minute) / ms);
-
 const { trigger: deleteDeactivatedFriendsTrigger } = require('./triggers/delete-deactivated-friends');
-const deleteDeactivatedFriendsInterval = setInterval(async () => {
-  await executeTrigger(deleteDeactivatedFriendsTrigger, { vk });
-}, (30 * minute) / ms);
-
-// const { trigger: greetFriends } = require('./triggers/greet-friends');
-// const greetFriendsInterval = setInterval(async () => {
-//   await executeTrigger(greetFriends, { vk, options: { maxGreetings: 20 } });
-// }, 40 * minute);
-
-// const { trigger: reactToCancelledFriendships } = require('./triggers/react-to-cancelled-friendships');
-// const reactToCancelledFriendshipsInterval = setInterval(async () => {
-//   await executeTrigger(reactToCancelledFriendships, { vk, options: { maxRequests: 20 }, states: peers });
-// }, 20 * minute);
-
 const { trigger: deleteOutgoingFriendRequestsTrigger } = require('./triggers/delete-outgoing-requests');
-const deleteOutgoingFriendRequestsInterval = setInterval(async () => {
-  await executeTrigger(deleteOutgoingFriendRequestsTrigger, { vk, options: { maxRequests: 20 } });
-}, (8 * minute) / ms);
-
 const { trigger: sendInvitationPostsForFriendsTrigger } = require('./triggers/send-invitation-posts-for-friends');
+const { trigger: sendBirthDayCongratulationsTrigger } = require('./triggers/send-birthday-congratulations');
+
+scheduler.addScheduledAction('MessagesHandler', null, second / ms, { customAction: handleOutgoingMessage });
+scheduler.addScheduledAction('SetOnlineStatus', setOnlineStatusTrigger, (14 * minute) / ms);
+scheduler.addScheduledAction('AcceptFriendRequests', acceptFriendRequestsTrigger, (20 * minute) / ms);
+scheduler.addScheduledAction('DeleteDeactivatedFriends', deleteDeactivatedFriendsTrigger, (30 * minute) / ms);
+scheduler.addScheduledAction('DeleteOutgoingFriendRequests', deleteOutgoingFriendRequestsTrigger, (8 * minute) / ms, { maxRequests: 20 });
+scheduler.addScheduledAction('SendInvitationPosts', sendInvitationPostsForFriendsTrigger, (9 * minute) / ms);
+
+let lastBirthday;
+const birthdayTriggerWrapper = {
+  name: "SendBirthdayCongratulations",
+  action: async (context) => {
+    const now = new Date();
+    const currentDay = now.getDate();
+    if (currentDay != lastBirthday) {
+      lastBirthday = currentDay;
+      await sendBirthDayCongratulationsTrigger.action(context);
+    }
+  }
+};
+scheduler.addScheduledAction('SendBirthdayCongratulations', birthdayTriggerWrapper, (23 * 60 * minute) / ms);
+
+scheduler.start({ vk, states: peers });
+
 const sendInvitationPostsForFriendsIntervalAction = async () => {
   await executeTrigger(sendInvitationPostsForFriendsTrigger, { vk });
 };
-const sendInvitationPostsForFriendsInterval = setInterval(sendInvitationPostsForFriendsIntervalAction, (9 * minute) / ms);
 sendInvitationPostsForFriendsIntervalAction();
 
-let lastBirthday;
-const { trigger: sendBirthDayCongratulationsTrigger } = require('./triggers/send-birthday-congratulations');
-const sendBirthDayCongratulationsIntervalAction = async () => {
-  const now = new Date();
-  const currentDay = now.getDate();
-  if (currentDay != lastBirthday) {
-    lastBirthday = currentDay;
-    await executeTrigger(sendBirthDayCongratulationsTrigger, { vk });
-  }
-}
-const sendBirthDayCongratulationsInterval = setInterval(sendBirthDayCongratulationsIntervalAction, (23 * 60 * minute) / ms);
-// sendBirthDayCongratulationsIntervalAction();
+setInterval(() => {
+  scheduler.printStats();
+}, (60 * minute) / ms);
